@@ -4,7 +4,7 @@ import { RiLock2Line } from "react-icons/ri";
 import { FaRegCircleUser } from "react-icons/fa6";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../../components/data/context/authContext"
-
+import loginImage from '../../assets/farol.png'
 export default function Login() {
   // const navigate = useNavigate();
 
@@ -84,7 +84,7 @@ export default function Login() {
         {/* Imagem */}
         <div className="w-1/2">
           <img
-            // src={loginImage}
+            src={loginImage}
             alt="Login"
             className="object-cover w-full h-full rounded-r-2xl"
           />
