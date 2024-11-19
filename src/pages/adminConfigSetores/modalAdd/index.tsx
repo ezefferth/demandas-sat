@@ -7,13 +7,13 @@ import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { CriarSetor } from '../../../components/data/fetch/setores/criarSetor';
+import { TextField } from '@mui/material';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  //width: 400,
   bgcolor: 'background.paper',
   // /border: '1px solid #000',
   boxShadow: 15,
@@ -39,7 +39,7 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
 
   const handleAdd = async () => {
     try {
-      if (nome.length >= 4) {
+      if (nome.length >= 2) {
         await CriarSetor({ nome })
         setOpenAdd(false)
         handleOnAdd()
@@ -67,7 +67,7 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
           </h2>
           <div className='mt-5'>
             {/* <label>Nome</label> */}
-            <input className='border bg-slate-100 border-slate-700 w-56 pl-2 text-slate-800 rounded-lg active:border-slate-500' placeholder='Nome do setor' onChange={e => setNome(e.target.value)} />
+            <TextField id="standard-basic" label="Nome do setor" variant="standard" onChange={e => setNome(e.target.value)} sx={{width:'16rem'}}/>
           </div>
 
           <div className='flex justify-center gap-4 mt-4'>

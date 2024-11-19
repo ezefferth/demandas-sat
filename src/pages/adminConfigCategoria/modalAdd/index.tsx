@@ -7,6 +7,7 @@ import { useContext, useState } from 'react';
 import { CriarCategoria } from '../../../components/data/fetch/categoria/criarCategoria';
 import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
 import { DataContext } from '../../../components/data/context/dataContext';
+import { TextField } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -67,7 +68,7 @@ export default function ModalAddCategoria({ openAdd, handleClose, setOpenAdd }: 
           </h2>
           <div className='mt-5'>
             {/* <label>Nome</label> */}
-            <input className='border bg-slate-100 border-slate-700 w-56 pl-2 text-slate-800 rounded-lg active:border-slate-500' placeholder='Nome da categoria' onChange={e => setNome(e.target.value)} />
+            <TextField id="standard-basic" label="Nome da categoria" variant="standard" onChange={e => setNome(e.target.value)} sx={{ width: '16rem' }} />
           </div>
 
           <div className='flex justify-center gap-4 mt-4'>

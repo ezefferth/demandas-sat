@@ -139,9 +139,10 @@ export default function Home() {
       </aside>
 
       {/* Conteúdo Principal */}
-      <div className="flex-grow">
-        <Outlet />
-
+      <div className="flex-grow h-full overflow-hidden">
+        <div className="h-full overflow-y-auto p-4">
+          <Outlet />
+        </div>
       </div>
 
     </div>

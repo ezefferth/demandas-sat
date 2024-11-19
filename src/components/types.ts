@@ -1,10 +1,12 @@
 export type Usuario = {
+  id: string;
   nome: string;
-  // email: string;
   senha: string;
-  admin?: boolean;
+  admin: boolean;
   nomeUsuario: string;
-  avatar: BinaryType | null;
+  avatar?: BinaryType | null;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 
