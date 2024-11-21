@@ -13,8 +13,10 @@ import Assuntos from "../../pages/adminConfigAssuntos";
 import Categorias from "../../pages/adminConfigCategoria";
 import Setores from "../../pages/adminConfigSetores";
 import Usuarios from "../../pages/adminConfigUsuarios";
-import AbrirChamado from "../../pages/usuarioAbrirChamado";
-import MeusChamados from "../../pages/usuarioMeusChamados";
+import Chamados from "../../pages/usuarioChamados";
+import StatusPage from "../../pages/adminConfigStatus";
+import Prioridades from "../../pages/adminConfigPrioridades";
+import VerChamado from "../../pages/usuarioVerChamado";
 
 export default function Router() {
   return (
@@ -68,6 +70,22 @@ export default function Router() {
           }
         />
         <Route
+          path="/config/status"
+          element={
+            <AdminRoute>
+              <StatusPage />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/config/prioridades"
+          element={
+            <AdminRoute>
+              <Prioridades />
+            </AdminRoute>
+          }
+        />
+        <Route
           path="/config/usuarios"
           element={
             <AdminRoute>
@@ -80,12 +98,12 @@ export default function Router() {
           element={<PageNotFound />}
         />
         <Route
-          path="/abrirChamado"
-          element={<AbrirChamado />}
+          path="/chamados"
+          element={<Chamados />}
         />
         <Route
-          path="/MeusChamados"
-          element={<MeusChamados />}
+          path="/verChamado"
+          element={<VerChamado />}
         />
       </Route>
       <Route

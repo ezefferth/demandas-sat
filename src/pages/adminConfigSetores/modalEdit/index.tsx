@@ -8,6 +8,7 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { Setor } from '../../../components/types';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { AtualizarSetor } from '../../../components/data/fetch/setores/atualizarSetor';
+import { TextField } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -71,20 +72,14 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Editando Categoria
+            Editando Setor
           </h2>
           <p className='text-center'>
             {setor?.nome}
           </p>
 
-          <div className='w-72 mt-8'>
-            <input
-              className='border rounded-lg px-3 py-1 w-full'
-              type='text'
-              value={nome}
-              placeholder={setor?.nome}
-              onChange={(e) => setNome(e.target.value)}
-            />
+          <div className='mt-5 mb-4 w-72'>
+            <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={setor?.nome} />
           </div>
 
           <div className='text-slate-600 font-thin text-xs mt-8'>

@@ -1,9 +1,12 @@
 import { createContext, useEffect, useState } from "react";
-import { Assunto, Categoria, Setor, Usuario } from "../../types";
+import { Assunto, Categoria, Chamado, Prioridade, Setor, Status, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
 import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
 import { LerUsuarios } from "../fetch/usuarios/lerUsuarios";
+import { LerStatus } from "../fetch/status/lerStatus";
+import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
+import { LerChamados } from "../fetch/chamados/lerChamados";
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
@@ -14,6 +17,12 @@ type DataContextType = {
   setAssuntos: (value: Assunto[] | undefined) => void;
   usuarios: Usuario[] | undefined;
   setUsuarios: (value: Usuario[] | undefined) => void;
+  status: Status[] | undefined;
+  setStatus: (value: Status[] | undefined) => void;
+  prioridades: Status[] | undefined;
+  setPrioridades: (value: Prioridade[] | undefined) => void;
+  chamados: Chamado[] | undefined;
+  setChamados: (value: Chamado[] | undefined) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -23,6 +32,9 @@ export default function DataProvider({ children }: any) {
   const [setores, setSetores] = useState<Setor[] | undefined>();
   const [assuntos, setAssuntos] = useState<Assunto[] | undefined>();
   const [usuarios, setUsuarios] = useState<Usuario[] | undefined>();
+  const [status, setStatus] = useState<Status[] | undefined>();
+  const [prioridades, setPrioridades] = useState<Prioridade[] | undefined>();
+  const [chamados, setChamados] = useState<Chamado[] | undefined>();
 
 
   /* CATEGORIAS */
@@ -77,6 +89,45 @@ export default function DataProvider({ children }: any) {
     };
     fetchUsuario();
   }, []);
+  /* STATUS */
+  useEffect(() => {
+    const fetchStatus = async () => {
+      try {
+        LerStatus({ setStatus });
+
+      } catch (error) {
+        console.log("Erro no useEffect status", error);
+        return;
+      }
+    };
+    fetchStatus();
+  }, []);
+  /* PRIORIDADE */
+  useEffect(() => {
+    const fetchPrioridade = async () => {
+      try {
+        LerPrioridades({ setPrioridades });
+
+      } catch (error) {
+        console.log("Erro no useEffect prioridade", error);
+        return;
+      }
+    };
+    fetchPrioridade();
+  }, []);
+  /* CHAMADOS */
+  useEffect(() => {
+    const fetch = async () => {
+      try {
+        LerChamados({ setChamados });
+
+      } catch (error) {
+        console.log("Erro no useEffect prioridade", error);
+        return;
+      }
+    };
+    fetch();
+  }, []);
 
   return (
     <DataContext.Provider
@@ -89,6 +140,12 @@ export default function DataProvider({ children }: any) {
         setSetores,
         assuntos,
         setAssuntos,
+        status,
+        setStatus,
+        prioridades,
+        setPrioridades,
+        chamados,
+        setChamados,
       }}
     >
       {children}

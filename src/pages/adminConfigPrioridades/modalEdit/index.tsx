@@ -3,19 +3,19 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
-import { Categoria } from '../../../components/types';
-import { AtualizarCategoria } from '../../../components/data/fetch/categoria/atualizarCategoria';
+import { Status } from '../../../components/types';
 import { TextField } from '@mui/material';
+import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPrioridades';
+import { AtualizarPrioridade } from '../../../components/data/fetch/status/atualizarStatus';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  //width: 400,
+  width: 350,
   bgcolor: 'background.paper',
   // /border: '1px solid #000',
   boxShadow: 15,
@@ -23,34 +23,35 @@ const style = {
 };
 
 type Props = {
-  categoria: Categoria | null
+  prioridade: Status | null
   openEdit: boolean;
   setOpenEdit: (value: boolean) => void
   handleCloseEdit: (value: boolean) => void
 }
 
-export default function ModalEditarCategoria({ categoria, openEdit, handleCloseEdit, setOpenEdit }: Props) {
+export default function ModalEditarPrioridade({ prioridade, openEdit, handleCloseEdit, setOpenEdit }: Props) {
 
 
-  const { setCategorias } = useContext(DataContext)
+  const { setPrioridades } = useContext(DataContext)
 
   const handleOnEdit = async () => {
-    await LerCategorias({ setCategorias })
+    await LerPrioridades({ setPrioridades })
 
   }
 
   const [nome, setNome] = useState<string>('');
+  const [cor, setCor] = useState<string>('');
 
 
 
-  const handleRemove = async () => {
-    if (!categoria) {
+  const handleEdit = async () => {
+    if (!prioridade) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
-    const id = categoria.id
+    const id = prioridade.id
     try {
-      await AtualizarCategoria({ id, nome })
+      await AtualizarPrioridade({ id, nome, cor })
       setOpenEdit(false)
       handleOnEdit()
       setNome('')
@@ -62,6 +63,13 @@ export default function ModalEditarCategoria({ categoria, openEdit, handleCloseE
     }
   }
 
+  useEffect(() => {
+    if (prioridade) {
+      setNome(prioridade.nome || '');
+      setCor(prioridade.cor || '');
+    }
+  }, [prioridade]);
+
   return (
     <div>
       <Modal
@@ -72,30 +80,34 @@ export default function ModalEditarCategoria({ categoria, openEdit, handleCloseE
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Editando Categoria
+            Editando Prioridade
           </h2>
           <p className='text-center'>
-            {categoria?.nome}
+            {prioridade?.nome}
           </p>
 
-          <div className='mt-5 mb-4 w-72'>
-            <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={categoria?.nome} />
+          <div className='mt-5 mb-4'>
+            <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={prioridade?.nome} />
           </div>
+          <div className='mt-5 mb-4'>
+            <TextField id="standard-basic" label="Cód. Cor" variant="filled" onChange={(e) => setCor(e.target.value)} sx={{ width: '100%' }} defaultValue={prioridade?.cor} />
+          </div>
+
 
           <div className='text-slate-600 font-thin text-xs mt-8'>
             <div className='flex justify-between gap-4'>
               <p>Criado em:</p>
               <p>
-                {categoria?.createdAt
-                  ? new Date(categoria.createdAt).toLocaleString()
+                {prioridade?.createdAt
+                  ? new Date(prioridade.createdAt).toLocaleString()
                   : 'Data não disponível'}
               </p>
             </div>
             <div className='flex justify-between gap-4'>
               <p>Atualizado em:</p>
               <p>
-                {categoria?.createdAt
-                  ? new Date(categoria.updatedAt).toLocaleString()
+                {prioridade?.createdAt
+                  ? new Date(prioridade.updatedAt).toLocaleString()
                   : 'Data não disponível'}
               </p>
             </div>
@@ -106,7 +118,7 @@ export default function ModalEditarCategoria({ categoria, openEdit, handleCloseE
             <button className='border rounded-lg bg-red-200 px-3 py-1 hover:bg-red-300 transition-all' onClick={() => setOpenEdit(false)}>
               Cancelar
             </button>
-            <button className='border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all' onClick={handleRemove}>
+            <button className='border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all' onClick={handleEdit}>
               Atualizar
             </button>
           </div>

@@ -3,7 +3,7 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../components/data/context/authContext";
 
 import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear } from 'react-icons/fa6'
-import { MdLabelImportantOutline } from "react-icons/md";
+import { MdLabelImportantOutline, MdLowPriority } from "react-icons/md";
 
 import { FaPlus } from "react-icons/fa6";
 import { FaSquarePollHorizontal } from "react-icons/fa6";
@@ -11,6 +11,7 @@ import { IoSettingsOutline } from "react-icons/io5";
 import { SiAwsorganizations } from "react-icons/si";
 import { RiOrganizationChart } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
+import { FaExclamationTriangle } from "react-icons/fa";
 
 export default function Home() {
 
@@ -101,6 +102,14 @@ export default function Home() {
                       <RiOrganizationChart className="h-5 w-5" />
                       <p className="cursor-pointer" onClick={() => navigate('/config/setores')}>Setores</p>
                     </div>
+                    <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/status' && 'pl-2 font-bold'}`}>
+                      <FaExclamationTriangle className="h-5 w-5" />
+                      <p className="cursor-pointer" onClick={() => navigate('/config/status')}>Status</p>
+                    </div>
+                    <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/setores' && 'pl-2 font-bold'}`}>
+                      <MdLowPriority  className="h-5 w-5" />
+                      <p className="cursor-pointer" onClick={() => navigate('/config/prioridades')}>Pioridades</p>
+                    </div>
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/usuarios' && 'pl-2 font-bold'}`}>
                       <FaUsersGear className="h-5 w-5" />
                       <p className="cursor-pointer" onClick={() => navigate('/config/usuarios')}>Usuários</p>
@@ -108,20 +117,20 @@ export default function Home() {
                   </div>
                 )}
               </div>
-            </div>
+            </div> 
           ) : (
             <div className="text-slate-100 mt-12">
               <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
-                <FaPlus className="w-6 h-6 mr-2" />
-                <p className="cursor-pointer">Novo Chamado</p>
+                <FaChartLine className="w-6 h-6 mr-2" />
+                <p className="cursor-pointer" onClick={() => navigate('/chamados')}>Dashboard</p>
               </div>
               <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
                 <FaSquarePollHorizontal className="w-6 h-6 mr-2 " />
-                <p className="cursor-pointer">Meus Chamados</p>
+                <p className="cursor-pointer" onClick={() => navigate('/chamados')}>Chamados</p>
               </div>
               <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
                 <IoSettingsOutline className="w-6 h-6 mr-2" />
-                <p className="cursor-pointer">Configurações</p>
+                <p className="cursor-pointer" >Configurações</p>
               </div>
             </div>
           )
