@@ -43,7 +43,15 @@ export type Chamado = {
   createdAt: Date;
   updatedAt: Date;
   finishedAt: Date | null;
+}
 
+export type Comentario = {
+  id: string;
+  comentario: string;
+  createdAt: Date;
+  updatedAt: Date;
+  chamadoId: string;
+  usuarioId: string;
 }
 
 export type Status = {

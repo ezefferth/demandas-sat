@@ -1,5 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import { Assunto, Categoria, Chamado, Prioridade, Setor, Status, Usuario } from "../../types";
+import { Assunto, Categoria, Chamado, Comentario, Prioridade, Setor, Status, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
 import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
@@ -23,6 +23,8 @@ type DataContextType = {
   setPrioridades: (value: Prioridade[] | undefined) => void;
   chamados: Chamado[] | undefined;
   setChamados: (value: Chamado[] | undefined) => void;
+  comentarios: Comentario[] | undefined;
+  setComentarios: (value: Comentario[] | undefined) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -35,6 +37,7 @@ export default function DataProvider({ children }: any) {
   const [status, setStatus] = useState<Status[] | undefined>();
   const [prioridades, setPrioridades] = useState<Prioridade[] | undefined>();
   const [chamados, setChamados] = useState<Chamado[] | undefined>();
+  const [comentarios, setComentarios] = useState<Comentario[] | undefined>();
 
 
   /* CATEGORIAS */
@@ -122,12 +125,14 @@ export default function DataProvider({ children }: any) {
         LerChamados({ setChamados });
 
       } catch (error) {
-        console.log("Erro no useEffect prioridade", error);
+        console.log("Erro no useEffect chamados", error);
         return;
       }
     };
     fetch();
   }, []);
+  /* CHAMADOS */
+
 
   return (
     <DataContext.Provider
@@ -146,6 +151,8 @@ export default function DataProvider({ children }: any) {
         setPrioridades,
         chamados,
         setChamados,
+        comentarios,
+        setComentarios,
       }}
     >
       {children}

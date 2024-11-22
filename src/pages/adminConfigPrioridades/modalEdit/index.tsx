@@ -113,6 +113,10 @@ export default function ModalEditarPrioridade({ prioridade, openEdit, handleClos
             </div>
           </div>
 
+          <p className='mt-8 text-center font-thin text-slate-600 text-sm'>A cor deve ser colocada em hexadecimal</p>
+          <p className='mb-4 text-center font-thin text-slate-600 text-sm'>Consulte sugestões de cores <a href='https://celke.com.br/artigo/tabela-de-cores-html-nome-hexadecimal-rgb' target='_blank'>aqui</a></p>
+
+
 
           <div className='flex justify-center gap-4 mt-4'>
             <button className='border rounded-lg bg-red-200 px-3 py-1 hover:bg-red-300 transition-all' onClick={() => setOpenEdit(false)}>

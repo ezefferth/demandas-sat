@@ -6,8 +6,6 @@ import Modal from '@mui/material/Modal';
 import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
-import { LerStatus } from '../../../components/data/fetch/status/lerStatus';
-import { CriarStatus } from '../../../components/data/fetch/status/criarStatus';
 import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPrioridades';
 import { CriarPrioridade } from '../../../components/data/fetch/prioridade/criarPrioridade';
 
