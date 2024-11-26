@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Assunto, Categoria, Chamado, Comentario, Prioridade, Setor, Status, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
@@ -7,6 +7,8 @@ import { LerUsuarios } from "../fetch/usuarios/lerUsuarios";
 import { LerStatus } from "../fetch/status/lerStatus";
 import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
 import { LerChamados } from "../fetch/chamados/lerChamados";
+import { AuthContext } from "./authContext";
+import { LerChamadosUser } from "../fetch/chamados/lerChamadosUser";
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
@@ -23,6 +25,8 @@ type DataContextType = {
   setPrioridades: (value: Prioridade[] | undefined) => void;
   chamados: Chamado[] | undefined;
   setChamados: (value: Chamado[] | undefined) => void;
+  chamadosUser: Chamado[] | undefined;
+  setChamadosUser: (value: Chamado[] | undefined) => void;
   comentarios: Comentario[] | undefined;
   setComentarios: (value: Comentario[] | undefined) => void;
 };
@@ -37,102 +41,83 @@ export default function DataProvider({ children }: any) {
   const [status, setStatus] = useState<Status[] | undefined>();
   const [prioridades, setPrioridades] = useState<Prioridade[] | undefined>();
   const [chamados, setChamados] = useState<Chamado[] | undefined>();
+  const [chamadosUser, setChamadosUser] = useState<Chamado[] | undefined>();
   const [comentarios, setComentarios] = useState<Comentario[] | undefined>();
 
+  const { usuario } = useContext(AuthContext);
 
-  /* CATEGORIAS */
   useEffect(() => {
+    if (!usuario) return; // Aguarda o usuário estar logado
+
     const fetchCategorias = async () => {
       try {
-        LerCategorias({ setCategorias });
-
+        await LerCategorias({ setCategorias });
       } catch (error) {
-        console.log("Erro no useEffect Categorias", error);
-        return;
+        console.error("Erro ao buscar categorias:", error);
       }
     };
-    fetchCategorias();
-  }, []);
-  /* SETORES */
-  useEffect(() => {
+
     const fetchSetores = async () => {
       try {
-        LerSetores({ setSetores });
-
+        await LerSetores({ setSetores });
       } catch (error) {
-        console.log("Erro no useEffect setores", error);
-        return;
+        console.error("Erro ao buscar setores:", error);
       }
     };
-    fetchSetores();
-  }, []);
-  /* ASSUNTOS */
-  useEffect(() => {
-    const fetchAssunto = async () => {
+
+    const fetchAssuntos = async () => {
       try {
-        LerAssuntos({ setAssuntos });
-
+        await LerAssuntos({ setAssuntos });
       } catch (error) {
-        console.log("Erro no useEffect assuntos", error);
-        return;
+        console.error("Erro ao buscar assuntos:", error);
       }
     };
-    fetchAssunto();
-  }, []);
-  /* USUARIOS */
-  useEffect(() => {
-    const fetchUsuario = async () => {
+
+    const fetchUsuarios = async () => {
       try {
-        LerUsuarios({ setUsuarios });
-
+        await LerUsuarios({ setUsuarios });
       } catch (error) {
-        console.log("Erro no useEffect assuntos", error);
-        return;
+        console.error("Erro ao buscar usuários:", error);
       }
     };
-    fetchUsuario();
-  }, []);
-  /* STATUS */
-  useEffect(() => {
+
     const fetchStatus = async () => {
       try {
-        LerStatus({ setStatus });
-
+        await LerStatus({ setStatus });
       } catch (error) {
-        console.log("Erro no useEffect status", error);
-        return;
+        console.error("Erro ao buscar status:", error);
       }
     };
+
+    const fetchPrioridades = async () => {
+      try {
+        await LerPrioridades({ setPrioridades });
+      } catch (error) {
+        console.error("Erro ao buscar prioridades:", error);
+      }
+    };
+
+    const fetchChamados = async () => {
+      try {
+        if (usuario.admin) {
+          await LerChamados({ setChamados });
+        } else {
+          const id = usuario.id;
+          await LerChamadosUser({ setChamadosUser, id });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar chamados:", error);
+      }
+    };
+
+    fetchCategorias();
+    fetchSetores();
+    fetchAssuntos();
+    fetchUsuarios();
     fetchStatus();
-  }, []);
-  /* PRIORIDADE */
-  useEffect(() => {
-    const fetchPrioridade = async () => {
-      try {
-        LerPrioridades({ setPrioridades });
-
-      } catch (error) {
-        console.log("Erro no useEffect prioridade", error);
-        return;
-      }
-    };
-    fetchPrioridade();
-  }, []);
-  /* CHAMADOS */
-  useEffect(() => {
-    const fetch = async () => {
-      try {
-        LerChamados({ setChamados });
-
-      } catch (error) {
-        console.log("Erro no useEffect chamados", error);
-        return;
-      }
-    };
-    fetch();
-  }, []);
-  /* CHAMADOS */
-
+    fetchPrioridades();
+    fetchChamados();
+  }, [usuario]);
 
   return (
     <DataContext.Provider
@@ -151,6 +136,8 @@ export default function DataProvider({ children }: any) {
         setPrioridades,
         chamados,
         setChamados,
+        chamadosUser,
+        setChamadosUser,
         comentarios,
         setComentarios,
       }}

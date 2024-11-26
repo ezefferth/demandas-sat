@@ -8,7 +8,7 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { AuthContext } from '../../../components/data/context/authContext';
 import { CriarChamado } from '../../../components/data/fetch/chamados/criarChamado';
-import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
+import { LerChamadosUser } from '../../../components/data/fetch/chamados/lerChamadosUser';
 
 const style = {
   position: 'absolute',
@@ -43,10 +43,11 @@ export default function ModalAddChamado({ openAdd, handleClose, setOpenAdd }: Pr
   };
 
   const { usuario } = useContext(AuthContext)
-  const { setChamados, assuntos, setores } = useContext(DataContext)
+  const { setChamadosUser, assuntos, setores } = useContext(DataContext)
 
   const handleOnAdd = async () => {
-    await LerChamados({ setChamados })
+    const id = usuario!.id
+    await LerChamadosUser({ setChamadosUser, id })
 
   }
 

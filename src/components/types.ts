@@ -43,6 +43,7 @@ export type Chamado = {
   createdAt: Date;
   updatedAt: Date;
   finishedAt: Date | null;
+  finalizadoPor: string;
 }
 
 export type Comentario = {

@@ -27,10 +27,10 @@ export default function VerChamado() {
     return (
       <div className="p-12">
         <button className='bg-slate-600 p-1 rounded-sm hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
-          <FaArrowLeftLong className='text-white'/>
+          <FaArrowLeftLong className='text-white' />
         </button>
 
-        <div className="mt-4 p-8 text-slate-600 w-[32rem] mx-auto border-2 rounded-lg shadow-lg bg-slate-100 font-thin">
+        <div className="mt-4 p-8 text-slate-600 w-[32rem] mx-auto border-2 rounded-lg shadow-lg bg-gray-100 font-thin">
           <div>
             <p className='text-center text-xl font-semibold text-slate-800'>Chamado N.º{chamado.id}</p>
           </div>
@@ -42,7 +42,7 @@ export default function VerChamado() {
             <div >
               {
                 chamado.statusId ? (
-                  status?.map( st => {
+                  status?.map(st => {
                     if (st.id === chamado.statusId) {
                       return <span key={st.id}>{st.nome}</span>;
                     }
@@ -85,7 +85,7 @@ export default function VerChamado() {
               <p>Descrição:</p>
             </div>
             <div>
-              <p>{chamado.descricao}</p>
+              <p className='pl-2 text-justify'>{chamado.descricao}</p>
             </div>
           </div>
           <div className="border-b border-slate-300 my-1 w-full" />
@@ -149,7 +149,7 @@ export default function VerChamado() {
                 {comentarios?.map((comentario) => (
                   <div
                     key={comentario.id}
-                    className="p-4 border rounded-xl bg-gray-50 shadow-lg"
+                    className="p-4 border rounded-xl bg-gray-50 shadow-lg hover:shadow-xl transition-all"
                   >
                     <p className="text-sm text-gray-700">{comentario.comentario}</p>
                     <div className="text-xs text-gray-500 mt-2">
