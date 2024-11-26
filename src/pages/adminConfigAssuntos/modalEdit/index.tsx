@@ -36,6 +36,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
 
   const [categoriaId, setCategoriaId] = useState<string>('')
   const [nome, setNome] = useState<string>(assunto?.nome || '');
+  const [tempoLimite, setTempoLimite] = useState<number>(assunto?.tempoLimite || 0);
 
 
   const handleOnEdit = async () => {
@@ -46,6 +47,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
     if (assunto) {
       setNome(assunto.nome || '');
       setCategoriaId(assunto.categoriaId || '');
+      setTempoLimite(assunto.tempoLimite || 0);
     }
   }, [assunto]);
 
@@ -61,7 +63,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
 
     const id = assunto.id
     try {
-      await AtualizarAssunto({ id, nome, categoriaId })
+      await AtualizarAssunto({ id, nome, categoriaId, tempoLimite })
       setOpenEdit(false)
       handleOnEdit()
       setNome('')
@@ -73,6 +75,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
     }
   }
 
+
   return (
     <div>
       <Modal
@@ -83,7 +86,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Editando Categoria
+            Editando Assunto
           </h2>
           <p className='text-center'>
             {assunto?.nome}
@@ -91,10 +94,25 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
 
           <div className='w-72 mt-8'>
             <div className='mt-5 mb-4'>
-              <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={assunto?.nome} />
+              <TextField
+                id="standard-basic"
+                label="Nome" variant="filled"
+                onChange={(e) => setNome(e.target.value)}
+                sx={{ width: '100%' }}
+                defaultValue={assunto?.nome} />
+            </div>
+            <div className='mt-5 mb-4'>
+              <TextField
+                id="standard-basic"
+                label="Tempo limite"
+                placeholder='tempo limite em minutos'
+                type='number' variant="filled"
+                onChange={(e) => setTempoLimite(parseInt(e.target.value))}
+                sx={{ width: '100%' }}
+                defaultValue={assunto?.tempoLimite} />
             </div>
             <FormControl variant="standard" sx={{ width: '100%' }}>
-              <InputLabel sx={{pl:'12px'}} id="demo-simple-select-standard-label">Categoria</InputLabel>
+              <InputLabel sx={{ pl: '12px' }} id="demo-simple-select-standard-label">Categoria</InputLabel>
               <Select
                 labelId="demo-simple-select-standard-label"
                 id="demo-simple-select-standard"
@@ -102,7 +120,7 @@ export default function ModalEditarAssunto({ assunto, openEdit, handleCloseEdit,
                 onChange={handleChange}
                 label="Categoria"
                 defaultValue={assunto?.categoriaId}
-                sx={{pl:'10px'}}
+                sx={{ pl: '10px' }}
               >
                 {
                   categorias?.map(categorias => (

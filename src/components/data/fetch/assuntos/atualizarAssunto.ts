@@ -5,12 +5,13 @@ import axios from "axios";
 type Props = {
   id: string;
   nome: string;
+  tempoLimite: number;
   categoriaId: string;
 };
 
-export async function AtualizarAssunto({ id, nome, categoriaId }: Props) {
+export async function AtualizarAssunto({ id, nome, categoriaId, tempoLimite }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/atualizarAssunto", { id, nome, categoriaId }, {
+    const response = await axios.post("http://10.21.39.75:4001/atualizarAssunto", { id, nome, categoriaId, tempoLimite }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar assunto!", response);

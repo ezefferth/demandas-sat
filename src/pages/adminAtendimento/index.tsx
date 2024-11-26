@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 export default function Atendimento() {
 
 
-  const { chamados, assuntos } = useContext(DataContext)
+  const { chamados, assuntos, status, prioridades } = useContext(DataContext)
 
   const navigate = useNavigate()
 
@@ -74,6 +74,35 @@ export default function Atendimento() {
   /* ============= PAGINACAO FINALIZADOS ============= */
 
 
+  const [atraso, setAtraso] = useState<number>()
+  const [duration, setDuration] = useState('');
+
+  function CalculaDuracaoEAtraso(chamado: Chamado) {
+    if (!chamado?.createdAt) return { duration: '', atraso: 0 };
+
+    const startTime = new Date(chamado.createdAt).getTime();
+    const endTime = chamado.finishedAt
+      ? new Date(chamado.finishedAt).getTime()
+      : Date.now(); // Usa o momento atual se o chamado estiver em andamento
+
+    const diffInSeconds = Math.floor((endTime - startTime) / 1000);
+
+    // Calcular duração formatada
+    const days = Math.floor(diffInSeconds / (3600 * 24));
+    const hours = Math.floor((diffInSeconds % (3600 * 24)) / 3600);
+    const minutes = Math.floor((diffInSeconds % 3600) / 60);
+    const seconds = diffInSeconds % 60;
+    const duration = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+
+    setDuration(duration)
+    // Calcular atraso em minutos
+    const atraso = Math.floor(diffInSeconds / 60); // Total em minutos
+    setAtraso(atraso)
+
+
+  }
+
+
   const handleChangePage = (_: any, page: number) => {
     setCurrentPage(page);
   };
@@ -102,9 +131,14 @@ export default function Atendimento() {
 
       <div className="mt-8 px-8 text-slate-900 w-[60rem] mx-auto">
         <div className="mb-2">
-          Aguardando Triagem
+
+          <span className="border-b-2 px-4 border-gray-400">
+            Aguardando Triagem
+          </span>
+
+
         </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left">
+        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
@@ -155,15 +189,19 @@ export default function Atendimento() {
       </div>
 
       <div className="mt-2 px-8 text-slate-900 w-[60rem] mx-auto">
-        <div className="mb-2">
-          Em Atendimento
+        <div className="mb-2 mt-4">
+          <span className="border-b-2 px-4 border-gray-400">
+            Em Atendimento
+          </span>
         </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left">
+        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
+              <th className="px-2 py-1 border border-slate-300">Status</th>
+              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
           </thead>
@@ -181,6 +219,25 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="truncate">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                  </p>
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[5rem]">
+                  <p className="text-center rounded-md" style={{
+                    backgroundColor: status?.find(
+                      (status) => status.id === chamado.statusId
+                    )?.cor || 'transparent',
+                  }}>
+                    {/* {CalculaDuracaoEAtraso(chamado).atraso} */}
+                    {status?.find((status) => status.id === chamado.statusId)?.nome}
+                  </p>
+                </td>
+                <td className="px-2 py-1 border border-slate-300 w-[4rem]">
+                  <p className="text-center rounded-md" style={{
+                    backgroundColor: prioridades?.find(
+                      (prioridade) => prioridade.id === chamado.prioridadeId
+                    )?.cor || 'transparent',
+                  }}>
+                    {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
@@ -209,15 +266,19 @@ export default function Atendimento() {
       </div>
 
       <div className="mt-2 px-8 text-slate-900 w-[60rem] mx-auto">
-        <div className="mb-2">
-          Finalizados
+        <div className="mb-2 mt-4">
+          <span className="border-b-2 px-4 border-gray-400">
+            Finalizados
+          </span>
         </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left">
+        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
+              <th className="px-2 py-1 border border-slate-300">Status</th>
+              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
           </thead>
@@ -235,6 +296,24 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="truncate">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                  </p>
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[5rem]">
+                  <p className="text-center rounded-md" style={{
+                    backgroundColor: status?.find(
+                      (status) => status.id === chamado.statusId
+                    )?.cor || 'transparent',
+                  }}>
+                    {status?.find((status) => status.id === chamado.statusId)?.nome}
+                  </p>
+                </td>
+                <td className="px-2 py-1 border border-slate-300 w-[4rem]">
+                  <p className="text-center rounded-md" style={{
+                    backgroundColor: prioridades?.find(
+                      (prioridade) => prioridade.id === chamado.prioridadeId
+                    )?.cor || 'transparent',
+                  }}>
+                    {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300">

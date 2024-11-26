@@ -28,6 +28,7 @@ export type Assunto = {
   nome: string;
   id: string;
   categoriaId: string;
+  tempoLimite: number;
   createdAt: Date;
   updatedAt: Date;
 }

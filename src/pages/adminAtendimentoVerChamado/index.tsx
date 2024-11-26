@@ -38,6 +38,8 @@ export default function VerChamadoAdmin() {
 
   const [duration, setDuration] = useState('');
 
+  
+
   useEffect(() => {
     if (!localChamado?.createdAt) return;
 
@@ -84,11 +86,22 @@ export default function VerChamadoAdmin() {
     }
   }
 
+  useEffect(() => {
+    if (chamados && chamado) {
+      // Encontra o chamado correspondente
+      const chamadoCorrespondente = chamados.find(ch => ch.id === chamado.id);
+  
+      // Atualiza o estado localChamado se o chamado correspondente for encontrado
+      if (chamadoCorrespondente) {
+        setLocalChamado(chamadoCorrespondente);
+      }
+    }
+  }, [chamados, chamado]);
 
   if (localChamado) {
     return (
       <div className="p-12">
-        <button className='bg-slate-600 p-1 rounded-sm hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
+        <button className='bg-slate-600 p-1 rounded-md hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
           <FaArrowLeftLong className='text-white' />
         </button>
 

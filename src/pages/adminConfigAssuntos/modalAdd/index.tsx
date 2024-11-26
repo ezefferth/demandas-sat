@@ -38,12 +38,14 @@ export default function ModalAddAssunto({ openAdd, handleClose, setOpenAdd }: Pr
 
   }
 
+  const [tempoLimite, setTempoLimite] = useState<number>(0);
+
   const [categoriaId, setCategoriaId] = useState<string>('')
 
   const handleAdd = async () => {
     try {
-      if (nome.length >= 4) {
-        await CriarAssunto({ nome, categoriaId })
+      if (nome.length >= 4 && tempoLimite > 1) {
+        await CriarAssunto({ nome, categoriaId, tempoLimite })
         setOpenAdd(false)
         handleOnAdd()
       } else {
@@ -55,7 +57,6 @@ export default function ModalAddAssunto({ openAdd, handleClose, setOpenAdd }: Pr
       setOpenAdd(false);
     }
   }
-
   const handleChange = (event: SelectChangeEvent) => {
     setCategoriaId(event.target.value);
   };
@@ -73,9 +74,25 @@ export default function ModalAddAssunto({ openAdd, handleClose, setOpenAdd }: Pr
             Cadastrar Assunto
           </h2>
           <div className='mt-5 mb-4'>
-            <TextField id="standard-basic" label="Nome do Assunto" variant="standard" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%'}}/>
+            <TextField
+              id="standard-basic"
+              label="Nome do Assunto"
+              variant="standard"
+              onChange={(e) => setNome(e.target.value)}
+              sx={{ width: '100%' }} />
           </div>
-          <FormControl variant="standard" sx={{ width: '100%'}}>
+          <div className='mt-5 mb-4'>
+            <TextField
+              id="standard-basic"
+              variant="standard"
+              label="Tempo limite"
+              placeholder='tempo limite em minutos'
+              type='number'
+              onChange={(e) => setTempoLimite(parseInt(e.target.value))}
+              sx={{ width: '100%' }}
+            />
+          </div>
+          <FormControl variant="standard" sx={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-standard-label">Categoria</InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
