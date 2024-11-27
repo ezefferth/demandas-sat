@@ -18,6 +18,7 @@ import StatusPage from "../../pages/adminConfigStatus";
 import Prioridades from "../../pages/adminConfigPrioridades";
 import VerChamado from "../../pages/usuarioVerChamado";
 import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
+import UsuarioConfiguracoes from "../../pages/usuarioConfig";
 
 export default function Router() {
   return (
@@ -109,6 +110,10 @@ export default function Router() {
         <Route
           path="/chamados"
           element={<Chamados />}
+        />
+        <Route
+          path="/configuracoes"
+          element={<UsuarioConfiguracoes />}
         />
         <Route
           path="/verChamado"

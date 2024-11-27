@@ -47,9 +47,9 @@ export default function ModalEditarUsuario({ usuario, openEdit, handleCloseEdit,
 
   useEffect(() => {
     if (usuario) {
-      setNome(usuario.nome || '');
-      setNomeUsuario(usuario.nomeUsuario || '');
-      setSenha(usuario.senha || '');
+      setNome(usuario.nome);
+      setNomeUsuario(usuario.nomeUsuario);
+      setSenha(usuario.senha);
       setAdmin(usuario.admin)
       if (usuario.admin) {
         setAdminSelected('Sim');
@@ -138,7 +138,7 @@ export default function ModalEditarUsuario({ usuario, openEdit, handleCloseEdit,
             </FormControl>
           </div>
           <div className='mt-1 mb-3'>
-              <TextField id="standard-basic" type='password' label="Senha" variant="filled" onChange={(e) => setSenha(e.target.value)} sx={{ width: '100%' }}/>
+              <TextField id="standard-basic" type='password' label="Senha" variant="filled" onChange={(e) => setSenha(e.target.value)} sx={{ width: '100%' }} defaultValue={senha}/>
             </div>
 
           <div className='text-slate-600 font-thin text-xs mt-8'>

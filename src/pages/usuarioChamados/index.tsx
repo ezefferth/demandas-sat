@@ -19,7 +19,7 @@ export default function Chamados() {
   const handleClose = () => setOpenAdd(false);
 
 
-  const { chamadosUser, assuntos } = useContext(DataContext)
+  const { chamadosUser, assuntos, status } = useContext(DataContext)
 
   const navigate = useNavigate()
 
@@ -29,7 +29,7 @@ export default function Chamados() {
     navigate(`/verChamado/`, { state: chamado });
   };
 
-  
+
 
   return (
     <div className="p-12">
@@ -49,6 +49,7 @@ export default function Chamados() {
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
+              <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
           </thead>
@@ -66,6 +67,41 @@ export default function Chamados() {
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="truncate">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                  </p>
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[8rem]">
+                  <p
+                    className="text-center rounded-md flex items-center justify-center gap-2"
+                    style={{
+                      backgroundColor:
+                        status?.find((status) => status.id === chamado.statusId)?.cor ||
+                        "transparent",
+                    }}
+                  >
+                    {
+                      chamado.statusId ? (
+                        status?.map((st) => {
+                          if (st.id === chamado.statusId) {
+                            return (
+                              <p
+                                key={st.id}
+                                className="rounded-lg px-2 text-slate-950"
+                                style={{ backgroundColor: st.cor }}
+                              >
+                                {st.nome}
+                              </p>
+                            );
+                          }
+                          return null; // Retorna null caso a condição não seja atendida
+                        })
+                      ) : (
+                        <p
+                          className="bg-gray-400 rounded-lg px-2"
+                        >
+                          Aguardando triagem
+                        </p>
+                      )
+                    }
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
@@ -125,9 +161,9 @@ export default function Chamados() {
         </div>
 
       </div> */}
-  {/* <ModalRemoverCategoria categoria={selectedCategoria ?? null} openRemove={openRemove} handleCloseRemove={handleCloseRemove} setOpenRemove={setOpenRemove} /> */ }
-  <ModalAddChamado openAdd={openAdd} handleClose={handleClose} setOpenAdd={setOpenAdd} />
-  {/* <ModalEditarCategoria categoria={selectedCategoria ?? null} openEdit={openEdit} handleCloseEdit={handleCloseEdit} setOpenEdit={setOpenEdit} /> */ }
+      {/* <ModalRemoverCategoria categoria={selectedCategoria ?? null} openRemove={openRemove} handleCloseRemove={handleCloseRemove} setOpenRemove={setOpenRemove} /> */}
+      <ModalAddChamado openAdd={openAdd} handleClose={handleClose} setOpenAdd={setOpenAdd} />
+      {/* <ModalEditarCategoria categoria={selectedCategoria ?? null} openEdit={openEdit} handleCloseEdit={handleCloseEdit} setOpenEdit={setOpenEdit} /> */}
     </div >
   )
 }

@@ -43,7 +43,7 @@ export default function Home() {
 
               {usuario && usuario.avatar ? (
                 <img
-                  src={`data:image/png;base64,${Buffer.from(usuario.avatar).toString('base64')}`}
+                  src={usuario.avatar}
                   alt={usuario.nome}
                   className="w-16 h-16 rounded-full"
                 />
@@ -66,7 +66,7 @@ export default function Home() {
           usuario?.admin ? (
             <div className="text-slate-100 mt-4">
               <div className={`flex pb-2 items-center gap-2 hover:pl-2 transition-all ${loc == '/dashboard' && 'pl-2 font-bold'}`}>
-                <FaChartLine className="w-6 h-6 mr-2" />{/* io5 IoBarChart */}
+                <FaChartLine className="w-6 h-6 mr-2" />
                 <p className="cursor-pointer" onClick={() => navigate('/dashboard')}>Dashboard</p>
               </div>
               <div className={`flex pb-2 items-center gap-2 hover:pl-2 transition-all ${loc == '/atendimento' && 'pl-2 font-bold'}`}>
@@ -119,17 +119,17 @@ export default function Home() {
             </div> 
           ) : (
             <div className="text-slate-100 mt-12">
-              <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
+              {/* <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
                 <FaChartLine className="w-6 h-6 mr-2" />
                 <p className="cursor-pointer" onClick={() => navigate('/chamados')}>Dashboard</p>
-              </div>
-              <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
+              </div> */}
+              <div className={`pb-2 flex items-center gap-2 hover:pl-2 transition-all ${loc == '/chamados' && 'pl-2 font-bold'}`}>
                 <FaSquarePollHorizontal className="w-6 h-6 mr-2 " />
                 <p className="cursor-pointer" onClick={() => navigate('/chamados')}>Chamados</p>
               </div>
-              <div className="flex pb-2 hover:pl-2 transition-all hover:font-bold">
+              <div className={`pb-2 flex items-center gap-2 hover:pl-2 transition-all ${loc == '/configuracoes' && 'pl-2 font-bold'}`}>
                 <IoSettingsOutline className="w-6 h-6 mr-2" />
-                <p className="cursor-pointer" >Configurações</p>
+                <p className="cursor-pointer" onClick={() => navigate('/configuracoes')}>Configurações</p>
               </div>
             </div>
           )

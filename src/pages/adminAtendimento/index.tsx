@@ -1,8 +1,8 @@
-import { FaSearch } from "react-icons/fa";
+import { FaExclamationCircle, FaSearch } from "react-icons/fa";
 import { Chamado } from "../../components/types";
 import { useContext, useState } from "react";
 import { DataContext } from "../../components/data/context/dataContext";
-import { Pagination } from "@mui/material";
+import { Pagination, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 
@@ -74,11 +74,9 @@ export default function Atendimento() {
   /* ============= PAGINACAO FINALIZADOS ============= */
 
 
-  const [atraso, setAtraso] = useState<number>()
-  const [duration, setDuration] = useState('');
 
   function CalculaDuracaoEAtraso(chamado: Chamado) {
-    if (!chamado?.createdAt) return { duration: '', atraso: 0 };
+    if (!chamado?.createdAt) return { duration: "", atraso: 0 };
 
     const startTime = new Date(chamado.createdAt).getTime();
     const endTime = chamado.finishedAt
@@ -91,15 +89,12 @@ export default function Atendimento() {
     const days = Math.floor(diffInSeconds / (3600 * 24));
     const hours = Math.floor((diffInSeconds % (3600 * 24)) / 3600);
     const minutes = Math.floor((diffInSeconds % 3600) / 60);
-    const seconds = diffInSeconds % 60;
-    const duration = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+    const duration = `${days}d ${hours}h ${minutes}m`;
 
-    setDuration(duration)
     // Calcular atraso em minutos
     const atraso = Math.floor(diffInSeconds / 60); // Total em minutos
-    setAtraso(atraso)
 
-
+    return { duration, atraso };
   }
 
 
@@ -135,8 +130,6 @@ export default function Atendimento() {
           <span className="border-b-2 px-4 border-gray-400">
             Aguardando Triagem
           </span>
-
-
         </div>
         <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
@@ -206,52 +199,78 @@ export default function Atendimento() {
             </tr>
           </thead>
           <tbody>
-            {currentItemsNotNull?.map((chamado: Chamado, index: number) => (
-              <tr
-                key={chamado.id}
-                className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'
-                  } hover:bg-gray-100 transition-all`}
-              >
-                <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
-                  <p className="truncate ">{chamado.descricao}</p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="truncate">
-                    {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[5rem]">
-                  <p className="text-center rounded-md" style={{
-                    backgroundColor: status?.find(
-                      (status) => status.id === chamado.statusId
-                    )?.cor || 'transparent',
-                  }}>
-                    {/* {CalculaDuracaoEAtraso(chamado).atraso} */}
-                    {status?.find((status) => status.id === chamado.statusId)?.nome}
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 w-[4rem]">
-                  <p className="text-center rounded-md" style={{
-                    backgroundColor: prioridades?.find(
-                      (prioridade) => prioridade.id === chamado.prioridadeId
-                    )?.cor || 'transparent',
-                  }}>
-                    {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300">
-                  <div className="flex items-center justify-center gap-2">
-                    <button onClick={(e) => handleSeletedVisualizar(e, chamado)}>
-                      <FaSearch
-                        size={20}
-                        className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
-                      />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
+            {currentItemsNotNull?.map((chamado: Chamado, index: number) => {
+              const { atraso, duration } = CalculaDuracaoEAtraso(chamado); // Calcula para cada chamado
+
+              return (
+                <tr
+                  key={chamado.id}
+                  className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                    } hover:bg-gray-100 transition-all`}
+                >
+                  <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
+                    <p className="truncate">{chamado.descricao}</p>
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
+                    <p className="truncate">
+                      {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                    </p>
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[7rem]">
+                    <p
+                      className="text-center rounded-md flex items-center justify-center gap-2"
+                      style={{
+                        backgroundColor:
+                          status?.find((status) => status.id === chamado.statusId)?.cor ||
+                          "transparent",
+                      }}
+                    >
+                      {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.tempoLimite &&
+                        atraso > 0 &&
+                        assuntos.find((assunto) => assunto.id === chamado.assuntoId)?.tempoLimite! < atraso && (
+                          <Tooltip title={`Atrasado em ${duration}`}>
+                            <span>
+                              <FaExclamationCircle
+                                className="text-slate-800"
+                                size={16}
+                                style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                              />
+                            </span>
+                          </Tooltip>
+                        )}
+
+                      {status?.find((status) => status.id === chamado.statusId)?.nome}
+                    </p>
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 w-[4rem]">
+                    <p
+                      className="text-center rounded-md"
+                      style={{
+                        backgroundColor:
+                          prioridades?.find(
+                            (prioridade) => prioridade.id === chamado.prioridadeId
+                          )?.cor || "transparent",
+                      }}
+                    >
+                      {prioridades?.find(
+                        (prioridades) => prioridades.id === chamado.prioridadeId
+                      )?.nome}
+                    </p>
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300">
+                    <div className="flex items-center justify-center gap-2">
+                      <button onClick={(e) => handleSeletedVisualizar(e, chamado)}>
+                        <FaSearch
+                          size={20}
+                          className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
+                        />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
         <div className="flex justify-center items-center mt-4">

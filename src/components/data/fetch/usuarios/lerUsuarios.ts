@@ -13,9 +13,9 @@ export async function LerUsuarios({ setUsuarios }: Props) {
     const response = await axios.get("http://10.21.39.75:4001/lerUsuarios", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler usuario!");
+    console.log("Sucesso em ler usuarios!");
     setUsuarios(response.data);
   } catch (error) {
-    console.log("Erro em ler usuario!", error);
+    console.log("Erro em ler usuarios!", error);
   }
 }

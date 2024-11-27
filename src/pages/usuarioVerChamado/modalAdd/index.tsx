@@ -8,6 +8,7 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
 import { CriarComentario } from '../../../components/data/fetch/comentario/criarComentario';
 import { LerComentarios } from '../../../components/data/fetch/comentario/lerComentarios';
+import { Chamado } from '../../../components/types';
 
 const style = {
   position: 'absolute',
@@ -27,9 +28,10 @@ type Props = {
   handleClose: (value: boolean) => void
   chamadoId: string;
   usuarioId: string;
+  chamado: Chamado
 }
 
-export default function ModalAddComentario({ openAdd, handleClose, setOpenAdd, chamadoId, usuarioId }: Props) {
+export default function ModalAddComentario({ openAdd, handleClose, setOpenAdd, chamadoId, usuarioId, chamado }: Props) {
 
 
   const [comentario, setComentario] = useState<string>('')
@@ -54,7 +56,7 @@ export default function ModalAddComentario({ openAdd, handleClose, setOpenAdd, c
 
   const handleAdd = async () => {
     try {
-      if (comentario.length >= 6) {
+      if (comentario.length >= 4 && !chamado.finishedAt) {
         await CriarComentario({ comentario, usuarioId, chamadoId })
         setOpenAdd(false)
         setTimeout(() =>
