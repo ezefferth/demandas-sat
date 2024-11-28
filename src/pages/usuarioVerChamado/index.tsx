@@ -58,7 +58,7 @@ export default function VerChamado() {
   if (chamado) {
     return (
       <div className="p-12">
-        <button className='bg-slate-600 p-1 rounded-sm hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
+        <button className='bg-slate-600 p-1 rounded-md hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
           <FaArrowLeftLong className='text-white' />
         </button>
 

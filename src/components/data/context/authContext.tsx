@@ -18,6 +18,7 @@ export default function AuthProvider({ children }: any) {
   const [usuario, setUsuario] = useState<Usuario | undefined>();
   const [token, setToken] = useState<string | undefined>();
   const navigate = useNavigate();
+  
 
   // Função de logout
   const logout = async () => {

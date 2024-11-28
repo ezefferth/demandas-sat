@@ -75,7 +75,7 @@ export default function ModalEditarUsuario({ usuario, openEdit, handleCloseEdit,
 
 
   const handleEdit = async () => {
-    if (!usuario) {
+    if (!usuario) { 
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 

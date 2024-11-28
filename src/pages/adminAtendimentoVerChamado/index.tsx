@@ -101,7 +101,7 @@ export default function VerChamadoAdmin() {
   if (localChamado) {
     return (
       <div className="p-12">
-        <button className='bg-slate-600 p-1 rounded-md hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate(-1)}>
+        <button className='bg-slate-600 p-1 rounded-md hover:bg-slate-700 transition-all active:bg-slate-800' onClick={() => navigate('/atendimento')}>
           <FaArrowLeftLong className='text-white' />
         </button>
 
@@ -120,7 +120,7 @@ export default function VerChamadoAdmin() {
                     onClick={handleFinalizar}
                   >
                     <FaCheckSquare
-                      className="text-slate-800 hover:text-slate-700 active:text-slate-600 transition-all"
+                      className="text-slate-700 hover:text-slate-600 active:text-slate-500 transition-all"
                       size={25}
                     />
                   </button>

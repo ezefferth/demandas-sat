@@ -9,6 +9,10 @@ import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
 import { LerChamados } from "../fetch/chamados/lerChamados";
 import { AuthContext } from "./authContext";
 import { LerChamadosUser } from "../fetch/chamados/lerChamadosUser";
+import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
+import { toast } from "react-toastify";
+import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
+import { LerComentariosTodosUser } from "../fetch/comentario/lerComentariosTodosUser";
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
@@ -29,6 +33,12 @@ type DataContextType = {
   setChamadosUser: (value: Chamado[] | undefined) => void;
   comentarios: Comentario[] | undefined;
   setComentarios: (value: Comentario[] | undefined) => void;
+  comentariosTodos: Comentario[] | undefined;
+  setComentariosTodos: (value: Comentario[] | undefined) => void;
+  countChamado: number;
+  setCountChamado: (value: number) => void;
+  countChamadoAtual: number;
+  setCountChamadoAtual: (value: number) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -43,6 +53,9 @@ export default function DataProvider({ children }: any) {
   const [chamados, setChamados] = useState<Chamado[] | undefined>();
   const [chamadosUser, setChamadosUser] = useState<Chamado[] | undefined>();
   const [comentarios, setComentarios] = useState<Comentario[] | undefined>();
+  const [comentariosTodos, setComentariosTodos] = useState<Comentario[] | []>();
+  const [countChamado, setCountChamado] = useState<number>(0);
+  const [countChamadoAtual, setCountChamadoAtual] = useState<number>(0);
 
   const { usuario } = useContext(AuthContext);
 
@@ -119,6 +132,77 @@ export default function DataProvider({ children }: any) {
     fetchChamados();
   }, [usuario]);
 
+  useEffect(() => {
+    if (!usuario) {
+      setComentariosTodos([])
+      return
+    }; // Aguarda o usuário estar logado
+
+    const fetchComentariosAdmin = async () => {
+      try {
+        // Lógica específica para administradores
+        await LerComentariosCount({
+          id: usuario.id,
+          setCountChamado,
+        });
+
+        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+          if (countChamadoAtual !== 0) {
+            toast.info("Novo comentário recebido!", {
+              autoClose: false,
+              closeOnClick: true,
+            })
+          }
+
+          setCountChamadoAtual(countChamado);
+          await LerComentariosTodos({
+            id: usuario.id,
+            setComentariosTodos,
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar comentários (admin):", error);
+      }
+    };
+
+    const fetchComentariosUser = async () => {
+      try {
+        // Lógica específica para usuários normais
+        await LerComentariosCount({
+          id: usuario.id,
+          setCountChamado,
+        });
+
+        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+          if (countChamadoAtual !== 0) {
+            toast.info("Novo comentário recebido!", {
+              autoClose: false,
+              closeOnClick: true,
+            })
+          }
+
+          setCountChamadoAtual(countChamado);
+          await LerComentariosTodosUser({
+            id: usuario.id,
+            setComentariosTodos,
+          });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar comentários (usuário):", error);
+      }
+    };
+
+    const interval = setInterval(() => {
+      if (usuario.admin) {
+        fetchComentariosAdmin();
+      } else {
+        fetchComentariosUser();
+      }
+    }, 5000); // Executa a cada 5 segundos
+
+    return () => clearInterval(interval); // Limpa o intervalo ao desmontar
+  }, [usuario, countChamadoAtual, countChamado]);
+
   return (
     <DataContext.Provider
       value={{
@@ -140,6 +224,12 @@ export default function DataProvider({ children }: any) {
         setChamadosUser,
         comentarios,
         setComentarios,
+        comentariosTodos,
+        setComentariosTodos,
+        countChamado,
+        setCountChamado,
+        countChamadoAtual,
+        setCountChamadoAtual,
       }}
     >
       {children}
