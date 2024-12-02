@@ -4,13 +4,18 @@ import { useContext, useState } from "react";
 import { DataContext } from "../../components/data/context/dataContext";
 import { Pagination, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { RxUpdate } from "react-icons/rx";
+import { LerChamados } from "../../components/data/fetch/chamados/lerChamados";
+import { AuthContext } from "../../components/data/context/authContext";
 
 
 
 export default function Atendimento() {
 
 
-  const { chamados, assuntos, status, prioridades } = useContext(DataContext)
+  const { chamados, assuntos, status, prioridades, setChamados } = useContext(DataContext)
+
+  const { usuario } = useContext(AuthContext)
 
   const navigate = useNavigate()
 
@@ -115,12 +120,30 @@ export default function Atendimento() {
     navigate(`/verChamadoAdmin/`, { state: chamado });
   };
 
+  const handleUpdateChamados = async () => {
+    if (usuario) {
+      try {
+        if (usuario.admin) {
+          await LerChamados({ setChamados });
+        } else {
+          // const id = usuario.id;
+          await LerChamados({ setChamados });
+        }
+      } catch (error) {
+        console.error("Erro ao buscar chamados:", error);
+      }
+    }
+  }
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
         <div className="font-normal text-lg">
           <p>Atendimento</p>
         </div>
+        <button className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500" onClick={handleUpdateChamados}>
+          <RxUpdate size={20} color='#fff' className='hover:animate-spin' />
+        </button>
       </div>
 
 
@@ -149,12 +172,12 @@ export default function Atendimento() {
               >
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
-                  <p className="truncate ">{chamado.descricao}</p>
+                  <span className="truncate ">{chamado.descricao}</span>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="truncate">
+                  <span className="truncate">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                  </p>
+                  </span>
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
@@ -182,10 +205,11 @@ export default function Atendimento() {
       </div>
 
       <div className="mt-2 px-8 text-slate-900 w-[60rem] mx-auto">
-        <div className="mb-2 mt-4">
+        <div className="mb-2 mt-4 flex justify-between">
           <span className="border-b-2 px-4 border-gray-400">
             Em Atendimento
           </span>
+
         </div>
         <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
@@ -209,7 +233,7 @@ export default function Atendimento() {
                     } hover:bg-gray-100 transition-all`}
                 >
                   <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                     <p className="truncate">{chamado.descricao}</p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
@@ -217,7 +241,7 @@ export default function Atendimento() {
                       {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                     </p>
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[7rem]">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                     <p
                       className="text-center rounded-md flex items-center justify-center gap-2"
                       style={{
@@ -243,7 +267,7 @@ export default function Atendimento() {
                       {status?.find((status) => status.id === chamado.statusId)?.nome}
                     </p>
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 w-[4rem]">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                     <p
                       className="text-center rounded-md"
                       style={{
@@ -309,7 +333,7 @@ export default function Atendimento() {
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
+                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="truncate ">{chamado.descricao}</p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
@@ -317,7 +341,7 @@ export default function Atendimento() {
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                   </p>
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[5rem]">
+                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="text-center rounded-md" style={{
                     backgroundColor: status?.find(
                       (status) => status.id === chamado.statusId
@@ -326,7 +350,7 @@ export default function Atendimento() {
                     {status?.find((status) => status.id === chamado.statusId)?.nome}
                   </p>
                 </td>
-                <td className="px-2 py-1 border border-slate-300 w-[4rem]">
+                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="text-center rounded-md" style={{
                     backgroundColor: prioridades?.find(
                       (prioridade) => prioridade.id === chamado.prioridadeId

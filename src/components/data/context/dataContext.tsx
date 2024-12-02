@@ -12,7 +12,7 @@ import { LerChamadosUser } from "../fetch/chamados/lerChamadosUser";
 import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
 import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
-import { LerComentariosTodosUser } from "../fetch/comentario/lerComentariosTodosUser";
+
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
@@ -123,6 +123,40 @@ export default function DataProvider({ children }: any) {
       }
     };
 
+    const fetchComentarios = async () => {
+      try {
+        // Lógica específica para usuários normais
+        await LerComentariosCount({
+          id: usuario.id,
+          setCountChamado,
+        });
+
+        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+          if (countChamadoAtual !== 0) {
+            toast.info("Novo comentário recebido!", {
+              autoClose: false,
+              closeOnClick: true,
+            })
+          }
+
+          setCountChamadoAtual(countChamado);
+          try {
+            await LerComentariosTodos({
+              id: usuario.id,
+              setComentariosTodos,
+            });
+          }
+          catch (error) {
+            console.error("Erro ao buscar comentários (usuário):", error);
+          }
+        }
+        // console.log(comentariosTodos)
+      } catch (error) {
+        console.error("Erro ao buscar comentários (usuário):", error);
+      }
+    };
+
+
     fetchCategorias();
     fetchSetores();
     fetchAssuntos();
@@ -130,7 +164,31 @@ export default function DataProvider({ children }: any) {
     fetchStatus();
     fetchPrioridades();
     fetchChamados();
+    fetchComentarios();
   }, [usuario]);
+
+  useEffect(() => {
+    if (!usuario) return; // Sai se o usuário não estiver definido
+
+    const fetchChamados = async () => {
+      try {
+        await LerChamados({ setChamados });
+      } catch (error) {
+        console.error("Erro ao buscar chamados:", error);
+      }
+    };
+
+    // Chamada inicial para carregar os chamados
+    fetchChamados();
+
+    // Configura o intervalo para atualizar os chamados periodicamente
+    const interval = setInterval(() => {
+      fetchChamados();
+    }, 300000); // Atualiza a cada 50 segundos
+
+    // Limpa o intervalo ao desmontar o componente
+    return () => clearInterval(interval);
+  }, [usuario, LerChamados, setChamados]); // Executa a cada 5 minutos
 
   useEffect(() => {
     if (!usuario) {
@@ -153,52 +211,23 @@ export default function DataProvider({ children }: any) {
               closeOnClick: true,
             })
           }
-
           setCountChamadoAtual(countChamado);
           await LerComentariosTodos({
             id: usuario.id,
             setComentariosTodos,
           });
         }
+        // console.log(comentariosTodos)
       } catch (error) {
         console.error("Erro ao buscar comentários (admin):", error);
       }
     };
 
-    const fetchComentariosUser = async () => {
-      try {
-        // Lógica específica para usuários normais
-        await LerComentariosCount({
-          id: usuario.id,
-          setCountChamado,
-        });
-
-        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
-          if (countChamadoAtual !== 0) {
-            toast.info("Novo comentário recebido!", {
-              autoClose: false,
-              closeOnClick: true,
-            })
-          }
-
-          setCountChamadoAtual(countChamado);
-          await LerComentariosTodosUser({
-            id: usuario.id,
-            setComentariosTodos,
-          });
-        }
-      } catch (error) {
-        console.error("Erro ao buscar comentários (usuário):", error);
-      }
-    };
-
     const interval = setInterval(() => {
-      if (usuario.admin) {
-        fetchComentariosAdmin();
-      } else {
-        fetchComentariosUser();
-      }
-    }, 5000); // Executa a cada 5 segundos
+      fetchComentariosAdmin();
+
+    }, 10000); // Executa a cada 5 segundos
+
 
     return () => clearInterval(interval); // Limpa o intervalo ao desmontar
   }, [usuario, countChamadoAtual, countChamado]);
@@ -230,6 +259,7 @@ export default function DataProvider({ children }: any) {
         setCountChamado,
         countChamadoAtual,
         setCountChamadoAtual,
+
       }}
     >
       {children}

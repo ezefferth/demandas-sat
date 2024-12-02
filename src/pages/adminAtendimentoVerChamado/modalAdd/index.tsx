@@ -54,7 +54,7 @@ export default function ModalAddComentario({ openAdd, handleClose, setOpenAdd, c
 
   const handleAdd = async () => {
     try {
-      if (comentario.length >= 6) {
+      if (comentario.length >= 2) {
         await CriarComentario({ comentario, usuarioId, chamadoId })
         setOpenAdd(false)
         setTimeout(() =>

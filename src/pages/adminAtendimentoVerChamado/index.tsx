@@ -2,17 +2,22 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Chamado } from '../../components/types';
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../components/data/context/dataContext';
-import { FaCheckSquare, FaPlusSquare } from 'react-icons/fa';
+import { FaPlusSquare } from 'react-icons/fa';
 import ModalAddComentario from './modalAdd';
 import { AuthContext } from '../../components/data/context/authContext';
 import { FaArrowLeftLong } from 'react-icons/fa6';
 import ModalStatus from './modalStatus';
 import ModalPrioridade from './modalPrioridade';
 import ModalAddFinalizar from './modalFinalizar';
+import { LerComentarios } from '../../components/data/fetch/comentario/lerComentarios';
 
 export default function VerChamadoAdmin() {
 
-  const { chamados } = useContext(DataContext)
+
+
+  const { usuario } = useContext(AuthContext)
+
+  const { chamados, countChamado, countChamadoAtual, assuntos, setores, comentarios, setComentarios, usuarios, status, prioridades } = useContext(DataContext)
 
   const [openAdd, setOpenAdd] = useState(false);
   const handleOpen = () => setOpenAdd(true);
@@ -38,7 +43,7 @@ export default function VerChamadoAdmin() {
 
   const [duration, setDuration] = useState('');
 
-  
+
 
   useEffect(() => {
     if (!localChamado?.createdAt) return;
@@ -71,9 +76,6 @@ export default function VerChamadoAdmin() {
   }, [localChamado?.createdAt, localChamado?.finishedAt]);
 
 
-  const { usuario } = useContext(AuthContext)
-  const { assuntos, setores, comentarios, usuarios, status, prioridades } = useContext(DataContext);
-
   const navigate = useNavigate()
 
   const handleFinalizar = () => {
@@ -90,13 +92,36 @@ export default function VerChamadoAdmin() {
     if (chamados && chamado) {
       // Encontra o chamado correspondente
       const chamadoCorrespondente = chamados.find(ch => ch.id === chamado.id);
-  
+
       // Atualiza o estado localChamado se o chamado correspondente for encontrado
       if (chamadoCorrespondente) {
         setLocalChamado(chamadoCorrespondente);
       }
     }
   }, [chamados, chamado]);
+
+  useEffect(() => {
+    if (!usuario) {
+      // setComentariosTodos([])
+      return
+    }; // Aguarda o usuário estar logado
+
+    const fetchComentariosAdmin = async () => {
+      try {
+        if (countChamadoAtual < countChamado) {
+          try {
+            await LerComentarios({ chamadoId: localChamado.id, setComentarios });
+          } catch (error) {
+            console.error("Erro ao buscar comentários:", error);
+          }
+        }
+      } catch (error) {
+        console.error("Erro ao buscar comentários (admin):", error);
+      }
+    };
+
+    fetchComentariosAdmin();
+  }, [localChamado, countChamado, countChamadoAtual])
 
   if (localChamado) {
     return (
@@ -106,34 +131,29 @@ export default function VerChamadoAdmin() {
         </button>
 
         <div className="mt-4 p-8 text-slate-600 w-[32rem] mx-auto border-2 border-gray-300 rounded-lg shadow-lg bg-[#EEEEEE] font-thin">
-          <div className='flex justify-between items-center'>
-            <div className='w-10' />
+          <div className='flex justify-center items-center'>
+            {/* <div className='w-10' /> */}
             <div>
               <p className='text-xl font-semibold text-slate-800'>Chamado N.º{chamado.id}</p>
             </div>
-            {
-              !localChamado.finishedAt ? (
-                <div>
-                  <button
-                    className="w-10 flex justify-end"
-                    type="button"
-                    onClick={handleFinalizar}
-                  >
-                    <FaCheckSquare
-                      className="text-slate-700 hover:text-slate-600 active:text-slate-500 transition-all"
-                      size={25}
-                    />
-                  </button>
-                </div>
-              ) : (
-                <div className="w-10" />
-                /* pensar em reabrir chamado? */
-              )
-            }
-
-
           </div>
+          {
+            !localChamado.finishedAt ? (
+              <div className='flex justify-end mt-4'>
+                <button
+                  className=" bg-gray-500 text-slate-950 rounded-md px-2"
 
+                  type="button"
+                  onClick={handleFinalizar}
+                >
+                  Encerrar chamado
+                </button>
+              </div>
+            ) : (
+              <div className="w-10" />
+              /* pensar em reabrir chamado? */
+            )
+          }
           <div className="flex mb-1 mt-4 justify-between">
             <div className="w-24">
               <p>Status:</p>
@@ -179,18 +199,32 @@ export default function VerChamadoAdmin() {
             <div >
               {
                 localChamado.prioridadeId ? (
-                  prioridades?.map(st => {
+                  prioridades?.map((st) => {
                     if (st.id === localChamado.prioridadeId) {
-                      return <button key={st.id} className='cursor-pointer px-2 rounded-lg text-slate-950' style={{ backgroundColor: st.cor }}
-                        onClick={() => {
-                          if (!localChamado.finishedAt) {
-                            handleOpenPrioridade();
-                          }
-                        }}>{st.nome}</button>;
+                      return (
+                        <button
+                          key={st.id}
+                          className="cursor-pointer rounded-lg px-2 text-slate-950"
+                          style={{ backgroundColor: st.cor }}
+                          onClick={() => {
+                            if (!localChamado.finishedAt) {
+                              handleOpenPrioridade();
+                            }
+                          }}
+                        >
+                          {st.nome}
+                        </button>
+                      );
                     }
+                    return null; // Retorna null caso a condição não seja atendida
                   })
                 ) : (
-                  <button className='cursor-pointer bg-gray-300 rounded-lg px-2' onClick={handleOpenPrioridade}>Vazio</button>
+                  <button
+                    className="cursor-pointer bg-gray-300 rounded-lg px-2"
+                    onClick={handleOpenPrioridade}
+                  >
+                    Vazio
+                  </button>
                 )
               }
             </div>

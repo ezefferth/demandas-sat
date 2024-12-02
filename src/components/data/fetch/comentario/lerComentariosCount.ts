@@ -13,9 +13,9 @@ export async function LerComentariosCount({ setCountChamado, id }: Props) {
     const response = await axios.post("http://10.21.39.75:4001/lerComentariosCount", { id }, {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler comentario!");
+    // console.log("Sucesso em count comentarios!");
     setCountChamado(response.data);
   } catch (error) {
-    console.log("Erro em ler comentario!", error);
+    console.log("Erro em count comentarios!", error);
   }
 }
