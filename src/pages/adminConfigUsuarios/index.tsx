@@ -53,6 +53,41 @@ export default function Usuarios() {
       </div>
       <div className="mt-8 p-8 text-slate-900 w-[36rem] mx-auto">
         <div className="flex justify-between font-semibold">
+          <p>Administradores</p>
+          <p>Ações</p>
+        </div>
+
+        <div className="mt-3">
+          {
+            usuarios?.map((usuario: Usuario) => {
+              if (usuario.admin) {
+                return (
+                  <div key={usuario.id} >
+                    <div className="flex justify-between items-center hover:font-bold hover:pl-2 transition-all">
+                      <p className="text-slate-900">{usuario.nome}</p>
+                      <div className="flex gap-1">
+                        <button onClick={(e) => handleSeletedCategoriaEdit(e, usuario)}>
+                          <TiEdit size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                        </button>
+                        <button onClick={(e) => handleSeletedCategoriaRemove(e, usuario)}>
+                          <TiTrash size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                        </button>
+                        <div className="border-b-2 border-slate-300" />
+                      </div>
+                    </div>
+                    <div className="border-b border-slate-300 my-1 w-full" />
+                  </div>
+                )
+              }
+            })
+          }
+        </div>
+
+
+
+      </div>
+      <div className="p-8 text-slate-900 w-[36rem] mx-auto">
+        <div className="flex justify-between font-semibold">
           <p>Nome</p>
           <p>Ações</p>
         </div>
@@ -60,23 +95,25 @@ export default function Usuarios() {
         <div className="mt-3">
           {
             usuarios?.map((usuario: Usuario) => {
-              return (
-                <div key={usuario.id} >
-                  <div className="flex justify-between items-center hover:font-bold hover:pl-2 transition-all">
-                    <p className="text-slate-900">{usuario.nome}</p>
-                    <div className="flex gap-1">
-                      <button onClick={(e) => handleSeletedCategoriaEdit(e, usuario)}>
-                        <TiEdit size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
-                      </button>
-                      <button onClick={(e) => handleSeletedCategoriaRemove(e, usuario)}>
-                        <TiTrash size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
-                      </button>
-                      <div className="border-b-2 border-slate-300" />
+              if (!usuario.admin) {
+                return (
+                  <div key={usuario.id} >
+                    <div className="flex justify-between items-center hover:font-bold hover:pl-2 transition-all">
+                      <p className="text-slate-900">{usuario.nome}</p>
+                      <div className="flex gap-1">
+                        <button onClick={(e) => handleSeletedCategoriaEdit(e, usuario)}>
+                          <TiEdit size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                        </button>
+                        <button onClick={(e) => handleSeletedCategoriaRemove(e, usuario)}>
+                          <TiTrash size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                        </button>
+                        <div className="border-b-2 border-slate-300" />
+                      </div>
                     </div>
+                    <div className="border-b border-slate-300 my-1 w-full" />
                   </div>
-                  <div className="border-b border-slate-300 my-1 w-full" />
-                </div>
-              )
+                )
+              }
             })
           }
         </div>

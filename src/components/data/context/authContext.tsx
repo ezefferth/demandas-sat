@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import { Usuario } from "../../types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -10,6 +10,7 @@ type AuthContextType = {
   setToken: (value: string | undefined) => void;
   login: (nomeUsuario: string, senha: string) => Promise<void>;
   logout: () => void;
+  loading: boolean;
 };
 
 export const AuthContext = createContext({} as AuthContextType);
@@ -17,8 +18,42 @@ export const AuthContext = createContext({} as AuthContextType);
 export default function AuthProvider({ children }: any) {
   const [usuario, setUsuario] = useState<Usuario | undefined>();
   const [token, setToken] = useState<string | undefined>();
+
   const navigate = useNavigate();
-  
+
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const verificarLogin = async () => {
+      try {
+        const response = await axios.get(
+          "http://10.21.39.75:4001/verificarUsuario",
+          { withCredentials: true },
+        );
+        console.log("Usuário:", response);
+
+        if (response.status === 200) {
+          const data = response.data;
+          setUsuario(data.usuario);
+          setToken(data.token);
+
+        }
+      } catch (error) {
+        console.error("Usuário não autenticado:", error);
+        setUsuario(undefined);
+        setToken(undefined);
+        navigate("/login");
+      }
+      finally {
+        setLoading(false); // Finaliza o estado de carregamento
+      }
+    };
+
+    // console.log(token)
+
+    verificarLogin();
+  }, []);
+
 
   // Função de logout
   const logout = async () => {
@@ -33,7 +68,6 @@ export default function AuthProvider({ children }: any) {
       // Limpa o estado do usuário e redireciona para a página de login
       setUsuario(undefined);
       setToken(undefined);
-
       navigate("/login");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -83,6 +117,7 @@ export default function AuthProvider({ children }: any) {
         setToken,
         login,
         logout,
+        loading
       }}
     >
       {children}

@@ -1,26 +1,26 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
-import { AuthContext } from "../data/context/authContext";
+import { AuthContext } from "../data/context/authContext"; // ajuste o caminho conforme necessário
 
-type AdminRouteProps = {
+interface PrivateRouteProps {
   children: JSX.Element;
-};
+}
 
-export default function AdminRoute({ children }: AdminRouteProps) {
-  const { usuario } = useContext(AuthContext);
+function PrivateRoute({ children }: PrivateRouteProps) {
+  const { usuario, loading } = useContext(AuthContext);
 
-  // Verifica se o usuário está autenticado e é um administrador
+  if (loading) {
+    // Exibe um spinner ou tela de carregamento enquanto verifica a autenticação
+    return <div>Carregando...</div>;
+  }
+
   if (!usuario) {
-    // Se não for autenticado ou não for admin, redireciona para a página de login
+    // Redireciona para a página de login se o usuário não estiver autenticado
     return <Navigate to="/login" />;
   }
 
-  if (!usuario.admin) {
-    // Se não for admin, redireciona para a página de não autorizado
-    return <Navigate to="/pageNotFound" />;
-  }
-  
-  // Se for admin, renderiza o componente filho
+  // Renderiza o componente filho se o usuário estiver autenticado
   return children;
-  
 }
+
+export default PrivateRoute;
