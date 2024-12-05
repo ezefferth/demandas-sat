@@ -7,5 +7,14 @@ export default defineConfig({
   server: {
     host: true, // Permite acesso pela rede local
     port: 3000, // Defina a porta desejada
+    proxy: {
+      '/api': {
+        target: 'https://10.21.39.75:4001',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, ''), // Remove o prefixo '/api'
+      },
+
+    },
   },
 })

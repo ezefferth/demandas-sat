@@ -11,7 +11,7 @@ type Props = {
 
 export async function LerUsuario({ id, setUsuario }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/lerUsuario", { id }, {
+    const response = await axios.post("/api/lerUsuario", { id }, {
       headers: { "Content-Type": "application/json" },
     });
     console.log("Sucesso em ler usuario!");

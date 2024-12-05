@@ -10,7 +10,7 @@ type Props = {
 
 export async function LerComentariosCount({ setCountChamado, id }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/lerComentariosCount", { id }, {
+    const response = await axios.post("/api/lerComentariosCount", { id }, {
       headers: { "Content-Type": "application/json" },
     });
     // console.log("Sucesso em count comentarios!");

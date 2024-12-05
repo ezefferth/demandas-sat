@@ -9,7 +9,7 @@ type Props = {
 
 export async function AtualizarUsuarioFoto({ id, avatar}: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/atualizarUsuarioFoto", { id, avatar }, {//arrumar aki
+    const response = await axios.post("/api/atualizarUsuarioFoto", { id, avatar }, {//arrumar aki
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar avatar do usuario!", response);
