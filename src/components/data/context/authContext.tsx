@@ -78,7 +78,7 @@ export default function AuthProvider({ children }: any) {
   const login = async (nomeUsuario: string, senha: string) => {
     try {
       const response = await axios.post(
-        "/api/loginUsuario",
+        "https://10.21.39.75:4001/loginUsuario",
         {
           nomeUsuario,
           senha,
