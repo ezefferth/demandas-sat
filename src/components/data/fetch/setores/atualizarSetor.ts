@@ -9,7 +9,7 @@ type Props = {
 
 export async function AtualizarSetor({ id, nome }: Props) {
   try {
-    const response = await axios.post("/api/atualizarSetor", { id, nome }, {
+    const response = await axios.post("https://10.21.39.75:4001/atualizarSetor", { id, nome }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar setor!", response);

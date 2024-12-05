@@ -10,7 +10,7 @@ type Props = {
 
 export async function LerPrioridades({ setPrioridades }: Props) {
   try {
-    const response = await axios.get("/api/lerPrioridades", {
+    const response = await axios.get("https://10.21.39.75:4001/lerPrioridades", {
       headers: { "Content-Type": "application/json" },
     });
     console.log("Sucesso em ler prioridades!");

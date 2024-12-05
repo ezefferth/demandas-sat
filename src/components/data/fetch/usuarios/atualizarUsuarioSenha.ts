@@ -9,7 +9,7 @@ type Props = {
 
 export async function AtualizarUsuarioSenha({ id, senha}: Props) {
   try {
-    const response = await axios.post("/api/atualizarUsuarioSenha", { id, senha }, {//arrumar aki
+    const response = await axios.post("https://10.21.39.75:4001/atualizarUsuarioSenha", { id, senha }, {//arrumar aki
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar senha do usuario!", response);

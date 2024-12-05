@@ -27,7 +27,7 @@ export default function AuthProvider({ children }: any) {
     const verificarLogin = async () => {
       try {
         const response = await axios.get(
-          "/api/verificarUsuario",
+          "https://10.21.39.75:4001/verificarUsuario",
           { withCredentials: true },
         );
         console.log("Usuário:", response);
@@ -60,7 +60,7 @@ export default function AuthProvider({ children }: any) {
     try {
       // Faz uma requisição ao backend para limpar o cookie
       await axios.post(
-        "/api/logout",
+        "https://10.21.39.75:4001/logout",
         {},
         { withCredentials: true }
       );
