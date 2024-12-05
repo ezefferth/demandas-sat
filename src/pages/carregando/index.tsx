@@ -3,7 +3,7 @@ import { AiOutlineLoading3Quarters } from 'react-icons/ai'
 
 export default function Carregando() {
   return (
-    <div className='text-center flex justify-center h-[90vh] items-center'>
+    <div className='text-center flex justify-center h-[90vh] items-center w-screen'>
       <p className='text-2xl flex items-center'>Carregando...<AiOutlineLoading3Quarters className='animate-spin ml-4' /></p>
     </div>
   )
