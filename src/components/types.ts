@@ -72,3 +72,11 @@ export type Prioridade = {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type Sugestao = {
+  id: string
+  sugestao: string;
+  usuarioId: string
+  createdAt: Date;
+  updatedAt: Date;
+}

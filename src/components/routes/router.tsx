@@ -16,6 +16,8 @@ import Usuarios from "../../pages/adminConfigUsuarios";
 import StatusPage from "../../pages/adminConfigStatus";
 import Prioridades from "../../pages/adminConfigPrioridades";
 import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
+import Sugestoes from "../../pages/adminConfigSugestoes";
+import Carregando from "../../pages/carregando";
 
 export default function Router() {
   return (
@@ -100,6 +102,22 @@ export default function Router() {
             </AdminRoute>
           }
         />
+        <Route
+          path="/config/sugestoes"
+          element={
+            <AdminRoute>
+              <Sugestoes />
+            </AdminRoute>
+          }
+        />
+        {/* <Route
+          path="/carregando"
+          element={
+            <AdminRoute>
+              <Carregando />
+            </AdminRoute>
+          }
+        /> */}
         <Route
           path="/pageNotFound"
           element={<PageNotFound />}

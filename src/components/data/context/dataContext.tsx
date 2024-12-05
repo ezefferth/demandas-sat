@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Assunto, Categoria, Chamado, Comentario, Prioridade, Setor, Status, Usuario } from "../../types";
+import { Assunto, Categoria, Chamado, Comentario, Prioridade, Setor, Status, Sugestao, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
 import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
@@ -12,6 +12,7 @@ import { LerChamadosUser } from "../fetch/chamados/lerChamadosUser";
 import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
 import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
+import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
 
 
 type DataContextType = {
@@ -39,6 +40,8 @@ type DataContextType = {
   setCountChamado: (value: number) => void;
   countChamadoAtual: number;
   setCountChamadoAtual: (value: number) => void;
+  sugestoes: Sugestao[] | undefined;
+  setSugestoes: (value: Sugestao[] | undefined) => void
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -56,12 +59,20 @@ export default function DataProvider({ children }: any) {
   const [comentariosTodos, setComentariosTodos] = useState<Comentario[] | []>();
   const [countChamado, setCountChamado] = useState<number>(0);
   const [countChamadoAtual, setCountChamadoAtual] = useState<number>(0);
+  const [sugestoes, setSugestoes] = useState<Sugestao[] | []>();
 
   const { usuario } = useContext(AuthContext);
 
   useEffect(() => {
     if (!usuario) return; // Aguarda o usuário estar logado
 
+    const fetchSugestoes = async () => {
+      try {
+        await LerSugestoes({ setSugestoes });
+      } catch (error) {
+        console.error("Erro ao buscar sugestoes:", error);
+      }
+    };
     const fetchCategorias = async () => {
       try {
         await LerCategorias({ setCategorias });
@@ -156,7 +167,7 @@ export default function DataProvider({ children }: any) {
       }
     };
 
-
+    fetchSugestoes()
     fetchCategorias();
     fetchSetores();
     fetchAssuntos();
@@ -259,7 +270,8 @@ export default function DataProvider({ children }: any) {
         setCountChamado,
         countChamadoAtual,
         setCountChamadoAtual,
-
+        sugestoes,
+        setSugestoes,
       }}
     >
       {children}

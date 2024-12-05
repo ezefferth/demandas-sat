@@ -1,21 +1,26 @@
 import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { AuthContext } from "../data/context/authContext"; // ajuste o caminho conforme necessário
+import Carregando from "../../pages/carregando";
 
 interface PrivateRouteProps {
   children: JSX.Element;
 }
 
 function PrivateRoute({ children }: PrivateRouteProps) {
-  const { usuario } = useContext(AuthContext);
+  const { usuario, loading } = useContext(AuthContext);
 
-  // Verifica se o usuário está autenticado
+  if (loading) {
+    // Exibe um spinner ou tela de carregamento enquanto verifica a autenticação
+    return <Carregando />;
+  }
+
   if (!usuario) {
-    // Se não estiver autenticado, redireciona para a página de login
+    // Redireciona para a página de login se o usuário não estiver autenticado
     return <Navigate to="/login" />;
   }
 
-  // Se estiver autenticado, renderiza o componente filho
+  // Renderiza o componente filho se o usuário estiver autenticado
   return children;
 }
 
