@@ -15,9 +15,15 @@ import { DataContext } from "../../components/data/context/dataContext";
 import { Button, List, ListItem, Popover } from "@mui/material";
 import { Comentario } from "../../components/types";
 import PageNotFoundAdmin from "../pageNotFoundAdmin";
+import axios from 'axios'
 export default function Home() {
 
   const { usuario, logout } = useContext(AuthContext)
+
+  const axiosInstance = axios.create({
+    baseURL: 'https://10.21.39.75:4001',
+    withCredentials: true,
+  });
 
   const { comentariosTodos, usuarios, chamados } = useContext(DataContext)
 
@@ -25,6 +31,17 @@ export default function Home() {
 
   const navigate = useNavigate()
   const location = useLocation()
+
+  const verificarLogin = async () => {
+    try {
+      const response = await axiosInstance.get('/verificarUsuario');
+      // setUsuario(response.data.usuario);
+      console.log('Usuário verificado:', response.data.usuario);
+    } catch (error) {
+      console.error('Erro ao verificar usuário:', error);
+    }
+  };
+
 
   useEffect(() => {
     setLoc(location.pathname)
@@ -181,7 +198,8 @@ export default function Home() {
         }
         <div className="flex justify-center mt-auto w-full">
           <button
-            onClick={logout}
+            // onClick={logout}
+            onClick={verificarLogin}
             className="text-slate-100 hover:text-white px-3 rounded-lg transition-all hover:outline hover:outline-1 hover:transition-all"
           >
             Sair

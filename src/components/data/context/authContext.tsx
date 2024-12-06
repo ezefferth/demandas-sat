@@ -3,6 +3,10 @@ import { Usuario } from "../../types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+// Configuração global do axios
+axios.defaults.withCredentials = true;
+axios.defaults.baseURL = 'https://10.21.39.75:4001';
+
 type AuthContextType = {
   usuario?: Usuario;
   token?: string;
@@ -77,33 +81,19 @@ export default function AuthProvider({ children }: any) {
   // Função de login
   const login = async (nomeUsuario: string, senha: string) => {
     try {
-      const response = await axios.post(
-        "https://10.21.39.75:4001/loginUsuario",
-        {
-          nomeUsuario,
-          senha,
-        },
-        {
-          headers: { "Content-Type": "application/json" },
-          withCredentials: true,
-        }
-      );
+      const response = await axios.post('/loginUsuario', { nomeUsuario, senha });
 
       if (response.status < 200 || response.status >= 300) {
-        throw new Error("Erro de login");
+        throw new Error('Erro de login');
       }
 
-      const data = await response.data;
+      const data = response.data;
       setUsuario(data.usuario);
-      setToken(data.token); // Armazena o token recebido
-
-      // Armazenar o token no localStorage
-      localStorage.setItem("token", data.token);
 
       // Redireciona o usuário para a página inicial
-      navigate("/");
+      navigate('/');
     } catch (error) {
-      console.error("Erro ao fazer login:", error);
+      console.error('Erro ao fazer login:', error);
       throw error;
     }
   };
