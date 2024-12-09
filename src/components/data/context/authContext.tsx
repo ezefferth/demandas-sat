@@ -88,9 +88,8 @@ export default function AuthProvider({ children }: any) {
         { withCredentials: true }
       );
 
-      // Limpa o estado do usuário e redireciona para a página de login
-      // setUsuario(undefined);
-      // setToken(undefined);
+      setUsuario(undefined);
+      
       navigate("/login");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -106,9 +105,7 @@ export default function AuthProvider({ children }: any) {
         throw new Error('Erro de login');
       }
 
-      const { token, usuario } = response.data;
-
-      localStorage.setItem('authToken', token);
+      const { usuario } = response.data;
       
       setUsuario(usuario);
       navigate('/');

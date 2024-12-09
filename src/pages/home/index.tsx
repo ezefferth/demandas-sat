@@ -51,7 +51,6 @@ export default function Home() {
     } catch (error) {
       console.error("Usuário não autenticado:", error);
       // setToken(undefined);
-      navigate("/login");
     }
   };
 
