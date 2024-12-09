@@ -33,12 +33,25 @@ export default function Home() {
   const location = useLocation()
 
   const verificarLogin = async () => {
+    axiosInstance.interceptors.request.use((config) => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
     try {
       const response = await axiosInstance.get('/verificarUsuario');
-      // setUsuario(response.data.usuario);
-      console.log('Usuário verificado:', response.data.usuario);
+      console.log("Usuário:", response);
+
+      if (response.status === 200) {
+        const data = response.data;
+        console.log(data)
+      }
     } catch (error) {
-      console.error('Erro ao verificar usuário:', error);
+      console.error("Usuário não autenticado:", error);
+      // setToken(undefined);
+      navigate("/login");
     }
   };
 

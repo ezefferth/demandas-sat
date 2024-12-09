@@ -3,9 +3,7 @@ import { Usuario } from "../../types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-// Configuração global do axios
-axios.defaults.withCredentials = true;
-axios.defaults.baseURL = 'https://10.21.39.75:4001';
+
 
 type AuthContextType = {
   usuario?: Usuario;
@@ -23,38 +21,59 @@ export default function AuthProvider({ children }: any) {
   const [usuario, setUsuario] = useState<Usuario | undefined>();
   const [token, setToken] = useState<string | undefined>();
 
+  // Configuração global do axios
+  axios.defaults.withCredentials = true;
+  axios.defaults.baseURL = 'https://10.21.39.75:4001';
+
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
+  const axiosInstance = axios.create({
+    baseURL: 'https://10.21.39.75:4001',
+    withCredentials: true,
+  });
+
   useEffect(() => {
+    axiosInstance.interceptors.request.use((config) => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    });
     const verificarLogin = async () => {
       try {
-        const response = await axios.get(
-          "https://10.21.39.75:4001/verificarUsuario",
-          { withCredentials: true },
-        );
+        const response = await axiosInstance.get('/verificarUsuario');
         console.log("Usuário:", response);
 
         if (response.status === 200) {
           const data = response.data;
           setUsuario(data.usuario);
-          setToken(data.token);
+          // setToken(data.token);
 
         }
       } catch (error) {
         console.error("Usuário não autenticado:", error);
         setUsuario(undefined);
-        setToken(undefined);
+        // setToken(undefined);
         navigate("/login");
       }
       finally {
         setLoading(false); // Finaliza o estado de carregamento
       }
     };
+    const inicializarUsuario = () => {
+      const token = localStorage.getItem('authToken');
+      if (token) {
+        axiosInstance.get('/verificarUsuario')
+          .then((response) => setUsuario(response.data.usuario))
+          .catch(() => localStorage.removeItem('authToken')); // Remove token inválido
+      }
+    };
 
     // console.log(token)
-
+    inicializarUsuario();
     verificarLogin();
   }, []);
 
@@ -64,14 +83,14 @@ export default function AuthProvider({ children }: any) {
     try {
       // Faz uma requisição ao backend para limpar o cookie
       await axios.post(
-        "https://10.21.39.75:4001/logout",
+        "/logout",
         {},
         { withCredentials: true }
       );
 
       // Limpa o estado do usuário e redireciona para a página de login
-      setUsuario(undefined);
-      setToken(undefined);
+      // setUsuario(undefined);
+      // setToken(undefined);
       navigate("/login");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -87,10 +106,11 @@ export default function AuthProvider({ children }: any) {
         throw new Error('Erro de login');
       }
 
-      const data = response.data;
-      setUsuario(data.usuario);
+      const { token, usuario } = response.data;
 
-      // Redireciona o usuário para a página inicial
+      localStorage.setItem('authToken', token);
+      
+      setUsuario(usuario);
       navigate('/');
     } catch (error) {
       console.error('Erro ao fazer login:', error);
