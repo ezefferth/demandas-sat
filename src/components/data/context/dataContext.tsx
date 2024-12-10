@@ -237,7 +237,7 @@ export default function DataProvider({ children }: any) {
     const interval = setInterval(() => {
       fetchComentariosAdmin();
 
-    }, 10000); // Executa a cada 5 segundos
+    }, 15000); // Executa a cada 15 segundos
 
 
     return () => clearInterval(interval); // Limpa o intervalo ao desmontar

@@ -18,7 +18,7 @@ import PageNotFoundAdmin from "../pageNotFoundAdmin";
 import axios from 'axios'
 export default function Home() {
 
-  const { usuario, logout } = useContext(AuthContext)
+  const { usuario } = useContext(AuthContext)
 
   const axiosInstance = axios.create({
     baseURL: 'https://10.21.39.75:4001',
@@ -44,10 +44,10 @@ export default function Home() {
       const response = await axiosInstance.get('/verificarUsuario');
       console.log("Usuário:", response);
 
-      if (response.status === 200) {
+      /* if (response.status === 200) {
         const data = response.data;
         console.log(data)
-      }
+      } */
     } catch (error) {
       console.error("Usuário não autenticado:", error);
       // setToken(undefined);

@@ -4,7 +4,7 @@ export type Usuario = {
   senha: string;
   admin: boolean;
   nomeUsuario: string;
-  avatar?: Base64URLString | null;
+  avatar?: string | null;
   createdAt: Date;
   updatedAt: Date;
 };

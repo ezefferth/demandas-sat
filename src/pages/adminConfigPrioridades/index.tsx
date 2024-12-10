@@ -5,11 +5,11 @@
 import { useContext, useState } from "react";
 import { FaPlusSquare } from "react-icons/fa";
 import { DataContext } from "../../components/data/context/dataContext";
-import { Prioridade, Status } from "../../components/types";
+import { Prioridade, /* Status */ } from "../../components/types";
 import { TiEdit, TiTrash } from "react-icons/ti";
-import ModalRemoverStatus from "./modalDel";
-import ModalAddStatus from "./modalAdd";
-import ModalEditarStatus from "./modalEdit";
+// import ModalRemoverStatus from "./modalDel";
+// import ModalAddStatus from "./modalAdd";
+// import ModalEditarStatus from "./modalEdit";
 import ModalAddPrioridade from "./modalAdd";
 import ModalRemoverPrioridade from "./modalDel";
 import ModalEditarPrioridade from "./modalEdit";

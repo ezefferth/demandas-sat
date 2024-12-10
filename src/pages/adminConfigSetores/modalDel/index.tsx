@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useContext } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
+// import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
 import {  Setor } from '../../../components/types';
 import { RemoverSetor } from '../../../components/data/fetch/setores/removerSetor';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';

@@ -5,8 +5,8 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import { LerAssuntos } from '../../../components/data/fetch/assuntos/lerAssuntos';
-import { CriarAssunto } from '../../../components/data/fetch/assuntos/criarSetor';
+// import { LerAssuntos } from '../../../components/data/fetch/assuntos/lerAssuntos';
+// import { CriarAssunto } from '../../../components/data/fetch/assuntos/criarSetor';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { LerUsuarios } from '../../../components/data/fetch/usuarios/lerUsuarios';
 import { CriarUsuario } from '../../../components/data/fetch/usuarios/criarUsuario';
@@ -37,7 +37,7 @@ export default function ModalAddUsuario({ openAdd, handleClose, setOpenAdd }: Pr
   const [nomeUsuario, setNomeUsuario] = useState<string>('')
   const [senha, setSenha] = useState<string>('')
 
-  const { setUsuarios, categorias } = useContext(DataContext)
+  const { setUsuarios, /* categorias */ } = useContext(DataContext)
 
   const handleOnAdd = async () => {
     await LerUsuarios({ setUsuarios })

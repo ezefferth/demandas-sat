@@ -11,7 +11,7 @@ type Props = {
 
 export async function LerComentariosTodos({ setComentariosTodos, id }: Props) {
   try {
-    const response = await axios.post("https://10.21.39.75:4001/lerComentariosTodos", {
+    const response = await axios.post("https://10.21.39.75/lerComentariosTodos", {
       id, // Envia o ID no corpo da requisição
     }, {
       headers: { "Content-Type": "application/json" },

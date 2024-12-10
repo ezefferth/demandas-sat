@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import { DataContext } from "../../components/data/context/dataContext"
-import { Sugestao } from "../../components/types"
+// import { Sugestao } from "../../components/types"
 
 
 

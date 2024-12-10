@@ -17,7 +17,6 @@ import StatusPage from "../../pages/adminConfigStatus";
 import Prioridades from "../../pages/adminConfigPrioridades";
 import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
 import Sugestoes from "../../pages/adminConfigSugestoes";
-import Carregando from "../../pages/carregando";
 
 export default function Router() {
   return (

@@ -23,14 +23,14 @@ export default function AuthProvider({ children }: any) {
 
   // Configuração global do axios
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'https://10.21.39.75:4001';
+  axios.defaults.baseURL = 'https://10.21.39.75';
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   const axiosInstance = axios.create({
-    baseURL: 'https://10.21.39.75:4001',
+    baseURL: 'https://10.21.39.75',
     withCredentials: true,
   });
 
@@ -45,7 +45,7 @@ export default function AuthProvider({ children }: any) {
     const verificarLogin = async () => {
       try {
         const response = await axiosInstance.get('/verificarUsuario');
-        console.log("Usuário:", response);
+        // console.log("Usuário:", response);
 
         if (response.status === 200) {
           const data = response.data;
