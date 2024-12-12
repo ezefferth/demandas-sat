@@ -23,14 +23,14 @@ export default function AuthProvider({ children }: any) {
 
   // Configuração global do axios
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'https://10.21.39.75';
+  axios.defaults.baseURL = 'http://10.21.39.75:4001';
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   const axiosInstance = axios.create({
-    baseURL: 'https://10.21.39.75',
+    baseURL: 'http://10.21.39.75:4001',
     withCredentials: true,
   });
 
@@ -44,7 +44,9 @@ export default function AuthProvider({ children }: any) {
     });
     const verificarLogin = async () => {
       try {
-        const response = await axiosInstance.get('/verificarUsuario');
+        const response = await axiosInstance.get('/verificarUsuario', {
+          headers: { "Content-Type": "application/json" }
+        });
         // console.log("Usuário:", response);
 
         if (response.status === 200) {
@@ -89,7 +91,7 @@ export default function AuthProvider({ children }: any) {
       );
 
       setUsuario(undefined);
-      
+
       navigate("/login");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -106,7 +108,7 @@ export default function AuthProvider({ children }: any) {
       }
 
       const { usuario } = response.data;
-      
+
       setUsuario(usuario);
       navigate('/');
     } catch (error) {
