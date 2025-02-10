@@ -126,7 +126,6 @@ export default function Home() {
             <h1 className="font-semibold ">Chama-TI</h1>
             <h2 className="font-semibold pt-2">Help Desk</h2>
             <div className="flex justify-center pt-5">
-
               {usuario && usuario.avatar ? (
                 <img
                   src={usuario.avatar}

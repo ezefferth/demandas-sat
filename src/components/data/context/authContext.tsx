@@ -34,6 +34,7 @@ export default function AuthProvider({ children }: any) {
     withCredentials: true,
   });
 
+
   useEffect(() => {
     axiosInstance.interceptors.request.use((config) => {
       const token = localStorage.getItem('authToken');
