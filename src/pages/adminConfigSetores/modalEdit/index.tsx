@@ -8,7 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { Setor } from '../../../components/types';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { AtualizarSetor } from '../../../components/data/fetch/setores/atualizarSetor';
-import { TextField } from '@mui/material';
+import { SelectChangeEvent, TextField } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 const style = {
   position: 'absolute',
@@ -39,9 +40,21 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
 
   }
 
-  const [nome, setNome] = useState<string>('');
+  const [nome, setNome] = useState<string>(setor?.nome | '');
+  const [status, setStatus] = useState<boolean>(setor?.status | false)
+  const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
 
+  const handleChange = (event: SelectChangeEvent) => {
 
+    if (event.target.value == 'Sim') {
+      setStatus(true);
+      setStatusSelected('Sim')
+    }
+    else {
+      setStatus(false);
+      setStatusSelected('Não');
+    }
+  };
 
   const handleREdit = async () => {
     if (!setor) {
@@ -50,7 +63,7 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
 
     const id = setor.id
     try {
-      await AtualizarSetor({ id, nome })
+      await AtualizarSetor({ id, nome, status })
       setOpenEdit(false)
       handleOnEdit()
       setNome('')
@@ -81,6 +94,26 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
           <div className='mt-5 mb-4 w-72'>
             <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={setor?.nome} />
           </div>
+          <FormControl variant="standard" sx={{ width: '100%', }}>
+            <InputLabel id="demo-simple-select-standard-label" sx={{ pl: 2 }}>Ativo?</InputLabel>
+            <Select
+              labelId="demo-simple-select-standard-label"
+              id="demo-simple-select-standard"
+              value={statusSelected}
+              onChange={handleChange}
+              label="Assunto"
+              defaultValue={setor?.status ? 'Sim' : 'Não'}
+              sx={{ pl: 1.75 }}
+            >
+              <MenuItem key='Não' value='Não'>
+                Não
+              </MenuItem>
+              <MenuItem key='Sim' value='Sim'>
+                Sim
+              </MenuItem>
+
+            </Select>
+          </FormControl>
 
           <div className='text-slate-600 font-thin text-xs mt-8'>
             <div className='flex justify-between gap-4'>

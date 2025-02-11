@@ -11,7 +11,7 @@ type Props = {
 
 export async function CriarUsuario({ nome, nomeUsuario, senha, admin }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/criarUsuario", { nome, nomeUsuario, admin, senha }, {
+    const response = await axios.post("/criarUsuario", { nome, nomeUsuario, admin, senha }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em criar usuario!", response);

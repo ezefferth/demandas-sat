@@ -119,7 +119,7 @@ export default function Home() {
       <ToastContainer />
 
       {/* Sidebar */}
-      <aside className="w-64 bg-slate-600 shadow-lg p-5 flex flex-col h-screen">
+      <aside className="w-64 bg-slate-600 shadow-lg p-5 flex flex-col h-screen overflow-y-auto">
         {/* Imagem e Título do Usuário */}
         <div className="space-x-3 mb-6">
           <div className="text-slate-50 text-center">

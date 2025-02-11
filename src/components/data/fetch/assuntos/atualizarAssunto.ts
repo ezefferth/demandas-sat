@@ -11,7 +11,7 @@ type Props = {
 
 export async function AtualizarAssunto({ id, nome, categoriaId, tempoLimite }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/atualizarAssunto", { id, nome, categoriaId, tempoLimite }, {
+    const response = await axios.post("/atualizarAssunto", { id, nome, categoriaId, tempoLimite }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar assunto!", response);

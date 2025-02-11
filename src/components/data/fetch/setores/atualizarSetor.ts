@@ -5,11 +5,12 @@ import axios from "axios";
 type Props = {
   id: string;
   nome: string;
+  status: boolean;
 };
 
-export async function AtualizarSetor({ id, nome }: Props) {
+export async function AtualizarSetor({ id, nome, status }: Props) {
   try {
-    const response = await axios.post("http://10.21.39.75:4001/atualizarSetor", { id, nome }, {
+    const response = await axios.post("/atualizarSetor", { id, nome, status }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar setor!", response);

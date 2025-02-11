@@ -10,7 +10,7 @@ type Props = {
 
 export async function LerSugestoes({ setSugestoes }: Props) {
   try {
-    const response = await axios.get("http://10.21.39.75:4001/lerSugestoes", {
+    const response = await axios.get("/lerSugestoes", {
       headers: { "Content-Type": "application/json" },
     });
     console.log("Sucesso em ler sugestoes!");

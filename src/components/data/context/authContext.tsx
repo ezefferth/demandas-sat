@@ -32,6 +32,7 @@ export default function AuthProvider({ children }: any) {
   const axiosInstance = axios.create({
     baseURL: 'http://10.21.39.75:4001',
     withCredentials: true,
+    
   });
 
 

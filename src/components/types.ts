@@ -22,6 +22,7 @@ export type Setor = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
+  status: boolean;
 }
 
 export type Assunto = {
@@ -62,6 +63,7 @@ export type Status = {
   cor: string
   createdAt: Date;
   updatedAt: Date;
+  
 }
 
 
