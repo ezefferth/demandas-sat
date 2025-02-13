@@ -9,7 +9,6 @@ export type Usuario = {
   updatedAt: Date;
 };
 
-
 export type Categoria = {
   nome: string;
   id: string;
@@ -63,9 +62,8 @@ export type Status = {
   cor: string
   createdAt: Date;
   updatedAt: Date;
-  
-}
 
+}
 
 export type Prioridade = {
   id: string
@@ -82,3 +80,21 @@ export type Sugestao = {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type TipoPatrimonio = {
+  id: string;
+  nome: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type Patrimonio = {
+  id: string;
+  tipoEquipamento: string
+  descricao: string
+  patromonio: string;
+  status: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+

@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../components/data/context/authContext";
-import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear } from 'react-icons/fa6'
+import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear, FaComputer  } from 'react-icons/fa6'
 import { MdLabelImportantOutline, MdLowPriority } from "react-icons/md";
 import { FaBell, FaQuestionCircle } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -196,6 +196,10 @@ export default function Home() {
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/usuarios' && 'pl-2 font-bold'}`}>
                       <FaUsersGear className="h-5 w-5" />
                       <p className="cursor-pointer" onClick={() => navigate('/config/usuarios')}>Usuários</p>
+                    </div>
+                    <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/patrimonios' && 'pl-2 font-bold'}`}>
+                      <FaComputer className="h-5 w-5" />
+                      <p className="cursor-pointer" onClick={() => navigate('/config/patrimonios')}>Patrimônios</p>
                     </div>
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/sugestoes' && 'pl-2 font-bold'}`}>
                       <FaQuestionCircle className="h-5 w-5" />

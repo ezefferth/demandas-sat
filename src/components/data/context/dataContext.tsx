@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Assunto, Categoria, Chamado, Comentario, Prioridade, Setor, Status, Sugestao, Usuario } from "../../types";
+import { Assunto, Categoria, Chamado, Comentario, Patrimonio, Prioridade, Setor, Status, Sugestao, TipoPatrimonio, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
 import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
@@ -13,6 +13,8 @@ import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
 import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
 import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
+import { LerPatrimonios } from "../fetch/patrimonio/lerPatrimonio";
+import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
 
 
 type DataContextType = {
@@ -42,6 +44,10 @@ type DataContextType = {
   setCountChamadoAtual: (value: number) => void;
   sugestoes: Sugestao[] | undefined;
   setSugestoes: (value: Sugestao[] | undefined) => void
+  patrimonios: Patrimonio[] | undefined;
+  setPatrimonios: (value: Patrimonio[] | undefined) => void;
+  tipoPatrimonio: TipoPatrimonio[] | undefined;
+  setTipoPatrimonio: (value: TipoPatrimonio[] | undefined) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -60,6 +66,9 @@ export default function DataProvider({ children }: any) {
   const [countChamado, setCountChamado] = useState<number>(0);
   const [countChamadoAtual, setCountChamadoAtual] = useState<number>(0);
   const [sugestoes, setSugestoes] = useState<Sugestao[] | []>();
+  const [patrimonios, setPatrimonios] = useState<Patrimonio[] | []>();
+  const [tipoPatrimonio, setTipoPatrimonio] = useState<TipoPatrimonio[] | []>();
+
 
   const { usuario } = useContext(AuthContext);
 
@@ -121,6 +130,22 @@ export default function DataProvider({ children }: any) {
       }
     };
 
+    const fetchPatrimonio = async () => {
+      try {
+        await LerPatrimonios({ setPatrimonios });
+      } catch (error) {
+        console.error("Erro ao buscar patrimonios:", error);
+      }
+    };
+
+    const fetchTipoPatrimonio = async () => {
+      try {
+        await LerTipoPatrimonios({ setTipoPatrimonio });
+      } catch (error) {
+        console.error("Erro ao buscar prioridades:", error);
+      }
+    };
+
     const fetchChamados = async () => {
       try {
         if (usuario.admin) {
@@ -176,6 +201,8 @@ export default function DataProvider({ children }: any) {
     fetchPrioridades();
     fetchChamados();
     fetchComentarios();
+    fetchPatrimonio();
+    fetchTipoPatrimonio();
   }, [usuario]);
 
   useEffect(() => {
@@ -272,6 +299,10 @@ export default function DataProvider({ children }: any) {
         setCountChamadoAtual,
         sugestoes,
         setSugestoes,
+        tipoPatrimonio,
+        setTipoPatrimonio,
+        patrimonios,
+        setPatrimonios,
       }}
     >
       {children}

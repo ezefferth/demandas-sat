@@ -40,8 +40,8 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
 
   }
 
-  const [nome, setNome] = useState<string>(setor?.nome || '');
-  const [status, setStatus] = useState<boolean>(setor?.status || false)
+  const [nome, setNome] = useState<string>(setor?.nome | '');
+  const [status, setStatus] = useState<boolean>(setor?.status | false)
   const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
 
   const handleChange = (event: SelectChangeEvent) => {

@@ -171,13 +171,11 @@ export default function Atendimento() {
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem]">
-                  <span className="truncate ">{chamado.descricao}</span>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {chamado.descricao}
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <span className="truncate">
-                    {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                  </span>
+                <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
@@ -233,13 +231,11 @@ export default function Atendimento() {
                     } hover:bg-gray-100 transition-all`}
                 >
                   <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                    <p className="truncate">{chamado.descricao}</p>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {chamado.descricao}
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                    <p className="truncate">
-                      {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                    </p>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                     <p
@@ -333,13 +329,11 @@ export default function Atendimento() {
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="truncate ">{chamado.descricao}</p>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {chamado.descricao}
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="truncate">
-                    {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                  </p>
+                <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
                   <p className="text-center rounded-md" style={{

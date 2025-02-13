@@ -5,7 +5,7 @@
 import { useContext, useState } from "react";
 import { FaPlusSquare } from "react-icons/fa";
 import { DataContext } from "../../components/data/context/dataContext";
-import { Categoria, Setor } from "../../components/types";
+import { Setor } from "../../components/types";
 import { TiEdit, TiTrash } from "react-icons/ti";
 import ModalAddSetor from "./modalAdd";
 import ModalRemoverSetor from "./modalDel";
@@ -59,16 +59,16 @@ export default function Setores() {
 
         <div className="mt-3">
           {
-            setores?.map((setores: Categoria) => {
+            setores?.map((setor: Setor) => {
               return (
-                <div key={setores.id} >
+                <div key={setor.id} >
                   <div className="flex justify-between items-center hover:font-bold hover:pl-2 transition-all">
-                    <p className="text-slate-900">{setores.nome}</p>
+                    <p className="text-slate-900">{setor.nome}</p>
                     <div className="flex gap-1">
-                      <button onClick={(e) => handleSeletedEdit(e, setores)}>
+                      <button onClick={(e) => handleSeletedEdit(e, setor)}>
                         <TiEdit size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
-                      <button onClick={(e) => handleSeletedRemove(e, setores)}>
+                      <button onClick={(e) => handleSeletedRemove(e, setor)}>
                         <TiTrash size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
                       <div className="border-b-2 border-slate-300" />

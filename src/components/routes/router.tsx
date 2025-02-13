@@ -17,6 +17,7 @@ import StatusPage from "../../pages/adminConfigStatus";
 import Prioridades from "../../pages/adminConfigPrioridades";
 import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
 import Sugestoes from "../../pages/adminConfigSugestoes";
+import Patrimonios from "../../pages/adminConfigPatrimonio";
 
 export default function Router() {
   return (
@@ -98,6 +99,14 @@ export default function Router() {
           element={
             <AdminRoute>
               <VerChamadoAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/config/patrimonios"
+          element={
+            <AdminRoute>
+              <Patrimonios />
             </AdminRoute>
           }
         />
