@@ -5,11 +5,16 @@ import { DataContext } from '../../components/data/context/dataContext';
 import { FaPlusSquare } from 'react-icons/fa';
 import ModalAddComentario from './modalAdd';
 import { AuthContext } from '../../components/data/context/authContext';
-import { FaArrowLeftLong } from 'react-icons/fa6';
+import { FaArrowLeftLong, FaCircleUser } from 'react-icons/fa6';
 import ModalStatus from './modalStatus';
 import ModalPrioridade from './modalPrioridade';
 import ModalAddFinalizar from './modalFinalizar';
 import { LerComentarios } from '../../components/data/fetch/comentario/lerComentarios';
+import AvatarUsuario from './avatarUser';
+
+type Props = {
+  chamado: Chamado
+}
 
 export default function VerChamadoAdmin() {
 
@@ -123,6 +128,7 @@ export default function VerChamadoAdmin() {
     fetchComentariosAdmin();
   }, [localChamado, countChamado, countChamadoAtual])
 
+
   if (localChamado) {
     return (
       <div className="p-12">
@@ -131,10 +137,13 @@ export default function VerChamadoAdmin() {
         </button>
 
         <div className="mt-4 p-8 text-slate-600 w-[32rem] mx-auto border-2 border-gray-300 rounded-lg shadow-lg bg-[#EEEEEE] font-thin">
-          <div className='flex justify-center items-center'>
+          <div className='flex justify-evenly items-center'>
             {/* <div className='w-10' /> */}
             <div>
               <p className='text-xl font-semibold text-slate-800'>Chamado N.º{chamado.id}</p>
+            </div>
+            <div>
+              <AvatarUsuario usuarioId={localChamado.usuarioId} usuarios={usuarios || undefined} />
             </div>
           </div>
           {

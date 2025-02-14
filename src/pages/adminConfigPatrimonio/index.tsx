@@ -2,56 +2,128 @@
 
 // import React from 'react'
 
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { FaPlusSquare } from "react-icons/fa";
 import { DataContext } from "../../components/data/context/dataContext";
-import { Patrimonio } from "../../components/types";
+import { TipoPatrimonio } from "../../components/types";
 import { TiEdit, TiTrash } from "react-icons/ti";
-import ModalRemoverSetor from "./modalDel";
-import ModalEditarSetor from "./modalEdit";
+// import ModalRemoverSetor from "./modalDel";
+// import ModalEditarSetor from "./modalEdit";
 import ModalAddPatrimonioTipo from "./modalAddTipo";
 import ModalAddPatrimonio from "./modalAdd";
+import { Popover } from "@mui/material";
+import ModalEditarTipoPatrimonio from "./modalEditTipo";
+import ModalRemoverTipoPatrimonio from "./modalDelTipo";
 
 export default function Patrimonios() {
+
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
+
+  const handleClickPopover = (event: React.MouseEvent<HTMLButtonElement>, tipoPatrimonio: TipoPatrimonio) => {
+    setAnchorEl(event.currentTarget)
+    setSelectedTipoPatrimonio(tipoPatrimonio)
+
+  };
+
+  const handleClosePopover = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? 'simple-popover' : undefined;
+
+
+  useEffect(() => {
+    const disableRightClick = (e: MouseEvent) => e.preventDefault();
+    document.addEventListener("contextmenu", disableRightClick);
+
+    return () => {
+      document.removeEventListener("contextmenu", disableRightClick);
+    };
+  }, []);
+
   const [btn, setBtn] = useState<number>(1)
 
   const [openAddTipo, setOpenAddTipo] = useState(false);
   const handleOpenTipo = () => setOpenAddTipo(true);
   const handleCloseTipo = () => setOpenAddTipo(false);
 
+
   const [openAdd, setOpenAdd] = useState(false);
   const handleOpen = () => setOpenAdd(true);
   const handleClose = () => setOpenAdd(false);
 
-  const [openRemove, setOpenRemove] = useState(false);
-  const handleOpenRemove = () => setOpenRemove(true);
-  const handleCloseRemove = () => setOpenRemove(false);
+  // const [openRemove, setOpenRemove] = useState(false);
+  // const handleOpenRemove = () => setOpenRemove(true);
+  // const handleCloseRemove = () => setOpenRemove(false);
 
-  const [openEdit, setOpenEdit] = useState(false);
-  const handleOpenEdit = () => setOpenEdit(true);
-  const handleCloseEdit = () => setOpenEdit(false);
+  const [openRemoveTipo, setOpenRemoveTipo] = useState<boolean>(false);
+  const handleOpenRemoveTipo = () => setOpenRemoveTipo(true);
+  const handleCloseRemoveTipo = () => setOpenRemoveTipo(false);
 
-  const [selectedPatrimonio, setSelectedPatrimonio] = useState<Patrimonio>()
+  // const [openEdit, setOpenEdit] = useState(false);
+  // const handleOpenEdit = () => setOpenEdit(true);
+  // const handleCloseEdit = () => setOpenEdit(false);
+
+  const [openEditTipo, setOpenEditTipo] = useState<boolean>(false);
+  const handleOpenEditTipo = () => setOpenEditTipo(true);
+  const handleCloseEditTipo = () => setOpenEditTipo(false);
+
+  // const [selectedPatrimonio, setSelectedPatrimonio] = useState<Patrimonio>()
+  const [selectedTipoPatrimonio, setSelectedTipoPatrimonio] = useState<TipoPatrimonio | null>()
+
+
 
   const { patrimonios, tipoPatrimonio } = useContext(DataContext)
 
-
-  const handleSeletedRemove = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+  const handleOnClickEditTipoPatrimonio = (e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault()
-    setSelectedPatrimonio(patrimonio)
-    handleOpenRemove()
+    handleOpenEditTipo()
+    handleClosePopover();
   }
 
-  const handleSeletedEdit = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+  const handleOnClickRemoveTipoPatrimonio = (e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault()
-    setSelectedPatrimonio(patrimonio)
-    handleOpenEdit()
+    handleOpenRemoveTipo()
+    handleClosePopover();
+  }
+
+  // function teste() {
+  //   patrimonios?.map(patrimonio => {
+  //     if (patrimonio.tipoPatrimonio === selectedTipoPatrimonio?.id) {
+  //       console.log(patrimonio)
+  //     }
+  //   })
+  // }
+
+  // const handleSeletedRemove = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+  //   e.preventDefault()
+  //   setSelectedPatrimonio(patrimonio)
+  //   handleOpenRemove()
+  // }
+
+  // const handleSeletedEdit = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+  //   e.preventDefault()
+  //   setSelectedPatrimonio(patrimonio)
+  //   handleOpenEdit()
+  // }
+
+  function handleSelectTipoPatrimonio(e: React.MouseEvent<HTMLButtonElement>, tipoPatrimonio: TipoPatrimonio, btn: number) {
+    e.preventDefault()
+    setSelectedTipoPatrimonio(tipoPatrimonio)
+    setBtn(btn)
+  }
+  function handleSelectTipoPatrimonioTodos(e: React.MouseEvent<HTMLButtonElement>, btn: number) {
+    e.preventDefault()
+    setBtn(btn)
+    setSelectedTipoPatrimonio(null)
   }
 
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
         <div className="font-normal text-lg">
+          {/* <button onClick={() => teste()}>xx</button> */}
           <p>Patrimônios</p>
         </div>
         <button onClick={handleOpen}>
@@ -61,7 +133,7 @@ export default function Patrimonios() {
       <div className="flex justify-center mt-16 gap-4 text-slate-50">
         <button
           className={`px-4 py-1 rounded-md ${btn === 1 ? 'bg-slate-500' : 'bg-slate-600'} hover:bg-slate-500 transition-all`}
-          onClick={() => setBtn(1)}
+          onClick={(e) => handleSelectTipoPatrimonioTodos(e, 1)}
         >Todos</button>
         {
           tipoPatrimonio?.map((tipo, index) => {
@@ -69,7 +141,8 @@ export default function Patrimonios() {
               <button
                 key={index}
                 className={`px-4 py-1 rounded-md ${btn === index + 2 ? 'bg-slate-500' : 'bg-slate-600'} hover:bg-slate-500 transition-all`}
-                onClick={() => setBtn(index + 2)}
+                onClick={(e) => handleSelectTipoPatrimonio(e, tipo, index + 2)}
+                onContextMenu={(e) => handleClickPopover(e, tipo)}
               >{tipo.nome}</button>
             )
           })
@@ -78,40 +151,97 @@ export default function Patrimonios() {
           <FaPlusSquare className="text-slate-600 hover:text-slate-800 transition-all h-8 w-8" />
         </button>
       </div>
-      <div className="mt-8 p-8 text-slate-900 w-[36rem] mx-auto">
-        <div className="flex justify-between font-semibold">
-          <p>Nome</p>
-          <p>Ações</p>
-        </div>
-
-        <div className="mt-3">
-          {
-            patrimonios?.map((patrimonio: Patrimonio) => {
-              return (
-                <div key={patrimonio.id} >
-                  <div className="flex justify-between items-center hover:font-bold hover:pl-2 transition-all">
-                    <p className="text-slate-900">{patrimonio.descricao}</p>
-                    <div className="flex gap-1">
-                      <button onClick={(e) => handleSeletedEdit(e, patrimonio)}>
-                        <TiEdit size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+      <div className="overflow-x-auto mt-4">
+        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
+          <thead>
+            <tr className="text-slate-900 font-semibold bg-gray-400">
+              <th className="px-2 py-1 border border-slate-300 w-[6rem]">Patrimônio</th>
+              <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300 text-center w-[6rem]">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              btn === 1 ? (patrimonios?.map((patrimonio, index) => (
+                <tr
+                  key={patrimonio.id}
+                  className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} hover:bg-gray-100 transition-all`}
+                >
+                  <td className="py-1 border border-slate-300 text-center">
+                    <span className="">{patrimonio.patrimonio}</span></td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {patrimonio.descricao}
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300">
+                    <div className="flex items-center justify-center gap-2">
+                      <button /* onClick={(e) => handleSeletedEdit(e, patrimonio)} */>
+                        <TiEdit size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
-                      <button onClick={(e) => handleSeletedRemove(e, patrimonio)}>
-                        <TiTrash size={25} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                      <button /* onClick={(e) => handleSeletedRemove(e, patrimonio)} */>
+                        <TiTrash size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
-                      <div className="border-b-2 border-slate-300" />
                     </div>
-                  </div>
-                  <div className="border-b border-slate-300 my-1 w-full" />
-                </div>
+                  </td>
+                </tr>
+              ))
+              ) : (
+                patrimonios
+                  ?.filter((patrimonio) => patrimonio.tipoPatrimonio === selectedTipoPatrimonio?.id)
+                  .map((patrimonio, index) => (
+                    <tr
+                      key={patrimonio.id}
+                      className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} hover:bg-gray-100 transition-all`}
+                    >
+                      <td className="py-1 border border-slate-300 text-center">
+                        <span>{patrimonio.patrimonio}</span>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {patrimonio.descricao}
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300">
+                        <div className="flex items-center justify-center gap-2">
+                          <button>
+                            <TiEdit size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                          </button>
+                          <button>
+                            <TiTrash size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
               )
-            })
-          }
-        </div>
+            }
 
+          </tbody>
+        </table>
       </div>
+      <Popover
+        id={id}
+        open={open}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+      >
+        <div className="py-1 text-xs text-slate-800  w-20">
+          <div className="h-6 px-2 mt-1">
+            <p className="hover:border-b hover:rounded-md text-center border-slate-800 cursor-pointer px-2 " onClick={(e) => handleOnClickEditTipoPatrimonio(e)}>Editar</p>
+          </div>
+          <div className="h-6 px-2">
+            <p className="hover:border-b hover:rounded-md text-center border-slate-800 cursor-pointer px-2" onClick={(e) => handleOnClickRemoveTipoPatrimonio(e)}>Remover</p>
+
+          </div>
+        </div>
+      </Popover>
+
       {/* <ModalRemoverSetor patrimonio={selectedPatrimonio ?? null} openRemove={openRemove} handleCloseRemove={handleCloseRemove} setOpenRemove={setOpenRemove} /> */}
       <ModalAddPatrimonio openAdd={openAdd} handleClose={handleClose} setOpenAdd={setOpenAdd} />
       <ModalAddPatrimonioTipo openAdd={openAddTipo} handleClose={handleCloseTipo} setOpenAdd={setOpenAddTipo} />
+      <ModalEditarTipoPatrimonio tipoPatrimonio={selectedTipoPatrimonio ?? null} openEdit={openEditTipo} handleCloseEdit={handleCloseEditTipo} setOpenEdit={setOpenEditTipo} />
+      <ModalRemoverTipoPatrimonio tipoPatrimonio={selectedTipoPatrimonio ?? null} openRemove={openRemoveTipo} handleCloseRemove={handleCloseRemoveTipo} setOpenRemove={setOpenRemoveTipo} />
       {/* <ModalEditarSetor patrimonio={selectedPatrimonio ?? null} openEdit={openEdit} handleCloseEdit={handleCloseEdit} setOpenEdit={setOpenEdit} /> */}
     </div>
   )

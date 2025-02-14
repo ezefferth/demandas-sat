@@ -90,9 +90,9 @@ export type TipoPatrimonio = {
 
 export type Patrimonio = {
   id: string;
-  tipoEquipamento: string
+  tipoPatrimonio: string
   descricao: string
-  patromonio: string;
+  patrimonio: string;
   status: string;
   createdAt: Date;
   updatedAt: Date;

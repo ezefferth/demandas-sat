@@ -28,6 +28,8 @@ type Props = {
 
 export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }: Props) {
 
+  
+
   const [descricao, setDescricao] = useState<string>('')
   const [patrimonio, setPatrimonio] = useState<number>(0)
   const [tipoPatrimonioId, setTipoPatrimonioId] = useState<string>('')

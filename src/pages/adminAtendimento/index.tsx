@@ -7,10 +7,15 @@ import { useNavigate } from "react-router-dom";
 import { RxUpdate } from "react-icons/rx";
 import { LerChamados } from "../../components/data/fetch/chamados/lerChamados";
 import { AuthContext } from "../../components/data/context/authContext";
+import ModalListaErros from "./modalListaErros";
 
 
 
 export default function Atendimento() {
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
 
   const { chamados, assuntos, status, prioridades, setChamados } = useContext(DataContext)
@@ -48,8 +53,8 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) => (chamado.statusId !== null || chamado.prioridadeId !== null) && chamado.finishedAt === null
-  );
+    (chamado: Chamado) => (chamado.statusId !== null || chamado.prioridadeId !== null) && chamado.finishedAt === null 
+  );//f022126a-d338-4aab-af19-0d6e7b31a567
 
   const currentItemsNotNull = filteredChamadosNotNull?.slice(
     indexOfFirstItemNotNull,
@@ -66,7 +71,7 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosFinalizados = chamados?.filter(
-    (chamado: Chamado) => chamado.finishedAt !== null
+    (chamado: Chamado) => chamado.finishedAt !== null && chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
 
   const currentItemsFinalizados = filteredChamadosFinalizados?.slice(
@@ -377,6 +382,12 @@ export default function Atendimento() {
           />
         </div>
       </div>
+
+      <div className="text-center mt-16">
+        <button onClick={handleOpen} className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all">Listar chamados aberto por erro</button>
+      </div>
+
+      <ModalListaErros open={open} handleClose={handleClose}/>
 
     </div >
   )
