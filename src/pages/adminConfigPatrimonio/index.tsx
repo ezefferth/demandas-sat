@@ -15,6 +15,7 @@ import { Popover } from "@mui/material";
 import ModalEditarTipoPatrimonio from "./modalEditTipo";
 import ModalRemoverTipoPatrimonio from "./modalDelTipo";
 import ModalRemovePatrimonio from "./modalDel";
+import ModalEditarPatrimonio from "./modalEdit";
 
 export default function Patrimonios() {
 
@@ -62,9 +63,9 @@ export default function Patrimonios() {
   const handleOpenRemoveTipo = () => setOpenRemoveTipo(true);
   const handleCloseRemoveTipo = () => setOpenRemoveTipo(false);
 
-  // const [openEdit, setOpenEdit] = useState(false);
-  // const handleOpenEdit = () => setOpenEdit(true);
-  // const handleCloseEdit = () => setOpenEdit(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const handleOpenEdit = () => setOpenEdit(true);
+  const handleCloseEdit = () => setOpenEdit(false);
 
   const [openEditTipo, setOpenEditTipo] = useState<boolean>(false);
   const handleOpenEditTipo = () => setOpenEditTipo(true);
@@ -115,11 +116,11 @@ export default function Patrimonios() {
     handleOpenRemove()
   }
 
-  // const handleSeletedEdit = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
-  //   e.preventDefault()
-  //   setSelectedPatrimonio(patrimonio)
-  //   handleOpenEdit()
-  // }
+  const handleSeletedEdit = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+    e.preventDefault()
+    setSelectedPatrimonio(patrimonio)
+    handleOpenEdit()
+  }
 
   function handleSelectTipoPatrimonio(e: React.MouseEvent<HTMLButtonElement>, tipoPatrimonio: TipoPatrimonio, btn: number) {
     e.preventDefault()
@@ -170,6 +171,7 @@ export default function Patrimonios() {
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300 w-[6rem]">Patrimônio</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[6rem]">Ações</th>
             </tr>
           </thead>
@@ -187,9 +189,12 @@ export default function Patrimonios() {
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {patrimonio.descricao}
                   </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {patrimonio.status}
+                  </td>
                   <td className="px-2 py-1 border border-slate-300">
                     <div className="flex items-center justify-center gap-2">
-                      <button>
+                      <button onClick={(e) => handleSeletedEdit(e, patrimonio)}>
                         <TiEdit size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
                       <button onClick={(e) => handleSeletedRemove(e, patrimonio)}>
@@ -229,7 +234,7 @@ export default function Patrimonios() {
       <ModalAddPatrimonioTipo openAdd={openAddTipo} handleClose={handleCloseTipo} setOpenAdd={setOpenAddTipo} />
       <ModalEditarTipoPatrimonio tipoPatrimonio={selectedTipoPatrimonio ?? null} openEdit={openEditTipo} handleCloseEdit={handleCloseEditTipo} setOpenEdit={setOpenEditTipo} />
       <ModalRemoverTipoPatrimonio tipoPatrimonio={selectedTipoPatrimonio ?? null} openRemove={openRemoveTipo} handleCloseRemove={handleCloseRemoveTipo} setOpenRemove={setOpenRemoveTipo} />
-      {/* <ModalEditarSetor patrimonio={selectedPatrimonio ?? null} openEdit={openEdit} handleCloseEdit={handleCloseEdit} setOpenEdit={setOpenEdit} /> */}
+      <ModalEditarPatrimonio patrimonio={selectedPatrimonio ?? null} openEdit={openEdit} handleCloseEdit={handleCloseEdit} setOpenEdit={setOpenEdit} />
     </div>
   )
 }

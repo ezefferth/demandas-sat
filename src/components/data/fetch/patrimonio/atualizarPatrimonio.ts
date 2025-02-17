@@ -10,7 +10,7 @@ type Props = {
   status: string
 };
 
-export async function AtualizaPatrimonio({ id, descricao, tipoPatrimonioId, patrimonio, status }: Props) {
+export async function AtualizarPatrimonio({ id, descricao, tipoPatrimonioId, patrimonio, status }: Props) {
   try {
     const response = await axios.post("/atualizarPatrimonio", { id, descricao, tipoPatrimonioId, patrimonio, status }, {
       headers: { "Content-Type": "application/json" }

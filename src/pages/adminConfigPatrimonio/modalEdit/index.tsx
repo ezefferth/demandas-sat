@@ -3,20 +3,20 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import { Setor } from '../../../components/types';
-import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
-import { AtualizarSetor } from '../../../components/data/fetch/setores/atualizarSetor';
+import { Patrimonio } from '../../../components/types';
 import { SelectChangeEvent, TextField } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { AtualizarPatrimonio } from '../../../components/data/fetch/patrimonio/atualizarPatrimonio';
+import { LerPatrimonios } from '../../../components/data/fetch/patrimonio/lerPatrimonio';
 
 const style = {
   position: 'absolute',
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  //width: 400,
+  width: 500,
   bgcolor: 'background.paper',
   // /border: '1px solid #000',
   boxShadow: 15,
@@ -24,56 +24,72 @@ const style = {
 };
 
 type Props = {
-  setor: Setor | null
+  patrimonio: Patrimonio | null
   openEdit: boolean;
   setOpenEdit: (value: boolean) => void
   handleCloseEdit: (value: boolean) => void
 }
 
-export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, setOpenEdit }: Props) {
+export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleCloseEdit, setOpenEdit }: Props) {
 
 
-  const { setSetores } = useContext(DataContext)
+  const { setPatrimonios, tipoPatrimonio } = useContext(DataContext)
 
   const handleOnEdit = async () => {
-    await LerSetores({ setSetores })
+    await LerPatrimonios({ setPatrimonios })
 
   }
 
-  const [nome, setNome] = useState<string>(setor?.nome | '');
-  const [status, setStatus] = useState<boolean>(setor?.status | false)
-  const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
+  const [descricao, setDescricao] = useState<string>(patrimonio?.descricao || '')
+  const [tipoPatrimonioId, setTipoPatrimonioId] = useState<string>(patrimonio?.tipoPatrimonioId || '')
+  const [status, setStatus] = useState<string>(patrimonio?.status || '')
+  const [newPatrimonio, setNewPatrimonio] = useState<string>(patrimonio?.patrimonio || '')
 
-  const handleChange = (event: SelectChangeEvent) => {
+  useEffect(() => {
+    if (patrimonio) {
+      setDescricao(patrimonio.descricao)
+      setTipoPatrimonioId(patrimonio.tipoPatrimonioId)
+      setStatus(patrimonio.status)
+      setNewPatrimonio(patrimonio.patrimonio)
+    }
+  }, [patrimonio])
 
-    if (event.target.value == 'Sim') {
-      setStatus(true);
-      setStatusSelected('Sim')
-    }
-    else {
-      setStatus(false);
-      setStatusSelected('Não');
-    }
-  };
 
   const handleREdit = async () => {
-    if (!setor) {
+    if (!patrimonio) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
-    const id = setor.id
+    const id = patrimonio.id
+
     try {
-      await AtualizarSetor({ id, nome, status })
+      const patrimonio: number = parseInt(newPatrimonio)
+      await AtualizarPatrimonio({ id, descricao, status, tipoPatrimonioId, patrimonio })
       setOpenEdit(false)
       handleOnEdit()
-      setNome('')
+      setDescricao('')
+      setTipoPatrimonioId('')
+      setStatus('')
+      setNewPatrimonio('')
 
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setNome('')
+      setDescricao('')
+      setTipoPatrimonioId('')
+      setStatus('')
+      setNewPatrimonio('')
     }
   }
+
+  const handleChange = (event: SelectChangeEvent) => {
+    setTipoPatrimonioId(event.target.value)
+  };
+
+
+  const handleChangeStatus = (event: SelectChangeEvent) => {
+    setStatus(event.target.value)
+  };
 
   return (
     <div>
@@ -88,47 +104,83 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
             Editando Setor
           </h2>
           <p className='text-center'>
-            {setor?.nome}
+            {patrimonio?.patrimonio}
           </p>
 
-          <div className='mt-5 mb-4 w-72'>
-            <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={setor?.nome} />
+          <div className='mt-5 mb-2'>
+            <TextField id="standard-basic" label="Descrição" variant="standard" onChange={(e) => setDescricao(e.target.value)} sx={{ width: '100%' }} value={descricao}/>
           </div>
-          <FormControl variant="standard" sx={{ width: '100%', }}>
-            <InputLabel id="demo-simple-select-standard-label" sx={{ pl: 2 }}>Ativo?</InputLabel>
+          <div className='mt-1 mb-2'>
+            {/* <label>Nome</label> */}
+            <TextField id="standard-basic" label="Número do patrimônio" type='number' variant="standard" onChange={e => setNewPatrimonio(e.target.value)} sx={{ width: '100%' }} value={newPatrimonio}/>
+          </div>
+          <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
+            <InputLabel id="demo-simple-select-standard-label" sx={{}}>Status do Equipamento</InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={statusSelected}
-              onChange={handleChange}
+              value={status}
+              onChange={handleChangeStatus}
               label="Assunto"
-              defaultValue={setor?.status ? 'Sim' : 'Não'}
-              sx={{ pl: 1.75 }}
+              sx={{}}
             >
-              <MenuItem key='Não' value='Não'>
-                Não
+              <MenuItem key='Novo' value='Novo'>
+                Novo
               </MenuItem>
-              <MenuItem key='Sim' value='Sim'>
-                Sim
+              <MenuItem key='Ótimo' value='Ótimo'>
+                Ótimo
               </MenuItem>
-
+              <MenuItem key='Bom' value='Bom'>
+                Bom
+              </MenuItem>
+              <MenuItem key='Regular' value='Regular'>
+                Regular
+              </MenuItem>
+              <MenuItem key='Péssimo' value='Péssimo'>
+                Péssimo
+              </MenuItem>
+              <MenuItem key='Inservível' value='Inservível'>
+                Inservível
+              </MenuItem>
             </Select>
           </FormControl>
+
+          <div className='mt-2'>
+            <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
+              <InputLabel id="demo-simple-select-standard-label" sx={{}}>Tipo do Equipamento</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={tipoPatrimonioId}
+                onChange={handleChange}
+                label="Tipo do Equipamento"
+                sx={{}}
+              >
+                {
+                  tipoPatrimonio?.map(tp => (
+                    <MenuItem key={tp.nome} value={tp.id}>
+                      {tp.nome}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+          </div>
 
           <div className='text-slate-600 font-thin text-xs mt-8'>
             <div className='flex justify-between gap-4'>
               <p>Criado em:</p>
               <p>
-                {setor?.createdAt
-                  ? new Date(setor.createdAt).toLocaleString()
+                {patrimonio?.createdAt
+                  ? new Date(patrimonio.createdAt).toLocaleString()
                   : 'Data não disponível'}
               </p>
             </div>
             <div className='flex justify-between gap-4'>
               <p>Atualizado em:</p>
               <p>
-                {setor?.createdAt
-                  ? new Date(setor.updatedAt).toLocaleString()
+                {patrimonio?.createdAt
+                  ? new Date(patrimonio.updatedAt).toLocaleString()
                   : 'Data não disponível'}
               </p>
             </div>
