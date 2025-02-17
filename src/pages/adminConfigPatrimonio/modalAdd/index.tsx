@@ -48,6 +48,11 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
         await CriarPatrimonio({ descricao, patrimonio, tipoPatrimonioId, status })
         setOpenAdd(false)
         handleOnAdd()
+        setDescricao('')
+        setTipoPatrimonioId('')
+        setPatrimonio(0)
+        setStatus('')
+        setOpenAdd(false);    
       } else {
         window.alert("Favor digitar o nome do setor corretamente!");
       }
@@ -57,7 +62,7 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
       setTipoPatrimonioId('')
       setPatrimonio(0)
       setStatus('')
-      setOpenAdd(false);
+      setOpenAdd(false);      
     }
   }
 

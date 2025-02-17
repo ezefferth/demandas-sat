@@ -5,7 +5,7 @@
 import { useContext, useEffect, useState } from "react";
 import { FaPlusSquare } from "react-icons/fa";
 import { DataContext } from "../../components/data/context/dataContext";
-import { TipoPatrimonio } from "../../components/types";
+import { Patrimonio, TipoPatrimonio } from "../../components/types";
 import { TiEdit, TiTrash } from "react-icons/ti";
 // import ModalRemoverSetor from "./modalDel";
 // import ModalEditarSetor from "./modalEdit";
@@ -14,6 +14,7 @@ import ModalAddPatrimonio from "./modalAdd";
 import { Popover } from "@mui/material";
 import ModalEditarTipoPatrimonio from "./modalEditTipo";
 import ModalRemoverTipoPatrimonio from "./modalDelTipo";
+import ModalRemovePatrimonio from "./modalDel";
 
 export default function Patrimonios() {
 
@@ -42,7 +43,7 @@ export default function Patrimonios() {
     };
   }, []);
 
-  const [btn, setBtn] = useState<number>(1)
+  const [btn, setBtn] = useState<number>(0)
 
   const [openAddTipo, setOpenAddTipo] = useState(false);
   const handleOpenTipo = () => setOpenAddTipo(true);
@@ -53,9 +54,9 @@ export default function Patrimonios() {
   const handleOpen = () => setOpenAdd(true);
   const handleClose = () => setOpenAdd(false);
 
-  // const [openRemove, setOpenRemove] = useState(false);
-  // const handleOpenRemove = () => setOpenRemove(true);
-  // const handleCloseRemove = () => setOpenRemove(false);
+  const [openRemove, setOpenRemove] = useState(false);
+  const handleOpenRemove = () => setOpenRemove(true);
+  const handleCloseRemove = () => setOpenRemove(false);
 
   const [openRemoveTipo, setOpenRemoveTipo] = useState<boolean>(false);
   const handleOpenRemoveTipo = () => setOpenRemoveTipo(true);
@@ -69,12 +70,24 @@ export default function Patrimonios() {
   const handleOpenEditTipo = () => setOpenEditTipo(true);
   const handleCloseEditTipo = () => setOpenEditTipo(false);
 
-  // const [selectedPatrimonio, setSelectedPatrimonio] = useState<Patrimonio>()
+  const [selectedPatrimonio, setSelectedPatrimonio] = useState<Patrimonio>()
   const [selectedTipoPatrimonio, setSelectedTipoPatrimonio] = useState<TipoPatrimonio | null>()
 
 
 
   const { patrimonios, tipoPatrimonio } = useContext(DataContext)
+
+  const [patrimonioFiltred, setPatrimonioFiltred] = useState<Patrimonio[]>()
+
+  useEffect(() => {
+    if (patrimonios && selectedTipoPatrimonio && btn !== 1) {
+      const newPatrimonios = patrimonios.filter((patrimonio) => patrimonio.tipoPatrimonioId === selectedTipoPatrimonio.id)
+      setPatrimonioFiltred(newPatrimonios)
+    }
+    else {
+      setPatrimonioFiltred(patrimonios)
+    }
+  }, [btn, patrimonios])
 
   const handleOnClickEditTipoPatrimonio = (e: React.MouseEvent<HTMLElement>): void => {
     e.preventDefault()
@@ -96,11 +109,11 @@ export default function Patrimonios() {
   //   })
   // }
 
-  // const handleSeletedRemove = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
-  //   e.preventDefault()
-  //   setSelectedPatrimonio(patrimonio)
-  //   handleOpenRemove()
-  // }
+  const handleSeletedRemove = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
+    e.preventDefault()
+    setSelectedPatrimonio(patrimonio)
+    handleOpenRemove()
+  }
 
   // const handleSeletedEdit = (e: React.MouseEvent<HTMLButtonElement>, patrimonio: Patrimonio): void => {
   //   e.preventDefault()
@@ -161,58 +174,32 @@ export default function Patrimonios() {
             </tr>
           </thead>
           <tbody>
-            {
-              btn === 1 ? (patrimonios?.map((patrimonio, index) => (
+
+            {patrimonioFiltred
+              ?.map((patrimonio, index) => (
                 <tr
                   key={patrimonio.id}
                   className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} hover:bg-gray-100 transition-all`}
                 >
                   <td className="py-1 border border-slate-300 text-center">
-                    <span className="">{patrimonio.patrimonio}</span></td>
+                    <span>{patrimonio.patrimonio}</span>
+                  </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {patrimonio.descricao}
                   </td>
                   <td className="px-2 py-1 border border-slate-300">
                     <div className="flex items-center justify-center gap-2">
-                      <button /* onClick={(e) => handleSeletedEdit(e, patrimonio)} */>
+                      <button>
                         <TiEdit size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
-                      <button /* onClick={(e) => handleSeletedRemove(e, patrimonio)} */>
+                      <button onClick={(e) => handleSeletedRemove(e, patrimonio)}>
                         <TiTrash size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
                       </button>
                     </div>
                   </td>
                 </tr>
               ))
-              ) : (
-                patrimonios
-                  ?.filter((patrimonio) => patrimonio.tipoPatrimonio === selectedTipoPatrimonio?.id)
-                  .map((patrimonio, index) => (
-                    <tr
-                      key={patrimonio.id}
-                      className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"} hover:bg-gray-100 transition-all`}
-                    >
-                      <td className="py-1 border border-slate-300 text-center">
-                        <span>{patrimonio.patrimonio}</span>
-                      </td>
-                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                        {patrimonio.descricao}
-                      </td>
-                      <td className="px-2 py-1 border border-slate-300">
-                        <div className="flex items-center justify-center gap-2">
-                          <button>
-                            <TiEdit size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
-                          </button>
-                          <button>
-                            <TiTrash size={20} className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
-              )
             }
-
           </tbody>
         </table>
       </div>
@@ -237,7 +224,7 @@ export default function Patrimonios() {
         </div>
       </Popover>
 
-      {/* <ModalRemoverSetor patrimonio={selectedPatrimonio ?? null} openRemove={openRemove} handleCloseRemove={handleCloseRemove} setOpenRemove={setOpenRemove} /> */}
+      <ModalRemovePatrimonio patrimonio={selectedPatrimonio ?? null} openRemove={openRemove} handleCloseRemove={handleCloseRemove} setOpenRemove={setOpenRemove} />
       <ModalAddPatrimonio openAdd={openAdd} handleClose={handleClose} setOpenAdd={setOpenAdd} />
       <ModalAddPatrimonioTipo openAdd={openAddTipo} handleClose={handleCloseTipo} setOpenAdd={setOpenAddTipo} />
       <ModalEditarTipoPatrimonio tipoPatrimonio={selectedTipoPatrimonio ?? null} openEdit={openEditTipo} handleCloseEdit={handleCloseEditTipo} setOpenEdit={setOpenEditTipo} />

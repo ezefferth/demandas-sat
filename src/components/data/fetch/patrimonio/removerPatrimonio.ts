@@ -8,13 +8,13 @@ type Props = {
 
 export async function RemoverPatrimonio({ id }: Props) {
   try {
-    const response = await axios.post("/patrimonio", { id }, {
+    const response = await axios.post("/removerPatrimonio", { id }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em remover tipo patrimônio!", response);
+    console.log("Sucesso em remover patrimônio!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao remover tipo patrimônio!", error);
+    console.log("Erro ao remover patrimônio!", error);
     throw error;
   }
 }

@@ -55,9 +55,9 @@ export const DataContext = createContext({} as DataContextType);
 export default function DataProvider({ children }: any) {
   const [categorias, setCategorias] = useState<Categoria[] | undefined>();
   const [setores, setSetores] = useState<Setor[] | undefined>();
-  const [assuntos, setAssuntos] = useState<Assunto[] | undefined>();
-  const [usuarios, setUsuarios] = useState<Usuario[] | undefined>();
-  const [status, setStatus] = useState<Status[] | undefined>();
+  const [assuntos, setAssuntos] = useState<Assunto[] | undefined>([]);
+  const [usuarios, setUsuarios] = useState<Usuario[] | undefined>([]);
+  const [status, setStatus] = useState<Status[] | undefined>([]);
   const [prioridades, setPrioridades] = useState<Prioridade[] | undefined>();
   const [chamados, setChamados] = useState<Chamado[] | undefined>();
   const [chamadosUser, setChamadosUser] = useState<Chamado[] | undefined>();

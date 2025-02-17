@@ -6,9 +6,9 @@ import Modal from '@mui/material/Modal';
 import { useContext } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 // import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
-import {  Setor } from '../../../components/types';
-import { RemoverSetor } from '../../../components/data/fetch/setores/removerSetor';
-import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
+import {  Patrimonio } from '../../../components/types';
+import { RemoverPatrimonio } from '../../../components/data/fetch/patrimonio/removerPatrimonio';
+import { LerPatrimonios } from '../../../components/data/fetch/patrimonio/lerPatrimonio';
 
 const style = {
   position: 'absolute',
@@ -23,30 +23,30 @@ const style = {
 };
 
 type Props = {
-  setor: Setor | null
+  patrimonio: Patrimonio | null
   openRemove: boolean;
   setOpenRemove: (value: boolean) => void
   handleCloseRemove: (value: boolean) => void
 }
 
-export default function ModalRemoverSetor({ setor, openRemove, handleCloseRemove, setOpenRemove }: Props) {
+export default function ModalRemovePatrimonio({ patrimonio, openRemove, handleCloseRemove, setOpenRemove }: Props) {
 
 
-  const { setSetores } = useContext(DataContext)
+  const { setPatrimonios } = useContext(DataContext)
 
   const handleOnRemove = async () => {
-    await LerSetores({ setSetores })
-
+    await LerPatrimonios({ setPatrimonios })
   }
 
+
   const handleRemove = async () => {
-    if (!setor) {
+    if (!patrimonio) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
-    const id = setor.id  
+    const id = patrimonio.id  
     try {
-      await RemoverSetor({ id })
+      await RemoverPatrimonio({ id })
       setOpenRemove(false)
       handleOnRemove()
 
@@ -69,7 +69,7 @@ export default function ModalRemoverSetor({ setor, openRemove, handleCloseRemove
             Remover Setor
           </h2>
 
-          <p className='mt-4'>Tem certeza que deseja remover o setor "{setor?.nome}"?</p>
+          <p className='mt-4'>Tem certeza que deseja remover o Patrimonio "{patrimonio?.patrimonio}"?</p>
           <div className='flex justify-center gap-4 mt-4'>
             <button className='border rounded-lg bg-red-200 px-3 py-1 hover:bg-red-300 transition-all' onClick={() => setOpenRemove(false)}>
               Cancelar

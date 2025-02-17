@@ -51,6 +51,7 @@ export default function ModalListaErros({ open, handleClose }: Props) {
     value: number
   ) => {
     setCurrentPageErros(value);
+    console.log(event)
   };
 
   const navigate = useNavigate()

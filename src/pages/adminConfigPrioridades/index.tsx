@@ -43,6 +43,7 @@ export default function Prioridades() {
     setSelectedPrioridade(prioridade)
     handleOpenEdit()
   }
+  
 
   return (
     <div className="p-12">
