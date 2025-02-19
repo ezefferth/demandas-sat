@@ -8,13 +8,15 @@ import { LerStatus } from "../fetch/status/lerStatus";
 import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
 import { LerChamados } from "../fetch/chamados/lerChamados";
 import { AuthContext } from "./authContext";
-import { LerChamadosUser } from "../fetch/chamados/lerChamadosUser";
 import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
 import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
 import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
 import { LerPatrimonios } from "../fetch/patrimonio/lerPatrimonio";
 import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
+import { LerChamadosCount } from "../fetch/chamados/lerChamadosCount";
+
+// import audioMsg from '../../../../public/notification-msg.mp3'
 
 
 type DataContextType = {
@@ -65,6 +67,8 @@ export default function DataProvider({ children }: any) {
   const [comentariosTodos, setComentariosTodos] = useState<Comentario[] | []>();
   const [countChamado, setCountChamado] = useState<number>(0);
   const [countChamadoAtual, setCountChamadoAtual] = useState<number>(0);
+  const [countComentario, setCountComentario] = useState<number>(0);
+  const [countComentarioAtual, setCountComentarioAtual] = useState<number>(0);
   const [sugestoes, setSugestoes] = useState<Sugestao[] | []>();
   const [patrimonios, setPatrimonios] = useState<Patrimonio[] | []>();
   const [tipoPatrimonio, setTipoPatrimonio] = useState<TipoPatrimonio[] | []>();
@@ -148,12 +152,23 @@ export default function DataProvider({ children }: any) {
 
     const fetchChamados = async () => {
       try {
-        if (usuario.admin) {
-          await LerChamados({ setChamados });
-        } else {
-          const id = usuario.id;
-          await LerChamadosUser({ setChamadosUser, id });
+        await LerChamadosCount({
+          setCountChamado,
+        });
+
+        // Verifica se há novos chamados
+        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+          if (countChamadoAtual !== 0) {
+            toast.info("Novo chamado recebido!", {
+              autoClose: false,
+              closeOnClick: true,
+            });
+          }
+          setCountChamadoAtual(countChamado);
         }
+
+        await LerChamados({ setChamados });
+
       } catch (error) {
         console.error("Erro ao buscar chamados:", error);
       }
@@ -164,10 +179,10 @@ export default function DataProvider({ children }: any) {
         // Lógica específica para usuários normais
         await LerComentariosCount({
           id: usuario.id,
-          setCountChamado,
+          setCountComentario,
         });
 
-        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+        if (countComentarioAtual < countComentario || countComentarioAtual === 0) {
           if (countChamadoAtual !== 0) {
             toast.info("Novo comentário recebido!", {
               autoClose: false,
@@ -175,7 +190,7 @@ export default function DataProvider({ children }: any) {
             })
           }
 
-          setCountChamadoAtual(countChamado);
+          setCountComentarioAtual(countComentario);
           try {
             await LerComentariosTodos({
               id: usuario.id,
@@ -210,7 +225,28 @@ export default function DataProvider({ children }: any) {
 
     const fetchChamados = async () => {
       try {
-        await LerChamados({ setChamados });
+        // Obtém a contagem de chamados
+        await LerChamadosCount({
+          setCountChamado,
+        });
+
+        // Verifica se há novos chamados
+        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
+          if (countChamadoAtual !== 0) {
+
+            const audio = new Audio('../../../../public/notification-chamado.mp3')
+            audio.play().catch(error => console.error(" Erro ao tocar som: ", error))
+
+            toast.info("Novo chamado recebido!", {
+              autoClose: false,
+              closeOnClick: true,
+            });
+          }
+          setCountChamadoAtual(countChamado); // Atualiza a contagem atual
+
+          // Atualiza a lista de chamados
+          await LerChamados({ setChamados });
+        }
       } catch (error) {
         console.error("Erro ao buscar chamados:", error);
       }
@@ -222,11 +258,11 @@ export default function DataProvider({ children }: any) {
     // Configura o intervalo para atualizar os chamados periodicamente
     const interval = setInterval(() => {
       fetchChamados();
-    }, 300000); // Atualiza a cada 50 segundos
+    }, 60000); // Atualiza a cada 60 segundos
 
     // Limpa o intervalo ao desmontar o componente
     return () => clearInterval(interval);
-  }, [usuario, LerChamados, setChamados]); // Executa a cada 5 minutos
+  }, [usuario, countChamadoAtual, countChamado]);
 
   useEffect(() => {
     if (!usuario) {
@@ -239,17 +275,20 @@ export default function DataProvider({ children }: any) {
         // Lógica específica para administradores
         await LerComentariosCount({
           id: usuario.id,
-          setCountChamado,
+          setCountComentario,
         });
 
-        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
-          if (countChamadoAtual !== 0) {
+        if (countComentarioAtual < countComentario || countComentarioAtual === 0) {
+          if (countComentarioAtual !== 0) {
+            const audio = new Audio('../../../../public/notification-msg.mp3')
+            audio.play().catch(error => console.error(" Erro ao tocar som: ", error))
+
             toast.info("Novo comentário recebido!", {
               autoClose: false,
               closeOnClick: true,
             })
           }
-          setCountChamadoAtual(countChamado);
+          setCountComentarioAtual(countComentario);
           await LerComentariosTodos({
             id: usuario.id,
             setComentariosTodos,
@@ -268,7 +307,7 @@ export default function DataProvider({ children }: any) {
 
 
     return () => clearInterval(interval); // Limpa o intervalo ao desmontar
-  }, [usuario, countChamadoAtual, countChamado]);
+  }, [usuario, countComentarioAtual, countComentario]);
 
   return (
     <DataContext.Provider

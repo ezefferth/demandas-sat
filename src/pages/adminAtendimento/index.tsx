@@ -74,6 +74,7 @@ export default function Atendimento() {
     (chamado: Chamado) => chamado.finishedAt !== null && chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
 
+
   const currentItemsFinalizados = filteredChamadosFinalizados?.slice(
     indexOfFirstItemFinalizados,
     indexOfLastItemFinalizados
