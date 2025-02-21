@@ -5,16 +5,15 @@ import { DataContext } from '../../components/data/context/dataContext';
 import { FaPlusSquare } from 'react-icons/fa';
 import ModalAddComentario from './modalAdd';
 import { AuthContext } from '../../components/data/context/authContext';
-import { FaArrowLeftLong, FaCircleUser } from 'react-icons/fa6';
+import { FaArrowLeftLong } from 'react-icons/fa6';
 import ModalStatus from './modalStatus';
 import ModalPrioridade from './modalPrioridade';
+import ModalPatrimonio from './modalPatrimonio';
 import ModalAddFinalizar from './modalFinalizar';
 import { LerComentarios } from '../../components/data/fetch/comentario/lerComentarios';
 import AvatarUsuario from './avatarUser';
 
-type Props = {
-  chamado: Chamado
-}
+
 
 export default function VerChamadoAdmin() {
 
@@ -31,6 +30,10 @@ export default function VerChamadoAdmin() {
   const [openAddStatus, setOpenStatus] = useState(false);
   const handleOpenStatus = () => setOpenStatus(true);
   const handleCloseStatus = () => setOpenStatus(false);
+
+  const [openAddPatrimonios, setOpenPatrimonios] = useState(false);
+  const handleOpenPatrimonios = () => setOpenPatrimonios(true);
+  // const handleClosePatrimonios = () => setOpenPatrimonios(false);
 
   const [openAddPrioridade, setOpenPrioridade] = useState(false);
   const handleOpenPrioridade = () => setOpenPrioridade(true);
@@ -241,6 +244,28 @@ export default function VerChamadoAdmin() {
           <div className="border-b border-slate-300 my-1 w-full" />
           <div className="flex mb-1 mt-1 justify-between">
             <div className="w-24">
+              <p>Patrimônios:</p>
+            </div>
+            <div className='flex items-center gap-2'>
+              {localChamado.patrimonios && localChamado.patrimonios.length > 0 ? (
+                localChamado.patrimonios.map((st, index) => (
+                  <p key={index}>{st.patrimonio}</p>
+                ))
+              ) : (
+                <p>Nenhum patrimônio vinculado</p>
+              )}
+
+              <button
+                className="cursor-pointer bg-gray-300 rounded-lg px-2"
+                onClick={handleOpenPatrimonios}
+              >
+                +
+              </button>
+            </div>
+          </div>
+          <div className="border-b border-slate-300 my-1 w-full" />
+          <div className="flex mb-1 mt-1 justify-between">
+            <div className="w-24">
               <p>Solicitante:</p>
             </div>
             <div>
@@ -420,7 +445,14 @@ export default function VerChamadoAdmin() {
           handleClose={handleCloseFinalizar}
           chamado={localChamado}
         />
-      </div>
+
+        <ModalPatrimonio
+          chamado={localChamado}
+          open={openAddPatrimonios}
+          setOpen={setOpenPatrimonios}
+          // handleClose={handleClosePatrimonios}
+        />
+      </div >
     );
   }
 

@@ -264,6 +264,8 @@ export default function DataProvider({ children }: any) {
     return () => clearInterval(interval);
   }, [usuario, countChamadoAtual, countChamado]);
 
+
+  
   useEffect(() => {
     if (!usuario) {
       setComentariosTodos([])

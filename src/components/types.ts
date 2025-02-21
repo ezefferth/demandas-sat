@@ -45,6 +45,7 @@ export type Chamado = {
   updatedAt: Date;
   finishedAt: Date | null;
   finalizadoPor: string;
+  patrimonios: Patrimonio[]
 }
 
 export type Comentario = {
