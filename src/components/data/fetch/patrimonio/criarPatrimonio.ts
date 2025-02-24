@@ -7,11 +7,12 @@ type Props = {
   tipoPatrimonioId: string;
   patrimonio: number;
   status: string
+  setorId: string
 };
 
-export async function CriarPatrimonio({ descricao, tipoPatrimonioId, patrimonio, status }: Props) {
+export async function CriarPatrimonio({ descricao, tipoPatrimonioId, patrimonio, status, setorId }: Props) {
   try {
-    const response = await axios.post("/criarPatrimonio", { descricao, tipoPatrimonioId, patrimonio, status }, {
+    const response = await axios.post("/criarPatrimonio", { descricao, tipoPatrimonioId, patrimonio, status, setorId }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em criar tipo patrimonio!", response);

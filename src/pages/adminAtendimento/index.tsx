@@ -43,7 +43,7 @@ export default function Atendimento() {
   const currentItems = filteredChamados!.slice(indexOfFirstItem, indexOfLastItem);
 
   // Total de páginas
-  const totalPages = Math.ceil(chamados!.length / itemsPerPage);
+  const totalPages = Math.ceil(currentItems!.length / itemsPerPage);
 
   /* ============= PAGINACAO AGUARDANDO TRIAGEM ============= */
   /* ============= PAGINACAO EM ATENDIMENTO ============= */

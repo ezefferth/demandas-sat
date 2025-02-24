@@ -34,8 +34,9 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
   const [patrimonio, setPatrimonio] = useState<number>(0)
   const [tipoPatrimonioId, setTipoPatrimonioId] = useState<string>('')
   const [status, setStatus] = useState<string>('')
+  const [setorId, setSetorId] = useState<string>('')
 
-  const { setPatrimonios, tipoPatrimonio } = useContext(DataContext)
+  const { setPatrimonios, tipoPatrimonio, setores } = useContext(DataContext)
 
   const handleOnAdd = async () => {
     await LerPatrimonios({ setPatrimonios })
@@ -45,7 +46,7 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
   const handleAdd = async () => {
     try {
       if (descricao.length >= 2) {
-        await CriarPatrimonio({ descricao, patrimonio, tipoPatrimonioId, status })
+        await CriarPatrimonio({ descricao, patrimonio, tipoPatrimonioId, status, setorId })
         setOpenAdd(false)
         handleOnAdd()
         setDescricao('')
@@ -69,6 +70,10 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
 
   const handleChange = (event: SelectChangeEvent) => {
     setTipoPatrimonioId(event.target.value)
+  };
+
+  const handleChangeSetor = (event: SelectChangeEvent) => {
+    setSetorId(event.target.value)
   };
 
   const handleChangeStatus = (event: SelectChangeEvent) => {
@@ -145,6 +150,27 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
                   tipoPatrimonio?.map(tp => (
                     <MenuItem key={tp.nome} value={tp.id}>
                       {tp.nome}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+          </div>
+          <div className='mt-1'>
+            <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
+              <InputLabel id="demo-simple-select-standard-label" sx={{}}>Setor</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={setorId}
+                onChange={handleChangeSetor}
+                label="Tipo do Equipamento"
+                sx={{}}
+              >
+                {
+                  setores?.map(st => (
+                    <MenuItem key={st.nome} value={st.id}>
+                      {st.nome}
                     </MenuItem>
                   ))
                 }

@@ -5,7 +5,7 @@ import { DataContext } from '../../components/data/context/dataContext';
 import { FaPlusSquare } from 'react-icons/fa';
 import ModalAddComentario from './modalAdd';
 import { AuthContext } from '../../components/data/context/authContext';
-import { FaArrowLeftLong } from 'react-icons/fa6';
+import { FaArrowLeftLong, FaPlus } from 'react-icons/fa6';
 import ModalStatus from './modalStatus';
 import ModalPrioridade from './modalPrioridade';
 import ModalPatrimonio from './modalPatrimonio';
@@ -256,10 +256,10 @@ export default function VerChamadoAdmin() {
               )}
 
               <button
-                className="cursor-pointer bg-gray-300 rounded-lg px-2"
+                className="cursor-pointer bg-slate-700 hover:bg-slate-800 transition-all rounded-lg p-1"
                 onClick={handleOpenPatrimonios}
               >
-                +
+                <FaPlus size={15} className='text-slate-100'/>
               </button>
             </div>
           </div>
@@ -307,7 +307,7 @@ export default function VerChamadoAdmin() {
               <p>Descrição:</p>
             </div>
             <div>
-              <p className='pl-2 text-justify'>{localChamado.descricao}</p>
+              <p className='pl-2 '>{localChamado.descricao}</p>
             </div>
           </div>
           <div className="border-b border-slate-300 my-1 w-full" />

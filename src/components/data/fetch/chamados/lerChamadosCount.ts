@@ -9,7 +9,7 @@ type Props = {
 
 export async function LerChamadosCount({ setCountChamado }: Props) {
   try {
-    const response = await axios.post("/lerComentariosCount", {
+    const response = await axios.post("/lerChamadosCount", {
       headers: { "Content-Type": "application/json" },
     });
     // console.log("Sucesso em count comentarios!");

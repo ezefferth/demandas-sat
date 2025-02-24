@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import { Assunto, Categoria, Chamado, Comentario, Patrimonio, Prioridade, Setor, Status, Sugestao, TipoPatrimonio, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
@@ -73,8 +73,10 @@ export default function DataProvider({ children }: any) {
   const [patrimonios, setPatrimonios] = useState<Patrimonio[] | []>();
   const [tipoPatrimonio, setTipoPatrimonio] = useState<TipoPatrimonio[] | []>();
 
-
   const { usuario } = useContext(AuthContext);
+
+  const isFirstLoadComentario = useRef(true);
+  const isFirstLoadChamado = useRef(true);
 
   useEffect(() => {
     if (!usuario) return; // Aguarda o usuário estar logado
@@ -183,7 +185,7 @@ export default function DataProvider({ children }: any) {
         });
 
         if (countComentarioAtual < countComentario || countComentarioAtual === 0) {
-          if (countChamadoAtual !== 0) {
+          if (countComentarioAtual !== 0) {
             toast.info("Novo comentário recebido!", {
               autoClose: false,
               closeOnClick: true,
@@ -220,33 +222,33 @@ export default function DataProvider({ children }: any) {
     fetchTipoPatrimonio();
   }, [usuario]);
 
+
+
   useEffect(() => {
-    if (!usuario) return; // Sai se o usuário não estiver definido
+    if (!usuario) return; // Não executa se o usuário não estiver definido
 
     const fetchChamados = async () => {
       try {
         // Obtém a contagem de chamados
-        await LerChamadosCount({
-          setCountChamado,
-        });
+        await LerChamadosCount({ setCountChamado });
 
-        // Verifica se há novos chamados
-        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
-          if (countChamadoAtual !== 0) {
+        // Se for o primeiro carregamento, atualiza o estado sem disparar notificação
+        if (isFirstLoadChamado.current) {
+          isFirstLoadChamado.current = false;
+          setCountChamadoAtual(countChamado);
+        } else if (countChamado > countChamadoAtual) {
+          // Só dispara a notificação se houve aumento na contagem
+          const audio = new Audio('../../../../public/notification-chamado.mp3');
+          audio.play().catch(error => console.error("Erro ao tocar som: ", error));
 
-            const audio = new Audio('../../../../public/notification-chamado.mp3')
-            audio.play().catch(error => console.error(" Erro ao tocar som: ", error))
-
-            toast.info("Novo chamado recebido!", {
-              autoClose: false,
-              closeOnClick: true,
-            });
-          }
-          setCountChamadoAtual(countChamado); // Atualiza a contagem atual
-
-          // Atualiza a lista de chamados
-          await LerChamados({ setChamados });
+          toast.info("Novo chamado recebido!", {
+            autoClose: false,
+            closeOnClick: true,
+          });
+          setCountChamadoAtual(countChamado);
         }
+        // Atualiza a lista de chamados
+        await LerChamados({ setChamados });
       } catch (error) {
         console.error("Erro ao buscar chamados:", error);
       }
@@ -256,60 +258,49 @@ export default function DataProvider({ children }: any) {
     fetchChamados();
 
     // Configura o intervalo para atualizar os chamados periodicamente
-    const interval = setInterval(() => {
-      fetchChamados();
-    }, 60000); // Atualiza a cada 60 segundos
+    const interval = setInterval(fetchChamados, 30000); // A cada 60 segundos
 
-    // Limpa o intervalo ao desmontar o componente
     return () => clearInterval(interval);
-  }, [usuario, countChamadoAtual, countChamado]);
+  }, [usuario, countChamado, countChamadoAtual]);
 
-
-  
   useEffect(() => {
     if (!usuario) {
-      setComentariosTodos([])
-      return
-    }; // Aguarda o usuário estar logado
+      setComentariosTodos([]);
+      return;
+    }
 
     const fetchComentariosAdmin = async () => {
       try {
-        // Lógica específica para administradores
-        await LerComentariosCount({
-          id: usuario.id,
-          setCountComentario,
-        });
+        // Obtém a contagem de comentários
+        await LerComentariosCount({ id: usuario.id, setCountComentario });
 
-        if (countComentarioAtual < countComentario || countComentarioAtual === 0) {
-          if (countComentarioAtual !== 0) {
-            const audio = new Audio('../../../../public/notification-msg.mp3')
-            audio.play().catch(error => console.error(" Erro ao tocar som: ", error))
-
-            toast.info("Novo comentário recebido!", {
-              autoClose: false,
-              closeOnClick: true,
-            })
-          }
+        // Se for o primeiro carregamento, atualiza o estado sem notificar
+        if (isFirstLoadComentario.current) {
+          isFirstLoadComentario.current = false;
           setCountComentarioAtual(countComentario);
-          await LerComentariosTodos({
-            id: usuario.id,
-            setComentariosTodos,
+        } else if (countComentario > countComentarioAtual) {
+          // Dispara a notificação somente se houve aumento na contagem
+          const audio = new Audio('../../../../public/notification-msg.mp3');
+          audio.play().catch(error => console.error("Erro ao tocar som: ", error));
+
+          toast.info("Novo comentário recebido!", {
+            autoClose: false,
+            closeOnClick: true,
           });
+          setCountComentarioAtual(countComentario);
         }
-        // console.log(comentariosTodos)
+        // Atualiza a lista de comentários
+        await LerComentariosTodos({ id: usuario.id, setComentariosTodos });
       } catch (error) {
         console.error("Erro ao buscar comentários (admin):", error);
       }
     };
 
-    const interval = setInterval(() => {
-      fetchComentariosAdmin();
+    // Configura o intervalo para atualizar os comentários periodicamente
+    const interval = setInterval(fetchComentariosAdmin, 15000); // A cada 15 segundos
 
-    }, 15000); // Executa a cada 15 segundos
-
-
-    return () => clearInterval(interval); // Limpa o intervalo ao desmontar
-  }, [usuario, countComentarioAtual, countComentario]);
+    return () => clearInterval(interval);
+  }, [usuario, countComentario, countComentarioAtual])
 
   return (
     <DataContext.Provider

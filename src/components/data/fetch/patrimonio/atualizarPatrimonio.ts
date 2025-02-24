@@ -7,12 +7,13 @@ type Props = {
   descricao: string;
   tipoPatrimonioId: string;
   patrimonio: number;
-  status: string
+  status: string,
+  setorId: string
 };
 
-export async function AtualizarPatrimonio({ id, descricao, tipoPatrimonioId, patrimonio, status }: Props) {
+export async function AtualizarPatrimonio({ id, descricao, tipoPatrimonioId, patrimonio, status, setorId }: Props) {
   try {
-    const response = await axios.post("/atualizarPatrimonio", { id, descricao, tipoPatrimonioId, patrimonio, status }, {
+    const response = await axios.post("/atualizarPatrimonio", { id, descricao, tipoPatrimonioId, patrimonio, status, setorId }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar patrimônio!", response);
