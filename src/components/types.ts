@@ -95,6 +95,7 @@ export type Patrimonio = {
   descricao: string
   patrimonio: string;
   status: string;
+  setorId: string
   createdAt: Date;
   updatedAt: Date;
 }

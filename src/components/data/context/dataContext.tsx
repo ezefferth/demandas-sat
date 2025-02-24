@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { Assunto, Categoria, Chamado, Comentario, Patrimonio, Prioridade, Setor, Status, Sugestao, TipoPatrimonio, Usuario } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
@@ -75,169 +75,58 @@ export default function DataProvider({ children }: any) {
 
   const { usuario } = useContext(AuthContext);
 
-  const isFirstLoadComentario = useRef(true);
-  const isFirstLoadChamado = useRef(true);
+  const [initialLoadComplete, setInitialLoadComplete] = useState(false);
 
   useEffect(() => {
-    if (!usuario) return; // Aguarda o usuário estar logado
+    if (!usuario) return;
 
-    const fetchSugestoes = async () => {
+    const fetchInitialData = async () => {
       try {
-        await LerSugestoes({ setSugestoes });
-      } catch (error) {
-        console.error("Erro ao buscar sugestoes:", error);
-      }
-    };
-    const fetchCategorias = async () => {
-      try {
-        await LerCategorias({ setCategorias });
-      } catch (error) {
-        console.error("Erro ao buscar categorias:", error);
-      }
-    };
+        // Buscando os dados iniciais (sugestões, categorias, setores, etc.)
+        await Promise.all([
+          LerSugestoes({ setSugestoes }),
+          LerCategorias({ setCategorias }),
+          LerSetores({ setSetores }),
+          LerAssuntos({ setAssuntos }),
+          LerUsuarios({ setUsuarios }),
+          LerStatus({ setStatus }),
+          LerPrioridades({ setPrioridades }),
+          LerChamados({ setChamados }),
+          LerComentariosTodos({ id: usuario.id, setComentariosTodos }),
+          LerPatrimonios({ setPatrimonios }),
+          LerTipoPatrimonios({ setTipoPatrimonio })
+        ]);
 
-    const fetchSetores = async () => {
-      try {
-        await LerSetores({ setSetores });
-      } catch (error) {
-        console.error("Erro ao buscar setores:", error);
-      }
-    };
+        // Inicializando as contagens
+        await LerChamadosCount({ setCountChamado });
+        setCountChamadoAtual(countChamado); // Supondo que countChamado foi atualizado
 
-    const fetchAssuntos = async () => {
-      try {
-        await LerAssuntos({ setAssuntos });
-      } catch (error) {
-        console.error("Erro ao buscar assuntos:", error);
-      }
-    };
+        await LerComentariosCount({ id: usuario.id, setCountComentario });
+        setCountComentarioAtual(countComentario); // Similar para comentários
 
-    const fetchUsuarios = async () => {
-      try {
-        await LerUsuarios({ setUsuarios });
+        // Marca que a carga inicial foi concluída
+        setInitialLoadComplete(true);
       } catch (error) {
-        console.error("Erro ao buscar usuários:", error);
+        console.error("Erro na carga inicial:", error);
       }
     };
 
-    const fetchStatus = async () => {
-      try {
-        await LerStatus({ setStatus });
-      } catch (error) {
-        console.error("Erro ao buscar status:", error);
-      }
-    };
-
-    const fetchPrioridades = async () => {
-      try {
-        await LerPrioridades({ setPrioridades });
-      } catch (error) {
-        console.error("Erro ao buscar prioridades:", error);
-      }
-    };
-
-    const fetchPatrimonio = async () => {
-      try {
-        await LerPatrimonios({ setPatrimonios });
-      } catch (error) {
-        console.error("Erro ao buscar patrimonios:", error);
-      }
-    };
-
-    const fetchTipoPatrimonio = async () => {
-      try {
-        await LerTipoPatrimonios({ setTipoPatrimonio });
-      } catch (error) {
-        console.error("Erro ao buscar prioridades:", error);
-      }
-    };
-
-    const fetchChamados = async () => {
-      try {
-        await LerChamadosCount({
-          setCountChamado,
-        });
-
-        // Verifica se há novos chamados
-        if (countChamadoAtual < countChamado || countChamadoAtual === 0) {
-          if (countChamadoAtual !== 0) {
-            toast.info("Novo chamado recebido!", {
-              autoClose: false,
-              closeOnClick: true,
-            });
-          }
-          setCountChamadoAtual(countChamado);
-        }
-
-        await LerChamados({ setChamados });
-
-      } catch (error) {
-        console.error("Erro ao buscar chamados:", error);
-      }
-    };
-
-    const fetchComentarios = async () => {
-      try {
-        // Lógica específica para usuários normais
-        await LerComentariosCount({
-          id: usuario.id,
-          setCountComentario,
-        });
-
-        if (countComentarioAtual < countComentario || countComentarioAtual === 0) {
-          if (countComentarioAtual !== 0) {
-            toast.info("Novo comentário recebido!", {
-              autoClose: false,
-              closeOnClick: true,
-            })
-          }
-
-          setCountComentarioAtual(countComentario);
-          try {
-            await LerComentariosTodos({
-              id: usuario.id,
-              setComentariosTodos,
-            });
-          }
-          catch (error) {
-            console.error("Erro ao buscar comentários (usuário):", error);
-          }
-        }
-        // console.log(comentariosTodos)
-      } catch (error) {
-        console.error("Erro ao buscar comentários (usuário):", error);
-      }
-    };
-
-    fetchSugestoes()
-    fetchCategorias();
-    fetchSetores();
-    fetchAssuntos();
-    fetchUsuarios();
-    fetchStatus();
-    fetchPrioridades();
-    fetchChamados();
-    fetchComentarios();
-    fetchPatrimonio();
-    fetchTipoPatrimonio();
+    fetchInitialData();
   }, [usuario]);
 
 
 
+  // Efeito para atualizar chamados periodicamente
   useEffect(() => {
-    if (!usuario) return; // Não executa se o usuário não estiver definido
+    if (!usuario || !initialLoadComplete) return;
 
-    const fetchChamados = async () => {
+    const updateChamados = async () => {
       try {
-        // Obtém a contagem de chamados
+        // Atualiza a contagem de chamados
         await LerChamadosCount({ setCountChamado });
 
-        // Se for o primeiro carregamento, atualiza o estado sem disparar notificação
-        if (isFirstLoadChamado.current) {
-          isFirstLoadChamado.current = false;
-          setCountChamadoAtual(countChamado);
-        } else if (countChamado > countChamadoAtual) {
-          // Só dispara a notificação se houve aumento na contagem
+        // Só dispara notificação se houve aumento real (após a carga inicial)
+        if (countChamado > countChamadoAtual) {
           const audio = new Audio('../../../../public/notification-chamado.mp3');
           audio.play().catch(error => console.error("Erro ao tocar som: ", error));
 
@@ -245,41 +134,29 @@ export default function DataProvider({ children }: any) {
             autoClose: false,
             closeOnClick: true,
           });
-          setCountChamadoAtual(countChamado);
         }
+        // Atualiza o contador atual
+        setCountChamadoAtual(countChamado);
         // Atualiza a lista de chamados
         await LerChamados({ setChamados });
       } catch (error) {
-        console.error("Erro ao buscar chamados:", error);
+        console.error("Erro ao atualizar chamados:", error);
       }
     };
 
-    // Chamada inicial para carregar os chamados
-    fetchChamados();
-
-    // Configura o intervalo para atualizar os chamados periodicamente
-    const interval = setInterval(fetchChamados, 30000); // A cada 60 segundos
-
+    const interval = setInterval(updateChamados, 30000); // A cada 30 segundos
     return () => clearInterval(interval);
-  }, [usuario, countChamado, countChamadoAtual]);
+  }, [usuario, initialLoadComplete, countChamado, countChamadoAtual]);
 
+  // Efeito para atualizar comentários periodicamente
   useEffect(() => {
-    if (!usuario) {
-      setComentariosTodos([]);
-      return;
-    }
+    if (!usuario || !initialLoadComplete) return;
 
-    const fetchComentariosAdmin = async () => {
+    const updateComentarios = async () => {
       try {
-        // Obtém a contagem de comentários
         await LerComentariosCount({ id: usuario.id, setCountComentario });
 
-        // Se for o primeiro carregamento, atualiza o estado sem notificar
-        if (isFirstLoadComentario.current) {
-          isFirstLoadComentario.current = false;
-          setCountComentarioAtual(countComentario);
-        } else if (countComentario > countComentarioAtual) {
-          // Dispara a notificação somente se houve aumento na contagem
+        if (countComentario > countComentarioAtual) {
           const audio = new Audio('../../../../public/notification-msg.mp3');
           audio.play().catch(error => console.error("Erro ao tocar som: ", error));
 
@@ -287,20 +164,17 @@ export default function DataProvider({ children }: any) {
             autoClose: false,
             closeOnClick: true,
           });
-          setCountComentarioAtual(countComentario);
         }
-        // Atualiza a lista de comentários
+        setCountComentarioAtual(countComentario);
         await LerComentariosTodos({ id: usuario.id, setComentariosTodos });
       } catch (error) {
-        console.error("Erro ao buscar comentários (admin):", error);
+        console.error("Erro ao atualizar comentários:", error);
       }
     };
 
-    // Configura o intervalo para atualizar os comentários periodicamente
-    const interval = setInterval(fetchComentariosAdmin, 15000); // A cada 15 segundos
-
+    const interval = setInterval(updateComentarios, 15000); // A cada 15 segundos
     return () => clearInterval(interval);
-  }, [usuario, countComentario, countComentarioAtual])
+  }, [usuario, initialLoadComplete, countComentario, countComentarioAtual]);
 
   return (
     <DataContext.Provider

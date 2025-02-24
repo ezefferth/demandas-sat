@@ -33,7 +33,7 @@ type Props = {
 export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleCloseEdit, setOpenEdit }: Props) {
 
 
-  const { setPatrimonios, tipoPatrimonio } = useContext(DataContext)
+  const { setPatrimonios, tipoPatrimonio, setores } = useContext(DataContext)
 
   const handleOnEdit = async () => {
     await LerPatrimonios({ setPatrimonios })
@@ -44,6 +44,7 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
   const [tipoPatrimonioId, setTipoPatrimonioId] = useState<string>(patrimonio?.tipoPatrimonioId || '')
   const [status, setStatus] = useState<string>(patrimonio?.status || '')
   const [newPatrimonio, setNewPatrimonio] = useState<string>(patrimonio?.patrimonio || '')
+  const [setorId, setSetorId] = useState<string>(patrimonio?.setorId || '')
 
   useEffect(() => {
     if (patrimonio) {
@@ -51,6 +52,7 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
       setTipoPatrimonioId(patrimonio.tipoPatrimonioId)
       setStatus(patrimonio.status)
       setNewPatrimonio(patrimonio.patrimonio)
+      setSetorId(patrimonio.setorId)
     }
   }, [patrimonio])
 
@@ -64,13 +66,14 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
 
     try {
       const patrimonio: number = parseInt(newPatrimonio)
-      await AtualizarPatrimonio({ id, descricao, status, tipoPatrimonioId, patrimonio })
+      await AtualizarPatrimonio({ id, descricao, status, tipoPatrimonioId, patrimonio, setorId })
       setOpenEdit(false)
       handleOnEdit()
       setDescricao('')
       setTipoPatrimonioId('')
       setStatus('')
       setNewPatrimonio('')
+      setSetorId('')
 
     } catch (e: any) {
       console.error(e.response?.request?.status);
@@ -79,11 +82,16 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
       setTipoPatrimonioId('')
       setStatus('')
       setNewPatrimonio('')
+      setSetorId('')
     }
   }
 
   const handleChange = (event: SelectChangeEvent) => {
     setTipoPatrimonioId(event.target.value)
+  };
+
+  const handleChangeSetor = (event: SelectChangeEvent) => {
+    setSetorId(event.target.value)
   };
 
 
@@ -160,6 +168,27 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
                   tipoPatrimonio?.map(tp => (
                     <MenuItem key={tp.nome} value={tp.id}>
                       {tp.nome}
+                    </MenuItem>
+                  ))
+                }
+              </Select>
+            </FormControl>
+          </div>
+          <div className='mt-1'>
+            <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
+              <InputLabel id="demo-simple-select-standard-label" sx={{}}>Setor</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={setorId}
+                onChange={handleChangeSetor}
+                label="Tipo do Equipamento"
+                sx={{}}
+              >
+                {
+                  setores?.map(st => (
+                    <MenuItem key={st.nome} value={st.id}>
+                      {st.nome}
                     </MenuItem>
                   ))
                 }

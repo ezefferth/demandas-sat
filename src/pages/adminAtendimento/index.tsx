@@ -18,7 +18,7 @@ export default function Atendimento() {
   const handleClose = () => setOpen(false);
 
 
-  const { chamados, assuntos, status, prioridades, setChamados } = useContext(DataContext)
+  const { chamados, assuntos, status, prioridades, setChamados, setores } = useContext(DataContext)
 
   const { usuario } = useContext(AuthContext)
 
@@ -53,7 +53,7 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) => (chamado.statusId !== null || chamado.prioridadeId !== null) && chamado.finishedAt === null 
+    (chamado: Chamado) => (chamado.statusId !== null || chamado.prioridadeId !== null) && chamado.finishedAt === null
   );//f022126a-d338-4aab-af19-0d6e7b31a567
 
   const currentItemsNotNull = filteredChamadosNotNull?.slice(
@@ -165,6 +165,7 @@ export default function Atendimento() {
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
@@ -179,6 +180,9 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {chamado.descricao}
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {setores?.find(setor => setor.id === chamado.setorId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
@@ -220,6 +224,7 @@ export default function Atendimento() {
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300">Prioridade</th>
@@ -239,6 +244,9 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {chamado.descricao}
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {setores?.find(setor => setor.id === chamado.setorId)?.nome}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
@@ -321,6 +329,7 @@ export default function Atendimento() {
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300">Prioridade</th>
@@ -337,6 +346,9 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {chamado.descricao}
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {setores?.find(setor => setor.id === chamado.setorId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
@@ -388,7 +400,7 @@ export default function Atendimento() {
         <button onClick={handleOpen} className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all">Listar chamados aberto por erro</button>
       </div>
 
-      <ModalListaErros open={open} handleClose={handleClose}/>
+      <ModalListaErros open={open} handleClose={handleClose} />
 
     </div >
   )
