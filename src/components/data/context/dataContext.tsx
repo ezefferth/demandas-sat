@@ -50,6 +50,7 @@ type DataContextType = {
   setPatrimonios: (value: Patrimonio[] | undefined) => void;
   tipoPatrimonio: TipoPatrimonio[] | undefined;
   setTipoPatrimonio: (value: TipoPatrimonio[] | undefined) => void;
+  countComentario: number;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -98,13 +99,14 @@ export default function DataProvider({ children }: any) {
         ]);
 
         // Inicializando as contagens
-        await LerChamadosCount({ setCountChamado });
-        setCountChamadoAtual(countChamado); // Supondo que countChamado foi atualizado
+        // Inicializando as contagens
+        const chamadosCount = await LerChamadosCount({ setCountChamado });
+        setCountChamadoAtual(chamadosCount); // Sincroniza o valor inicial corretamente
 
-        await LerComentariosCount({ id: usuario.id, setCountComentario });
-        setCountComentarioAtual(countComentario); // Similar para comentários
+        const comentariosCount = await LerComentariosCount({ id: usuario.id, setCountComentario });
+        setCountComentarioAtual(comentariosCount); // Sincroniza o valor inicial corretamente
 
-        // Marca que a carga inicial foi concluída
+
         setInitialLoadComplete(true);
       } catch (error) {
         console.error("Erro na carga inicial:", error);
@@ -116,17 +118,15 @@ export default function DataProvider({ children }: any) {
 
 
 
-  // Efeito para atualizar chamados periodicamente
   useEffect(() => {
     if (!usuario || !initialLoadComplete) return;
 
     const updateChamados = async () => {
       try {
-        // Atualiza a contagem de chamados
-        await LerChamadosCount({ setCountChamado });
+        const novosChamadosCount = await LerChamadosCount({ setCountChamado });
 
-        // Só dispara notificação se houve aumento real (após a carga inicial)
-        if (countChamado > countChamadoAtual) {
+        // Só dispara notificação se countChamadoAtual já foi sincronizado anteriormente
+        if (countChamadoAtual > 0 && novosChamadosCount > countChamadoAtual) {
           const audio = new Audio('../../../../public/notification-chamado.mp3');
           audio.play().catch(error => console.error("Erro ao tocar som: ", error));
 
@@ -135,9 +135,7 @@ export default function DataProvider({ children }: any) {
             closeOnClick: true,
           });
         }
-        // Atualiza o contador atual
-        setCountChamadoAtual(countChamado);
-        // Atualiza a lista de chamados
+        setCountChamadoAtual(novosChamadosCount); // Atualiza o contador atual
         await LerChamados({ setChamados });
       } catch (error) {
         console.error("Erro ao atualizar chamados:", error);
@@ -146,17 +144,18 @@ export default function DataProvider({ children }: any) {
 
     const interval = setInterval(updateChamados, 30000); // A cada 30 segundos
     return () => clearInterval(interval);
-  }, [usuario, initialLoadComplete, countChamado, countChamadoAtual]);
+  }, [usuario, initialLoadComplete, countChamadoAtual]);
 
-  // Efeito para atualizar comentários periodicamente
+
   useEffect(() => {
     if (!usuario || !initialLoadComplete) return;
 
     const updateComentarios = async () => {
       try {
-        await LerComentariosCount({ id: usuario.id, setCountComentario });
+        const novosComentariosCount = await LerComentariosCount({ id: usuario.id, setCountComentario });
 
-        if (countComentario > countComentarioAtual) {
+        // Só dispara notificação se countComentarioAtual já foi sincronizado anteriormente
+        if (countComentarioAtual > 0 && novosComentariosCount > countComentarioAtual) {
           const audio = new Audio('../../../../public/notification-msg.mp3');
           audio.play().catch(error => console.error("Erro ao tocar som: ", error));
 
@@ -165,7 +164,7 @@ export default function DataProvider({ children }: any) {
             closeOnClick: true,
           });
         }
-        setCountComentarioAtual(countComentario);
+        setCountComentarioAtual(novosComentariosCount); // Atualiza o contador atual
         await LerComentariosTodos({ id: usuario.id, setComentariosTodos });
       } catch (error) {
         console.error("Erro ao atualizar comentários:", error);
@@ -174,7 +173,8 @@ export default function DataProvider({ children }: any) {
 
     const interval = setInterval(updateComentarios, 15000); // A cada 15 segundos
     return () => clearInterval(interval);
-  }, [usuario, initialLoadComplete, countComentario, countComentarioAtual]);
+  }, [usuario, initialLoadComplete, countComentarioAtual]);
+
 
   return (
     <DataContext.Provider
@@ -202,6 +202,7 @@ export default function DataProvider({ children }: any) {
         countChamado,
         setCountChamado,
         countChamadoAtual,
+        countComentario,
         setCountChamadoAtual,
         sugestoes,
         setSugestoes,

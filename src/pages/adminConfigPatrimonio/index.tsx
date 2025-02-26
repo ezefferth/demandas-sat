@@ -76,7 +76,7 @@ export default function Patrimonios() {
 
 
 
-  const { patrimonios, tipoPatrimonio } = useContext(DataContext)
+  const { patrimonios, tipoPatrimonio, setores } = useContext(DataContext)
 
   const [patrimonioFiltred, setPatrimonioFiltred] = useState<Patrimonio[]>()
 
@@ -171,6 +171,7 @@ export default function Patrimonios() {
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300 w-[6rem]">Patrimônio</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
+              <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[6rem]">Ações</th>
             </tr>
@@ -188,6 +189,9 @@ export default function Patrimonios() {
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {patrimonio.descricao}
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    {setores?.find(setor => setor.id === patrimonio.setorId)?.nome}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {patrimonio.status}

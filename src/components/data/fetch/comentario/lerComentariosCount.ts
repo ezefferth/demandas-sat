@@ -15,6 +15,7 @@ export async function LerComentariosCount({ setCountComentario, id }: Props) {
     });
     // console.log("Sucesso em count comentarios!");
     setCountComentario(response.data);
+    return response.data
   } catch (error) {
     console.log("Erro em count comentarios!", error);
   }

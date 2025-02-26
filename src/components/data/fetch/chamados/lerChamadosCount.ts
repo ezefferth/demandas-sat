@@ -14,6 +14,7 @@ export async function LerChamadosCount({ setCountChamado }: Props) {
     });
     // console.log("Sucesso em count comentarios!");
     setCountChamado(response.data);
+    return response.data
   } catch (error) {
     console.log("Erro em count chamados!", error);
   }

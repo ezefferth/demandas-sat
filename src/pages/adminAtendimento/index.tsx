@@ -251,7 +251,7 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
                     <p
                       className="text-center rounded-md flex items-center justify-center gap-2"
                       style={{
@@ -354,7 +354,7 @@ export default function Atendimento() {
                   {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="text-center rounded-md" style={{
+                  <p className="text-center px-1 rounded-md" style={{
                     backgroundColor: status?.find(
                       (status) => status.id === chamado.statusId
                     )?.cor || 'transparent',
