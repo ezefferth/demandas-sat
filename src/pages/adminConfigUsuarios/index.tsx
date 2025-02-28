@@ -29,6 +29,8 @@ export default function Usuarios() {
 
   const [selectedUsuario, setSelectedUsuario] = useState<Usuario>()
 
+  
+
   const { usuarios } = useContext(DataContext)
 
   const handleSeletedCategoriaRemove = (e: React.MouseEvent<HTMLButtonElement>, usuario: Usuario): void => {

@@ -37,7 +37,6 @@ export default function Atendimento() {
   const filteredChamados = chamados?.filter(
     (chamado: Chamado) =>
       chamado.statusId === null
-      && chamado.prioridadeId === null
   );
 
   const currentItems = filteredChamados!.slice(indexOfFirstItem, indexOfLastItem);
@@ -53,7 +52,7 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) => (chamado.statusId !== null || chamado.prioridadeId !== null) && chamado.finishedAt === null
+    (chamado: Chamado) => (chamado.statusId !== null) && chamado.finishedAt === null
   );//f022126a-d338-4aab-af19-0d6e7b31a567
 
   const currentItemsNotNull = filteredChamadosNotNull?.slice(
@@ -221,8 +220,9 @@ export default function Atendimento() {
         </div>
         <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
-            <tr className="text-slate-900 font-semibold bg-gray-400">
+            <tr className="text-slate-900 font-semibold bg-gray-400 text-cen">
               <th className="px-2 py-1 border border-slate-300">ID</th>
+              <th className="px-2 py-1 border border-slate-300">Data</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
@@ -243,6 +243,13 @@ export default function Atendimento() {
                 >
                   <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                    <p>
+                      {chamado.createdAt
+                        ? new Date(chamado.createdAt).toLocaleDateString()
+                        : ''}
+                    </p>
+                  </td>
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {chamado.descricao}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
@@ -253,7 +260,7 @@ export default function Atendimento() {
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
                     <p
-                      className="text-center rounded-md flex items-center justify-center gap-2"
+                      className="text-center rounded-md flex items-center justify-center gap-2 w-[8rem]"
                       style={{
                         backgroundColor:
                           status?.find((status) => status.id === chamado.statusId)?.cor ||
@@ -277,19 +284,13 @@ export default function Atendimento() {
                       {status?.find((status) => status.id === chamado.statusId)?.nome}
                     </p>
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                    <p
-                      className="text-center rounded-md"
-                      style={{
-                        backgroundColor:
-                          prioridades?.find(
-                            (prioridade) => prioridade.id === chamado.prioridadeId
-                          )?.cor || "transparent",
-                      }}
-                    >
-                      {prioridades?.find(
-                        (prioridades) => prioridades.id === chamado.prioridadeId
-                      )?.nome}
+                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
+                    <p className="text-center w-[7rem] rounded-md" style={{
+                      backgroundColor: prioridades?.find(
+                        (prioridade) => prioridade.id === chamado.prioridadeId
+                      )?.cor || 'transparent',
+                    }}>
+                      {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300">
@@ -328,6 +329,7 @@ export default function Atendimento() {
           <thead>
             <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
+              <th className="px-2 py-1 border border-slate-300">Data</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
@@ -344,6 +346,13 @@ export default function Atendimento() {
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  <p>
+                    {chamado.createdAt
+                      ? new Date(chamado.createdAt).toLocaleDateString()
+                      : ''}
+                  </p>
+                </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {chamado.descricao}
                 </td>
@@ -362,8 +371,8 @@ export default function Atendimento() {
                     {status?.find((status) => status.id === chamado.statusId)?.nome}
                   </p>
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="text-center rounded-md" style={{
+                <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
+                  <p className="text-center w-[7rem] rounded-md" style={{
                     backgroundColor: prioridades?.find(
                       (prioridade) => prioridade.id === chamado.prioridadeId
                     )?.cor || 'transparent',

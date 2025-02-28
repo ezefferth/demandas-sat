@@ -10,7 +10,6 @@ import ChamadosPorStatus from "./chartPie/chamadosPorStatus";
 
 export default function Dashboard() {
   return (
-    <div>
       <div className="">
         <div className="text-center mb-20">
           <h1 className="text-center">Chamados por Setor</h1>
@@ -41,7 +40,5 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-
-    </div>
   )
 }

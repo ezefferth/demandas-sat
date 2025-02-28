@@ -3,7 +3,7 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { Setor } from '../../../components/types';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
@@ -44,8 +44,24 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
   const [status, setStatus] = useState<boolean>(setor?.status || false)
   const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
 
-  const handleChange = (event: SelectChangeEvent) => {
+  useEffect(() => {
+    if(!setor) return;
 
+    setNome(setor.nome);
+
+    if (setor.status === true) {
+      setStatus(true);
+      setStatusSelected('Sim')
+    }
+    else {
+      setStatus(false);
+      setStatusSelected('Não');
+    }
+
+    
+  }, [setor])
+
+  const handleChange = (event: SelectChangeEvent) => {
     if (event.target.value == 'Sim') {
       setStatus(true);
       setStatusSelected('Sim')
@@ -102,7 +118,7 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
               value={statusSelected}
               onChange={handleChange}
               label="Assunto"
-              defaultValue={setor?.status ? 'Sim' : 'Não'}
+              // defaultValue={setor?.status ? 'Sim' : 'Não'}
               sx={{ pl: 1.75 }}
             >
               <MenuItem key='Não' value='Não'>
