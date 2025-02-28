@@ -1,6 +1,8 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { useContext, useEffect, useState } from 'react';
+import { valueFormatter } from '../components/webUsageStatus';
+
 
 type Props = {
   id: number;
@@ -37,16 +39,19 @@ export default function ChamadosPorStatus() {
   }, [chamados, status]);
 
   return (
-    <div>
       <PieChart
         series={[
           {
             data: chamadosPor, // Dados prontos para o gráfico
+            cx: 120,
+            arcLabel: (item) => `${item.value}`,
+            highlightScope: { fade: 'global', highlight: 'item' },
+            faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+            valueFormatter
           },
         ]}
-        width={600}
+        width={500}
         height={250}
       />
-    </div>
   );
 }

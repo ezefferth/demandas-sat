@@ -7,26 +7,26 @@ type Props = {
   quantidade: number;
 };
 
-export default function ChamadosPorSetor() {
-  const { chamados, setores } = useContext(DataContext);
+export default function ChamadosPorUsuarios() {
+  const { chamados, usuarios } = useContext(DataContext);
   const [dadosGrafico, setDadosGrafico] = useState<Props[]>([]);
 
   useEffect(() => {
-    if (!chamados || !setores) return; // Verifica se os arrays estão definidos
+    if (!chamados || !usuarios) return; // Verifica se os arrays estão definidos
 
     // Agrupando e contando os chamados por setorId
     const countBySetor = chamados.reduce((acc, ch) => {
-      const setorId = ch.setorId;
-      acc[setorId] = (acc[setorId] || 0) + 1;
+      const usuarioId = ch.usuarioId;
+      acc[usuarioId] = (acc[usuarioId] || 0) + 1;
       return acc;
     }, {} as Record<string, number>);
 
     // Transformando o resultado em um array para o gráfico
-    const dadosArray = Object.entries(countBySetor).map(([setorId, quantidade]) => {
-      const setor = setores.find(s => s.id === setorId);
+    const dadosArray = Object.entries(countBySetor).map(([usuarioId, quantidade]) => {
+      const usuario = usuarios.find(s => s.id === usuarioId);
 
       return {
-        nome: setor?.nome || 'Desconhecido',
+        nome: usuario?.nome || 'Desconhecido',
         quantidade: quantidade
       };
     });
@@ -34,7 +34,7 @@ export default function ChamadosPorSetor() {
     dadosArray.sort((a, b) => a.quantidade - b.quantidade)
 
     setDadosGrafico(dadosArray);
-  }, [chamados, setores]);
+  }, [chamados, usuarios]);
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '400px' }}>

@@ -1,6 +1,7 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { useContext, useEffect, useState } from 'react';
+import { valueFormatter } from '../components/webUsageStatus';
 
 type Props = {
   id: number;
@@ -38,19 +39,22 @@ export default function ChamadosPorPrioridades() {
   }, [chamados, prioridades]);
 
   return (
-    <div>
-      <PieChart
-        series={[
-          {
-            data: chamadosPor,
-            
-          },
+    <PieChart
+      series={[
+        {
+          data: chamadosPor,
+          cx: 120,
+          highlightScope: { fade: 'global', highlight: 'item' },
+          faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+          valueFormatter,
+          arcLabel: (item) => `${item.value}`
+        },
 
-        ]}
+      ]}
 
-        width={600} // Tamanho fixo do gráfico
-        height={250} // Altura igual à largura para manter a proporção
-      />
-    </div>
+
+      width={500} // Tamanho fixo do gráfico
+      height={250} // Altura igual à largura para manter a proporção
+    />
   );
 }

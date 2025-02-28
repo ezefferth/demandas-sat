@@ -1,6 +1,7 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { useContext, useEffect, useState } from 'react';
+import { valueFormatter } from '../components/webUsageStatus';
 
 type Props = {
   id: number;
@@ -13,7 +14,7 @@ export default function ChamadosPorCategoria() {
   const [dadosGrafico, setDadosGrafico] = useState<Props[]>([]);
 
   useEffect(() => {
-    if (!chamados || !assuntos || !categorias) return; 
+    if (!chamados || !assuntos || !categorias) return;
 
     // Mapeando Assuntos para suas respectivas Categorias
     const assuntoParaCategoria = assuntos.reduce((acc, assunto) => {
@@ -45,16 +46,22 @@ export default function ChamadosPorCategoria() {
   }, [chamados, assuntos, categorias]);
 
   return (
-    <div>
-      <PieChart
-        series={[
-          {
-            data: dadosGrafico,
-          },
-        ]}
-        width={600} // Tamanho fixo do gráfico
-        height={250} // Altura igual à largura para manter a proporção
-      />
-    </div>
+    <PieChart
+      series={[
+        {
+          data: dadosGrafico,
+          arcLabel: (item) => `${item.value}`,
+          cx: 120,
+          highlightScope: { fade: 'global', highlight: 'item' },
+          faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+          
+          valueFormatter,
+
+        },
+      ]}
+      
+      width={500} // Tamanho fixo do gráfico
+      height={250} // Altura igual à largura para manter a proporção
+    />
   );
 }
