@@ -6,7 +6,7 @@ import { valueFormatter } from '../components/webUsageStatus';
 type Props = {
   id: number;
   value: number;
-  label: string;
+  label?: string;
 };
 
 export default function ChamadosPorAssunto() {

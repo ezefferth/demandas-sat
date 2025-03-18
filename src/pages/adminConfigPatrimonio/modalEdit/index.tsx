@@ -120,7 +120,7 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
           </div>
           <div className='mt-1 mb-2'>
             {/* <label>Nome</label> */}
-            <TextField id="standard-basic" label="Número do patrimônio" type='number' variant="standard" onChange={e => setNewPatrimonio(e.target.value)} sx={{ width: '100%' }} value={newPatrimonio}/>
+            <TextField id="standard-basic" label="Número do patrimônio" type='text' variant="standard" onChange={e => setNewPatrimonio(e.target.value)} sx={{ width: '100%' }} value={newPatrimonio}/>
           </div>
           <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
             <InputLabel id="demo-simple-select-standard-label" sx={{}}>Status do Equipamento</InputLabel>

@@ -52,7 +52,7 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) => (chamado.statusId !== null) && chamado.finishedAt === null
+    (chamado: Chamado) => (chamado.statusId !== null) && chamado.finishedAt === null && chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );//f022126a-d338-4aab-af19-0d6e7b31a567
 
   const currentItemsNotNull = filteredChamadosNotNull?.slice(
@@ -152,7 +152,7 @@ export default function Atendimento() {
       </div>
 
 
-      <div className="mt-8 px-8 text-slate-900 w-[60rem] mx-auto">
+      <div className="mt-8 text-slate-900 mx-auto">
         <div className="mb-2">
 
           <span className="border-b-2 px-4 border-gray-400">
@@ -211,7 +211,7 @@ export default function Atendimento() {
         </div>
       </div>
 
-      <div className="mt-2 px-8 text-slate-900 w-[60rem] mx-auto">
+      <div className="mt-2 text-slate-900 mx-auto">
         <div className="mb-2 mt-4 flex justify-between">
           <span className="border-b-2 px-4 border-gray-400">
             Em Atendimento
@@ -227,7 +227,7 @@ export default function Atendimento() {
               <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
-              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
+              <th className="px-2 py-1 border border-slate-300">Prioridade </th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
           </thead>
@@ -258,9 +258,9 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem] flex justify-center">
                     <p
-                      className="text-center rounded-md flex items-center justify-center gap-2 w-[8rem]"
+                      className="text-center rounded-md flex items-center gap-2 w-[8rem] justify-center"
                       style={{
                         backgroundColor:
                           status?.find((status) => status.id === chamado.statusId)?.cor ||
@@ -319,7 +319,7 @@ export default function Atendimento() {
         </div>
       </div>
 
-      <div className="mt-2 px-8 text-slate-900 w-[60rem] mx-auto">
+      <div className="mt-2 text-slate-900 mx-auto">
         <div className="mb-2 mt-4">
           <span className="border-b-2 px-4 border-gray-400">
             Finalizados
@@ -372,7 +372,7 @@ export default function Atendimento() {
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
-                  <p className="text-center w-[7rem] rounded-md" style={{
+                  <p className="text-center w-[10rem] rounded-md" style={{
                     backgroundColor: prioridades?.find(
                       (prioridade) => prioridade.id === chamado.prioridadeId
                     )?.cor || 'transparent',

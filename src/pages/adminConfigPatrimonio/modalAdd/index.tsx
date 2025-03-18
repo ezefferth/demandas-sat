@@ -31,7 +31,7 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
   
 
   const [descricao, setDescricao] = useState<string>('')
-  const [patrimonio, setPatrimonio] = useState<number>(0)
+  const [patrimonio, setPatrimonio] = useState<number | null>(null)
   const [tipoPatrimonioId, setTipoPatrimonioId] = useState<string>('')
   const [status, setStatus] = useState<string>('')
   const [setorId, setSetorId] = useState<string>('')
@@ -51,7 +51,7 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
         handleOnAdd()
         setDescricao('')
         setTipoPatrimonioId('')
-        setPatrimonio(0)
+        setPatrimonio(null)
         setStatus('')
         setOpenAdd(false);    
       } else {
@@ -100,7 +100,7 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
           </div>
           <div className='mt-1 mb-1'>
             {/* <label>Nome</label> */}
-            <TextField id="standard-basic" label="Número do patrimônio" type='number' variant="standard" onChange={e => setPatrimonio(parseInt(e.target.value))} sx={{ width: '16rem' }} />
+            <TextField id="standard-basic" label="Número do patrimônio" type='text' variant="standard" onChange={e => setPatrimonio(parseInt(e.target.value))} sx={{ width: '16rem' }} />
           </div>
           <div className='mt-1'>
 

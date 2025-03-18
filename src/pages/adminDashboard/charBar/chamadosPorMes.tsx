@@ -68,6 +68,7 @@ export default function ChamadosPorMes() {
             data: dadosGrafico.map(item => item.quantidade),
             label: 'Chamados'
           }
+          
         ]}
         width={500}
         height={300}

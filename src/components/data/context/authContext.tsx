@@ -46,7 +46,7 @@ export default function AuthProvider({ children }: any) {
     });
     const verificarLogin = async () => {
       try {
-        const response = await axiosInstance.get('/verificarUsuario', {
+        const response = await axiosInstance.post('/verificarUsuario', {
           headers: { "Content-Type": "application/json" }
         });
         // console.log("Usuário:", response);
