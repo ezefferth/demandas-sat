@@ -163,8 +163,9 @@ export default function ModalEditarAssunto({
               >
                 {setores?.map((setor) => {
                   if (
-                    setor.id === "fdc0248f-ade9-4325-917f-ace517196efb" ||
-                    setor.id === "66a38650-99d9-4dff-bebd-2281dc29f142"
+                    setor.id == "fdc0248f-ade9-4325-917f-ace517196efb" ||
+                    setor.id == "fb203925-c3d9-472c-93e6-3d5c5b110001" ||
+                    setor.id == "66a38650-99d9-4dff-bebd-2281dc29f142"
                   )
                     return (
                       <MenuItem
