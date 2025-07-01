@@ -3,8 +3,6 @@ import { Usuario } from "../../types";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-
-
 type AuthContextType = {
   usuario?: Usuario;
   token?: string;
@@ -23,22 +21,20 @@ export default function AuthProvider({ children }: any) {
 
   // Configuração global do axios
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = 'http://10.21.39.75:4001';
+  axios.defaults.baseURL = "http://10.21.39.75:4001";
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   const axiosInstance = axios.create({
-    baseURL: 'http://10.21.39.75:4001',
+    baseURL: "http://10.21.39.75:4001",
     withCredentials: true,
-    
   });
-
 
   useEffect(() => {
     axiosInstance.interceptors.request.use((config) => {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
@@ -46,8 +42,8 @@ export default function AuthProvider({ children }: any) {
     });
     const verificarLogin = async () => {
       try {
-        const response = await axiosInstance.post('/verificarUsuario', {
-          headers: { "Content-Type": "application/json" }
+        const response = await axiosInstance.post("/verificarUsuario", {
+          headers: { "Content-Type": "application/json" },
         });
         // console.log("Usuário:", response);
 
@@ -55,24 +51,23 @@ export default function AuthProvider({ children }: any) {
           const data = response.data;
           setUsuario(data.usuario);
           // setToken(data.token);
-
         }
       } catch (error) {
         console.error("Usuário não autenticado:", error);
         setUsuario(undefined);
         // setToken(undefined);
         navigate("/login");
-      }
-      finally {
+      } finally {
         setLoading(false); // Finaliza o estado de carregamento
       }
     };
     const inicializarUsuario = () => {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem("authToken");
       if (token) {
-        axiosInstance.get('/verificarUsuario')
+        axiosInstance
+          .get("/verificarUsuario")
           .then((response) => setUsuario(response.data.usuario))
-          .catch(() => localStorage.removeItem('authToken')); // Remove token inválido
+          .catch(() => localStorage.removeItem("authToken")); // Remove token inválido
       }
     };
 
@@ -81,16 +76,11 @@ export default function AuthProvider({ children }: any) {
     verificarLogin();
   }, []);
 
-
   // Função de logout
   const logout = async () => {
     try {
       // Faz uma requisição ao backend para limpar o cookie
-      await axios.post(
-        "/logout",
-        {},
-        { withCredentials: true }
-      );
+      await axios.post("/logout", {}, { withCredentials: true });
 
       setUsuario(undefined);
 
@@ -103,18 +93,27 @@ export default function AuthProvider({ children }: any) {
   // Função de login
   const login = async (nomeUsuario: string, senha: string) => {
     try {
-      const response = await axios.post('/loginUsuario', { nomeUsuario, senha });
+      const response = await axios.post("/loginUsuario", {
+        nomeUsuario,
+        senha,
+      });
 
       if (response.status < 200 || response.status >= 300) {
-        throw new Error('Erro de login');
+        throw new Error("Erro de login");
       }
 
       const { usuario } = response.data;
 
+      if (usuario.status === false) {
+        window.alert("Usuário inativo, entre em contato com o administrador.");
+        logout();
+        return;
+      }
+
       setUsuario(usuario);
-      navigate('/');
+      navigate("/");
     } catch (error) {
-      console.error('Erro ao fazer login:', error);
+      console.error("Erro ao fazer login:", error);
       throw error;
     }
   };
@@ -128,7 +127,7 @@ export default function AuthProvider({ children }: any) {
         setToken,
         login,
         logout,
-        loading
+        loading,
       }}
     >
       {children}

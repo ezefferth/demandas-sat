@@ -4,6 +4,7 @@ export type Usuario = {
   senha: string;
   admin: boolean;
   nomeUsuario: string;
+  status: boolean;
   avatar?: string | null;
   createdAt: Date;
   updatedAt: Date;
@@ -14,7 +15,7 @@ export type Categoria = {
   id: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type Setor = {
   nome: string;
@@ -22,21 +23,22 @@ export type Setor = {
   createdAt: Date;
   updatedAt: Date;
   status: boolean;
-}
+};
 
 export type Assunto = {
   nome: string;
   id: string;
   categoriaId: string;
   tempoLimite: number;
+  setorId: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type Chamado = {
   id: string;
   assuntoId: string;
-  usuarioId: string
+  usuarioId: string;
   setorId: string;
   prioridadeId: string | null;
   statusId: string;
@@ -45,8 +47,8 @@ export type Chamado = {
   updatedAt: Date;
   finishedAt: Date | null;
   finalizadoPor: string;
-  patrimonios: Patrimonio[]
-}
+  patrimonios: Patrimonio[];
+};
 
 export type Comentario = {
   id: string;
@@ -55,48 +57,46 @@ export type Comentario = {
   updatedAt: Date;
   chamadoId: string;
   usuarioId: string;
-}
+};
 
 export type Status = {
-  id: string
+  id: string;
   nome: string;
-  cor: string
+  cor: string;
   createdAt: Date;
   updatedAt: Date;
-
-}
+};
 
 export type Prioridade = {
-  id: string
+  id: string;
   nome: string;
-  cor: string
+  cor: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type Sugestao = {
-  id: string
+  id: string;
   sugestao: string;
-  usuarioId: string
+  usuarioId: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type TipoPatrimonio = {
   id: string;
   nome: string;
   createdAt: Date;
   updatedAt: Date;
-}
+};
 
 export type Patrimonio = {
   id: string;
-  tipoPatrimonioId: string
-  descricao: string
+  tipoPatrimonioId: string;
+  descricao: string;
   patrimonio: string;
   status: string;
-  setorId: string
+  setorId: string;
   createdAt: Date;
   updatedAt: Date;
-}
-
+};

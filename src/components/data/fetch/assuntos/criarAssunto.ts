@@ -1,15 +1,13 @@
 import axios from "axios";
 
 type Props = {
-  id: string;
   nome: string;
-  tempoLimite: number;
   categoriaId: string;
-  setorId: string;
+  tempoLimite: number;
+  setorId?: string; // SetorId é opcional, pois pode não ser necessário em todos os casos
 };
 
-export async function AtualizarAssunto({
-  id,
+export async function CriarAssunto({
   nome,
   categoriaId,
   tempoLimite,
@@ -17,16 +15,16 @@ export async function AtualizarAssunto({
 }: Props) {
   try {
     const response = await axios.post(
-      "/atualizarAssunto",
-      { id, nome, categoriaId, tempoLimite, setorId },
+      "/criarAssunto",
+      { nome, categoriaId, tempoLimite, setorId },
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log("Sucesso em atualizar assunto!", response);
+    console.log("Sucesso em criar assunto!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao atualizar assunto!", error);
+    console.log("Erro ao criar assunto!", error);
     throw error;
   }
 }
