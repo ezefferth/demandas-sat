@@ -148,7 +148,7 @@ export default function ModalAddAssunto({
               sx={{ pl: "10px" }}
             >
               {setores?.map((setor) => {
-                if (setor.id == "fdc0248f-ade9-4325-917f-ace517196efb")
+                if (setor.id == "fdc0248f-ade9-4325-917f-ace517196efb" || setor.id == "66a38650-99d9-4dff-bebd-2281dc29f142")
                   return (
                     <MenuItem
                       key={setor.id}

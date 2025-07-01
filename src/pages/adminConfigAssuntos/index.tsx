@@ -52,7 +52,7 @@ export default function Assuntos() {
           <FaPlusSquare className="text-slate-600 hover:text-slate-800 transition-all h-6 w-6" />
         </button>
       </div>
-      <div className="mt-8 p-8 text-slate-900 w-[36rem] mx-auto">
+      <div className="mt-8 p-8 text-slate-900 w-[48rem] mx-auto">
         <div className="flex justify-between font-semibold">
           <p>Nome</p>
           <p>Ações</p>

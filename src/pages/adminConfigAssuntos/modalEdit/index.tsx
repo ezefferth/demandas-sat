@@ -19,9 +19,8 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  //width: 400,
+  width: 400,
   bgcolor: "background.paper",
-  // /border: '1px solid #000',
   boxShadow: 15,
   p: 2,
 };
@@ -65,14 +64,13 @@ export default function ModalEditarAssunto({
   const handleChange = (event: SelectChangeEvent<string>) => {
     setCategoriaId(event.target.value);
   };
+
   const handleChangeSetor = (event: SelectChangeEvent<string>) => {
     setSetorId(event.target.value);
   };
 
   const handleEdit = async () => {
-    if (!assunto) {
-      return null; // Caso a categoria seja null, não renderiza o modal
-    }
+    if (!assunto) return null;
 
     const id = assunto.id;
     try {
@@ -95,83 +93,79 @@ export default function ModalEditarAssunto({
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <Box sx={style}>
+        <Box
+          sx={{
+            ...style,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
           <h2 className="text-center">Editando Assunto</h2>
           <p className="text-center">{assunto?.nome}</p>
 
-          <div className="w-72 mt-8">
-            <div className="mt-5 mb-4">
-              <TextField
-                id="standard-basic"
-                label="Nome"
-                variant="filled"
-                onChange={(e) => setNome(e.target.value)}
-                sx={{ width: "100%" }}
-                defaultValue={assunto?.nome}
-              />
-            </div>
-            <div className="mt-5 mb-4">
-              <TextField
-                id="standard-basic"
-                label="Tempo limite"
-                placeholder="tempo limite em minutos"
-                type="number"
-                variant="filled"
-                onChange={(e) => setTempoLimite(parseInt(e.target.value))}
-                sx={{ width: "100%" }}
-                defaultValue={assunto?.tempoLimite}
-              />
-            </div>
+          <div className="w-full mt-2 flex flex-col gap-4">
+            <TextField
+              id="nome"
+              label="Nome"
+              variant="filled"
+              onChange={(e) => setNome(e.target.value)}
+              defaultValue={assunto?.nome}
+              fullWidth
+            />
+            <TextField
+              id="tempo-limite"
+              label="Tempo limite"
+              placeholder="tempo limite em minutos"
+              type="number"
+              variant="filled"
+              onChange={(e) => setTempoLimite(parseInt(e.target.value))}
+              defaultValue={assunto?.tempoLimite}
+              fullWidth
+            />
+
             <FormControl
               variant="standard"
-              sx={{ width: "100%" }}
+              fullWidth
             >
-              <InputLabel
-                sx={{ pl: "12px" }}
-                id="demo-simple-select-standard-label"
-              >
-                Categoria
-              </InputLabel>
+              <InputLabel id="label-categoria">Categoria</InputLabel>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
+                labelId="label-categoria"
+                id="select-categoria"
                 value={categoriaId}
                 onChange={handleChange}
-                label="Categoria"
                 defaultValue={assunto?.categoriaId}
-                sx={{ pl: "10px" }}
+                fullWidth
               >
-                {categorias?.map((categorias) => (
+                {categorias?.map((categoria) => (
                   <MenuItem
-                    key={categorias.id}
-                    value={categorias.id}
+                    key={categoria.id}
+                    value={categoria.id}
                   >
-                    {categorias.nome}
+                    {categoria.nome}
                   </MenuItem>
                 ))}
               </Select>
             </FormControl>
+
             <FormControl
               variant="standard"
-              sx={{ width: "100%", mt: "1rem" }}
+              fullWidth
             >
-              <InputLabel
-                // sx={{ pl: "12px" }}
-                id="demo-simple-select-standard-label"
-              >
-                Setor
-              </InputLabel>
+              <InputLabel id="label-setor">Setor</InputLabel>
               <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
+                labelId="label-setor"
+                id="select-setor"
                 value={setorId}
                 onChange={handleChangeSetor}
-                label="Categoria"
                 defaultValue={assunto?.setorId}
-                sx={{ pl: "10px" }}
+                fullWidth
               >
                 {setores?.map((setor) => {
-                  if (setor.id == "fdc0248f-ade9-4325-917f-ace517196efb")
+                  if (
+                    setor.id === "fdc0248f-ade9-4325-917f-ace517196efb" ||
+                    setor.id === "66a38650-99d9-4dff-bebd-2281dc29f142"
+                  )
                     return (
                       <MenuItem
                         key={setor.id}
@@ -185,7 +179,7 @@ export default function ModalEditarAssunto({
             </FormControl>
           </div>
 
-          <div className="text-slate-600 font-thin text-xs mt-8">
+          <div className="text-slate-600 font-thin text-xs mt-4">
             <div className="flex justify-between gap-4">
               <p>Criado em:</p>
               <p>
@@ -197,7 +191,7 @@ export default function ModalEditarAssunto({
             <div className="flex justify-between gap-4">
               <p>Atualizado em:</p>
               <p>
-                {assunto?.createdAt
+                {assunto?.updatedAt
                   ? new Date(assunto.updatedAt).toLocaleString()
                   : "Data não disponível"}
               </p>
