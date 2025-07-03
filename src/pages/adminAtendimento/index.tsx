@@ -165,6 +165,7 @@ export default function Atendimento() {
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Setor</th>
+              <th className="px-2 py-1 border border-slate-300">Setor Destino</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
             </tr>
@@ -182,6 +183,17 @@ export default function Atendimento() {
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {setores?.find(setor => setor.id === chamado.setorId)?.nome}
+                </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {
+                    setores?.find(
+                      setor =>
+                        setor.id ===
+                        assuntos?.find(
+                          assunto => assunto.id === chamado.assuntoId
+                        )?.setorId
+                    )?.nome ?? "Setor não encontrado"
+                  }
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
@@ -216,24 +228,25 @@ export default function Atendimento() {
           <span className="border-b-2 px-4 border-gray-400">
             Em Atendimento
           </span>
-
         </div>
         <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
-            <tr className="text-slate-900 font-semibold bg-gray-400 text-cen">
+            <tr className="text-slate-900 font-semibold bg-gray-400">
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Data</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Setor</th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
-              <th className="px-2 py-1 border border-slate-300">Prioridade </th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
+              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
+              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                Ações
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItemsNotNull?.map((chamado: Chamado, index: number) => {
-              const { atraso, duration } = CalculaDuracaoEAtraso(chamado); // Calcula para cada chamado
+              const { atraso, duration } = CalculaDuracaoEAtraso(chamado);
 
               return (
                 <tr
@@ -241,61 +254,92 @@ export default function Atendimento() {
                   className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
                     } hover:bg-gray-100 transition-all`}
                 >
-                  <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
+                  <td className="px-2 py-1 border border-slate-300">
+                    {chamado.id}
+                  </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     <p>
                       {chamado.createdAt
                         ? new Date(chamado.createdAt).toLocaleDateString()
-                        : ''}
+                        : ""}
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {chamado.descricao}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {setores?.find(setor => setor.id === chamado.setorId)?.nome}
+                    {
+                      setores?.find((setor) => setor.id === chamado.setorId)
+                        ?.nome
+                    }
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                    {
+                      assuntos?.find(
+                        (assunto) => assunto.id === chamado.assuntoId
+                      )?.nome
+                    }
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem] flex justify-center">
+                  <td className="px-2 py-1 border border-slate-300">
                     <p
-                      className="text-center rounded-md flex items-center gap-2 w-[8rem] justify-center"
+                      className="rounded-md flex items-center gap-1 justify-center w-full max-w-[12rem] px-2 overflow-hidden text-ellipsis whitespace-nowrap"
                       style={{
                         backgroundColor:
-                          status?.find((status) => status.id === chamado.statusId)?.cor ||
-                          "transparent",
+                          status?.find(
+                            (status) => status.id === chamado.statusId
+                          )?.cor || "transparent",
                       }}
                     >
-                      {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.tempoLimite &&
+                      {assuntos?.find(
+                        (assunto) => assunto.id === chamado.assuntoId
+                      )?.tempoLimite &&
                         atraso > 0 &&
-                        assuntos.find((assunto) => assunto.id === chamado.assuntoId)?.tempoLimite! < atraso && (
+                        assuntos.find(
+                          (assunto) => assunto.id === chamado.assuntoId
+                        )?.tempoLimite! < atraso && (
                           <Tooltip title={`Atrasado em ${duration}`}>
                             <span>
                               <FaExclamationCircle
                                 className="text-slate-800"
                                 size={16}
-                                style={{ display: 'inline-block', verticalAlign: 'middle' }}
+                                style={{
+                                  display: "inline-block",
+                                  verticalAlign: "middle",
+                                }}
                               />
                             </span>
                           </Tooltip>
                         )}
-
-                      {status?.find((status) => status.id === chamado.statusId)?.nome}
+                      {
+                        status?.find((status) => status.id === chamado.statusId)
+                          ?.nome
+                      }
                     </p>
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
-                    <p className="text-center w-[7rem] rounded-md" style={{
-                      backgroundColor: prioridades?.find(
-                        (prioridade) => prioridade.id === chamado.prioridadeId
-                      )?.cor || 'transparent',
-                    }}>
-                      {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
+                  <td className="px-2 py-1 border border-slate-300">
+                    <p
+                      className="text-center w-full max-w-[8rem] rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                      style={{
+                        backgroundColor:
+                          prioridades?.find(
+                            (prioridade) =>
+                              prioridade.id === chamado.prioridadeId
+                          )?.cor || "transparent",
+                      }}
+                    >
+                      {
+                        prioridades?.find(
+                          (prioridades) =>
+                            prioridades.id === chamado.prioridadeId
+                        )?.nome
+                      }
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300">
                     <div className="flex items-center justify-center gap-2">
-                      <button onClick={(e) => handleSeletedVisualizar(e, chamado)}>
+                      <button
+                        onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                      >
                         <FaSearch
                           size={20}
                           className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"

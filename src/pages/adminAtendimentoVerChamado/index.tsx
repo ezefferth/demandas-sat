@@ -86,6 +86,22 @@ export default function VerChamadoAdmin() {
     }
   }, [localChamado?.createdAt, localChamado?.finishedAt]);
 
+
+  const [setorDestino, setSetorDestino] = useState<string>('')
+
+  useEffect(() => {
+    const assunto = assuntos?.find(
+      (assunto) => assunto.id === localChamado.assuntoId
+    );
+
+    const setorDestinoId = assunto?.setorId
+
+    const nome = setores?.find(setor => setor.id === setorDestinoId)?.nome;
+
+    if (nome) setSetorDestino(nome)
+
+  }, [localChamado])
+
   const navigate = useNavigate();
 
   const handleFinalizar = () => {
@@ -254,7 +270,7 @@ export default function VerChamadoAdmin() {
             </div>
             <div className="flex items-center gap-2">
               {localChamado.patrimonios &&
-              localChamado.patrimonios.length > 0 ? (
+                localChamado.patrimonios.length > 0 ? (
                 localChamado.patrimonios.map((st, index) => (
                   <p key={index}>{st.patrimonio}</p>
                 ))
@@ -314,6 +330,15 @@ export default function VerChamadoAdmin() {
                     <span key={setor.id}>{setor.nome}</span>
                   )
               )}
+            </div>
+          </div>
+          <div className="border-b border-slate-300 my-1 w-full" />
+          <div className="flex mt-1 mb-1 justify-between">
+            <div className="w-36">
+              <p>Setor Destino:</p>
+            </div>
+            <div>
+              <span>{setorDestino}</span>
             </div>
           </div>
           <div className="border-b border-slate-300 my-1 w-full" />
@@ -472,7 +497,7 @@ export default function VerChamadoAdmin() {
           chamado={localChamado}
           open={openAddPatrimonios}
           setOpen={setOpenPatrimonios}
-          // handleClose={handleClosePatrimonios}
+        // handleClose={handleClosePatrimonios}
         />
       </div>
     );
