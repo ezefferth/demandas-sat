@@ -1,5 +1,18 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { Assunto, Categoria, Chamado, Comentario, Patrimonio, Prioridade, Setor, Status, Sugestao, TipoPatrimonio, Usuario } from "../../types";
+import {
+  Assunto,
+  Categoria,
+  Chamado,
+  Comentario,
+  Documento,
+  Patrimonio,
+  Prioridade,
+  Setor,
+  Status,
+  Sugestao,
+  TipoPatrimonio,
+  Usuario,
+} from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
 import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
@@ -17,7 +30,6 @@ import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
 import { LerChamadosCount } from "../fetch/chamados/lerChamadosCount";
 
 // import audioMsg from '../../../../public/notification-msg.mp3'
-
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
@@ -45,12 +57,14 @@ type DataContextType = {
   countChamadoAtual: number;
   setCountChamadoAtual: (value: number) => void;
   sugestoes: Sugestao[] | undefined;
-  setSugestoes: (value: Sugestao[] | undefined) => void
+  setSugestoes: (value: Sugestao[] | undefined) => void;
   patrimonios: Patrimonio[] | undefined;
   setPatrimonios: (value: Patrimonio[] | undefined) => void;
   tipoPatrimonio: TipoPatrimonio[] | undefined;
   setTipoPatrimonio: (value: TipoPatrimonio[] | undefined) => void;
   countComentario: number;
+  documentos: Documento[] | undefined;
+  setDocumentos: (value: Documento[] | undefined) => void;
 };
 
 export const DataContext = createContext({} as DataContextType);
@@ -73,6 +87,7 @@ export default function DataProvider({ children }: any) {
   const [sugestoes, setSugestoes] = useState<Sugestao[] | []>();
   const [patrimonios, setPatrimonios] = useState<Patrimonio[] | []>();
   const [tipoPatrimonio, setTipoPatrimonio] = useState<TipoPatrimonio[] | []>();
+  const [documentos, setDocumentos] = useState<Documento[] | undefined>();
 
   const { usuario } = useContext(AuthContext);
 
@@ -95,7 +110,7 @@ export default function DataProvider({ children }: any) {
           LerChamados({ setChamados }),
           LerComentariosTodos({ id: usuario.id, setComentariosTodos }),
           LerPatrimonios({ setPatrimonios }),
-          LerTipoPatrimonios({ setTipoPatrimonio })
+          LerTipoPatrimonios({ setTipoPatrimonio }),
         ]);
 
         // Inicializando as contagens
@@ -103,9 +118,11 @@ export default function DataProvider({ children }: any) {
         const chamadosCount = await LerChamadosCount({ setCountChamado });
         setCountChamadoAtual(chamadosCount); // Sincroniza o valor inicial corretamente
 
-        const comentariosCount = await LerComentariosCount({ id: usuario.id, setCountComentario });
+        const comentariosCount = await LerComentariosCount({
+          id: usuario.id,
+          setCountComentario,
+        });
         setCountComentarioAtual(comentariosCount); // Sincroniza o valor inicial corretamente
-
 
         setInitialLoadComplete(true);
       } catch (error) {
@@ -116,8 +133,6 @@ export default function DataProvider({ children }: any) {
     fetchInitialData();
   }, [usuario]);
 
-
-
   useEffect(() => {
     if (!usuario || !initialLoadComplete) return;
 
@@ -127,8 +142,12 @@ export default function DataProvider({ children }: any) {
 
         // Só dispara notificação se countChamadoAtual já foi sincronizado anteriormente
         if (countChamadoAtual > 0 && novosChamadosCount > countChamadoAtual) {
-          const audio = new Audio('../../../../public/notification-chamado.mp3');
-          audio.play().catch(error => console.error("Erro ao tocar som: ", error));
+          const audio = new Audio(
+            "../../../../public/notification-chamado.mp3"
+          );
+          audio
+            .play()
+            .catch((error) => console.error("Erro ao tocar som: ", error));
 
           toast.info("Novo chamado recebido!", {
             autoClose: false,
@@ -146,18 +165,25 @@ export default function DataProvider({ children }: any) {
     return () => clearInterval(interval);
   }, [usuario, initialLoadComplete, countChamadoAtual]);
 
-
   useEffect(() => {
     if (!usuario || !initialLoadComplete) return;
 
     const updateComentarios = async () => {
       try {
-        const novosComentariosCount = await LerComentariosCount({ id: usuario.id, setCountComentario });
+        const novosComentariosCount = await LerComentariosCount({
+          id: usuario.id,
+          setCountComentario,
+        });
 
         // Só dispara notificação se countComentarioAtual já foi sincronizado anteriormente
-        if (countComentarioAtual > 0 && novosComentariosCount > countComentarioAtual) {
-          const audio = new Audio('../../../../public/notification-msg.mp3');
-          audio.play().catch(error => console.error("Erro ao tocar som: ", error));
+        if (
+          countComentarioAtual > 0 &&
+          novosComentariosCount > countComentarioAtual
+        ) {
+          const audio = new Audio("../../../../public/notification-msg.mp3");
+          audio
+            .play()
+            .catch((error) => console.error("Erro ao tocar som: ", error));
 
           toast.info("Novo comentário recebido!", {
             autoClose: false,
@@ -174,7 +200,6 @@ export default function DataProvider({ children }: any) {
     const interval = setInterval(updateComentarios, 15000); // A cada 15 segundos
     return () => clearInterval(interval);
   }, [usuario, initialLoadComplete, countComentarioAtual]);
-
 
   return (
     <DataContext.Provider
@@ -210,6 +235,8 @@ export default function DataProvider({ children }: any) {
         setTipoPatrimonio,
         patrimonios,
         setPatrimonios,
+        documentos,
+        setDocumentos,
       }}
     >
       {children}

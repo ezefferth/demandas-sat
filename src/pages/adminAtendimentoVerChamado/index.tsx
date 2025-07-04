@@ -12,6 +12,9 @@ import ModalPatrimonio from "./modalPatrimonio";
 import ModalAddFinalizar from "./modalFinalizar";
 import { LerComentarios } from "../../components/data/fetch/comentario/lerComentarios";
 import AvatarUsuario from "./avatarUser";
+import ModalAddAnexo from "./modalAddAnexo";
+import { ListaDocumentos, ListaDocumentosComentarios } from "./doc";
+import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
 
 export default function VerChamadoAdmin() {
   const { usuario } = useContext(AuthContext);
@@ -27,11 +30,17 @@ export default function VerChamadoAdmin() {
     usuarios,
     status,
     prioridades,
+    documentos,
+    setDocumentos,
   } = useContext(DataContext);
 
   const [openAdd, setOpenAdd] = useState(false);
   const handleOpen = () => setOpenAdd(true);
   const handleClose = () => setOpenAdd(false);
+
+  const [openAddDoc, setOpenAddDoc] = useState(false);
+  const handleOpenDoc = () => setOpenAddDoc(true);
+  const handleCloseDoc = () => setOpenAddDoc(false);
 
   const [openAddStatus, setOpenStatus] = useState(false);
   const handleOpenStatus = () => setOpenStatus(true);
@@ -55,6 +64,9 @@ export default function VerChamadoAdmin() {
   const [localChamado, setLocalChamado] = useState<Chamado>(chamado);
 
   const [duration, setDuration] = useState("");
+  // const [comentarioId, setComentarioId] = useState<string | undefined>(
+  //   undefined
+  // );
 
   useEffect(() => {
     if (!localChamado?.createdAt) return;
@@ -86,21 +98,25 @@ export default function VerChamadoAdmin() {
     }
   }, [localChamado?.createdAt, localChamado?.finishedAt]);
 
+  const [setorDestino, setSetorDestino] = useState<string>("");
 
-  const [setorDestino, setSetorDestino] = useState<string>('')
+  const handleDoc = async () => {
+    await LerDocumento({ setDocumentos, chamadoId: Number(localChamado.id) });
+  };
 
   useEffect(() => {
     const assunto = assuntos?.find(
       (assunto) => assunto.id === localChamado.assuntoId
     );
 
-    const setorDestinoId = assunto?.setorId
+    const setorDestinoId = assunto?.setorId;
 
-    const nome = setores?.find(setor => setor.id === setorDestinoId)?.nome;
+    const nome = setores?.find((setor) => setor.id === setorDestinoId)?.nome;
 
-    if (nome) setSetorDestino(nome)
+    if (nome) setSetorDestino(nome);
 
-  }, [localChamado])
+    handleDoc();
+  }, [localChamado]);
 
   const navigate = useNavigate();
 
@@ -270,7 +286,7 @@ export default function VerChamadoAdmin() {
             </div>
             <div className="flex items-center gap-2">
               {localChamado.patrimonios &&
-                localChamado.patrimonios.length > 0 ? (
+              localChamado.patrimonios.length > 0 ? (
                 localChamado.patrimonios.map((st, index) => (
                   <p key={index}>{st.patrimonio}</p>
                 ))
@@ -279,7 +295,7 @@ export default function VerChamadoAdmin() {
               )}
 
               <button
-                className="cursor-pointer bg-slate-700 hover:bg-slate-800 transition-all rounded-lg p-1"
+                className="cursor-pointer bg-slate-600 hover:bg-slate-800 transition-all rounded-lg p-1"
                 onClick={handleOpenPatrimonios}
               >
                 <FaPlus
@@ -420,6 +436,24 @@ export default function VerChamadoAdmin() {
             </div>
           </div>
 
+          <div className="border-b border-slate-300 my-1 w-full" />
+          <div className="flex mt-1 mb-3 justify-between">
+            <div className="w-36">
+              <p>Anexos:</p>
+            </div>
+            <div>
+              <button
+                onClick={handleOpenDoc}
+                className="px-2 flex justify-center items-center gap-2 bg-slate-600 hover:bg-slate-800 transition-all text-slate-50 rounded-md active:bg-slate-900"
+              >
+                <FaPlus className="" /> Anexo
+              </button>
+            </div>
+          </div>
+          {documentos && documentos?.length > 0 && (
+            <ListaDocumentos documentos={documentos} />
+          )}
+
           <div className="mt-10 p-2">
             <div className="flex justify-between">
               <div />
@@ -443,9 +477,15 @@ export default function VerChamadoAdmin() {
                     key={comentario.id}
                     className="p-4 border border-gray-300 rounded-xl bg-gray-50 shadow-lg hover:shadow-xl transition-all"
                   >
-                    <p className="text-sm text-gray-700">
+                    <p className="text-sm text-gray-700 break-words">
                       {comentario.comentario}
                     </p>
+                    {documentos && (
+                      <ListaDocumentosComentarios
+                        documentos={documentos}
+                        id={comentario.id}
+                      />
+                    )}
                     <div className="text-xs text-gray-500 mt-2">
                       <span>
                         {usuarios
@@ -497,7 +537,14 @@ export default function VerChamadoAdmin() {
           chamado={localChamado}
           open={openAddPatrimonios}
           setOpen={setOpenPatrimonios}
-        // handleClose={handleClosePatrimonios}
+          // handleClose={handleClosePatrimonios}
+        />
+        <ModalAddAnexo
+          chamadoId={Number(localChamado.id)}
+          openAdd={openAddDoc}
+          setOpenAdd={setOpenAddDoc}
+          handleClose={handleCloseDoc}
+          //comentarioId={comentarioId} // handleClose={handleClosePatrimonios}
         />
       </div>
     );

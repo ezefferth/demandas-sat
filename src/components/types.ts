@@ -100,3 +100,14 @@ export type Patrimonio = {
   createdAt: Date;
   updatedAt: Date;
 };
+
+export type Documento = {
+  id: string;
+  nome: string;
+  mimeType: string;
+  conteudo: Uint8Array;
+  createdAt: Date;
+  updatedAt: Date;
+  chamadoId: number;
+  comentarioId?: string | null;
+};
