@@ -9,20 +9,17 @@ import { LerChamados } from "../../components/data/fetch/chamados/lerChamados";
 import { AuthContext } from "../../components/data/context/authContext";
 import ModalListaErros from "./modalListaErros";
 
-
-
 export default function Atendimento() {
-
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
+  const { chamados, assuntos, status, prioridades, setChamados, setores } =
+    useContext(DataContext);
 
-  const { chamados, assuntos, status, prioridades, setChamados, setores } = useContext(DataContext)
+  const { usuario } = useContext(AuthContext);
 
-  const { usuario } = useContext(AuthContext)
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   /* ============= PAGINACAO AGUARDANDO TRIAGEM ============= */
   const [currentPage, setCurrentPage] = useState(1);
@@ -35,11 +32,13 @@ export default function Atendimento() {
   // Filtrar os chamados para exibir apenas os da página atual
 
   const filteredChamados = chamados?.filter(
-    (chamado: Chamado) =>
-      chamado.statusId === null
+    (chamado: Chamado) => chamado.statusId === null
   );
 
-  const currentItems = filteredChamados!.slice(indexOfFirstItem, indexOfLastItem);
+  const currentItems = filteredChamados!.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
 
   // Total de páginas
   const totalPages = Math.ceil(currentItems!.length / itemsPerPage);
@@ -52,8 +51,11 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) => (chamado.statusId !== null) && chamado.finishedAt === null && chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
-  );//f022126a-d338-4aab-af19-0d6e7b31a567
+    (chamado: Chamado) =>
+      chamado.statusId !== null &&
+      chamado.finishedAt === null &&
+      chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
+  ); //f022126a-d338-4aab-af19-0d6e7b31a567
 
   const currentItemsNotNull = filteredChamadosNotNull?.slice(
     indexOfFirstItemNotNull,
@@ -70,9 +72,10 @@ export default function Atendimento() {
 
   // Filtrar os chamados com `statusId !== null`
   const filteredChamadosFinalizados = chamados?.filter(
-    (chamado: Chamado) => chamado.finishedAt !== null && chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
+    (chamado: Chamado) =>
+      chamado.finishedAt !== null &&
+      chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
-
 
   const currentItemsFinalizados = filteredChamadosFinalizados?.slice(
     indexOfFirstItemFinalizados,
@@ -82,8 +85,6 @@ export default function Atendimento() {
     (filteredChamadosFinalizados?.length || 0) / itemsPerPage
   );
   /* ============= PAGINACAO FINALIZADOS ============= */
-
-
 
   function CalculaDuracaoEAtraso(chamado: Chamado) {
     if (!chamado?.createdAt) return { duration: "", atraso: 0 };
@@ -107,7 +108,6 @@ export default function Atendimento() {
     return { duration, atraso };
   }
 
-
   const handleChangePage = (_: any, page: number) => {
     setCurrentPage(page);
   };
@@ -119,7 +119,10 @@ export default function Atendimento() {
     setCurrentPageFinalizados(page);
   };
 
-  const handleSeletedVisualizar = (e: React.MouseEvent<HTMLButtonElement>, chamado: Chamado): void => {
+  const handleSeletedVisualizar = (
+    e: React.MouseEvent<HTMLButtonElement>,
+    chamado: Chamado
+  ): void => {
     e.preventDefault();
 
     navigate(`/verChamadoAdmin/`, { state: chamado });
@@ -138,7 +141,7 @@ export default function Atendimento() {
         console.error("Erro ao buscar chamados:", error);
       }
     }
-  }
+  };
 
   return (
     <div className="p-12">
@@ -146,15 +149,20 @@ export default function Atendimento() {
         <div className="font-normal text-lg">
           <p>Atendimento</p>
         </div>
-        <button className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500" onClick={handleUpdateChamados}>
-          <RxUpdate size={20} color='#fff' className='hover:animate-spin' />
+        <button
+          className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500"
+          onClick={handleUpdateChamados}
+        >
+          <RxUpdate
+            size={20}
+            color="#fff"
+            className="hover:animate-spin"
+          />
         </button>
       </div>
 
-
       <div className="mt-8 text-slate-900 mx-auto">
         <div className="mb-2">
-
           <span className="border-b-2 px-4 border-gray-400">
             Aguardando Triagem
           </span>
@@ -165,42 +173,53 @@ export default function Atendimento() {
               <th className="px-2 py-1 border border-slate-300">ID</th>
               <th className="px-2 py-1 border border-slate-300">Descrição</th>
               <th className="px-2 py-1 border border-slate-300">Setor</th>
-              <th className="px-2 py-1 border border-slate-300">Setor Destino</th>
+              <th className="px-2 py-1 border border-slate-300">
+                Setor Destino
+              </th>
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
+              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                Ações
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItems?.map((chamado: Chamado, index: number) => (
               <tr
                 key={chamado.id}
-                className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'
-                  } hover:bg-gray-100 transition-all`}
+                className={`${
+                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                } hover:bg-gray-100 transition-all`}
               >
-                <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
+                <td className="px-2 py-1 border border-slate-300">
+                  {chamado.id}
+                </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {chamado.descricao}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find(setor => setor.id === chamado.setorId)?.nome}
+                  {setores?.find((setor) => setor.id === chamado.setorId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {
-                    setores?.find(
-                      setor =>
-                        setor.id ===
-                        assuntos?.find(
-                          assunto => assunto.id === chamado.assuntoId
-                        )?.setorId
-                    )?.nome ?? "Setor não encontrado"
-                  }
+                  {setores?.find(
+                    (setor) =>
+                      setor.id ===
+                      assuntos?.find(
+                        (assunto) => assunto.id === chamado.assuntoId
+                      )?.setorId
+                  )?.nome ?? "Setor não encontrado"}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
+                  {
+                    assuntos?.find(
+                      (assunto) => assunto.id === chamado.assuntoId
+                    )?.nome
+                  }
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={(e) => handleSeletedVisualizar(e, chamado)}>
+                    <button
+                      onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                    >
                       <FaSearch
                         size={20}
                         className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
@@ -251,13 +270,14 @@ export default function Atendimento() {
               return (
                 <tr
                   key={chamado.id}
-                  className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                    } hover:bg-gray-100 transition-all`}
+                  className={`${
+                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                  } hover:bg-gray-100 transition-all`}
                 >
                   <td className="px-2 py-1 border border-slate-300">
                     {chamado.id}
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     <p>
                       {chamado.createdAt
                         ? new Date(chamado.createdAt).toLocaleDateString()
@@ -267,20 +287,20 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {chamado.descricao}
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {
                       setores?.find((setor) => setor.id === chamado.setorId)
                         ?.nome
                     }
                   </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {
                       assuntos?.find(
                         (assunto) => assunto.id === chamado.assuntoId
                       )?.nome
                     }
                   </td>
-                  <td className="px-2 py-1 border border-slate-300">
+                  <td className="px-2 py-1 border border-slate-300 w-[12rem] ">
                     <p
                       className="rounded-md flex items-center gap-1 justify-center w-full max-w-[12rem] px-2 overflow-hidden text-ellipsis whitespace-nowrap"
                       style={{
@@ -316,9 +336,9 @@ export default function Atendimento() {
                       }
                     </p>
                   </td>
-                  <td className="px-2 py-1 border border-slate-300">
+                  <td className="px-2 py-1 border border-slate-300 w-[10rem]">
                     <p
-                      className="text-center w-full max-w-[8rem] rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                      className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
                       style={{
                         backgroundColor:
                           prioridades?.find(
@@ -365,9 +385,7 @@ export default function Atendimento() {
 
       <div className="mt-2 text-slate-900 mx-auto">
         <div className="mb-2 mt-4">
-          <span className="border-b-2 px-4 border-gray-400">
-            Finalizados
-          </span>
+          <span className="border-b-2 px-4 border-gray-400">Finalizados</span>
         </div>
         <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
           <thead>
@@ -379,54 +397,79 @@ export default function Atendimento() {
               <th className="px-2 py-1 border border-slate-300">Assunto</th>
               <th className="px-2 py-1 border border-slate-300">Status</th>
               <th className="px-2 py-1 border border-slate-300">Prioridade</th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">Ações</th>
+              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                Ações
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentItemsFinalizados?.map((chamado: Chamado, index: number) => (
               <tr
                 key={chamado.id}
-                className={`${index % 2 === 0 ? 'bg-gray-200' : 'bg-gray-300'
-                  } hover:bg-gray-100 transition-all`}
+                className={`${
+                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                } hover:bg-gray-100 transition-all`}
               >
-                <td className="px-2 py-1 border border-slate-300">{chamado.id}</td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                <td className="px-2 py-1 border border-slate-300">
+                  {chamado.id}
+                </td>
+                <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   <p>
                     {chamado.createdAt
                       ? new Date(chamado.createdAt).toLocaleDateString()
-                      : ''}
+                      : ""}
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {chamado.descricao}
                 </td>
+                <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                  {setores?.find((setor) => setor.id === chamado.setorId)?.nome}
+                </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find(setor => setor.id === chamado.setorId)?.nome}
+                  {
+                    assuntos?.find(
+                      (assunto) => assunto.id === chamado.assuntoId
+                    )?.nome
+                  }
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {assuntos?.find((assunto) => assunto.id === chamado.assuntoId)?.nome}
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem]">
-                  <p className="text-center px-1 rounded-md" style={{
-                    backgroundColor: status?.find(
-                      (status) => status.id === chamado.statusId
-                    )?.cor || 'transparent',
-                  }}>
-                    {status?.find((status) => status.id === chamado.statusId)?.nome}
+                <td className="px-2 py-1 border border-slate-300 w-[12rem]">
+                  <p
+                    className="text-center px-1 rounded-md"
+                    style={{
+                      backgroundColor:
+                        status?.find((status) => status.id === chamado.statusId)
+                          ?.cor || "transparent",
+                    }}
+                  >
+                    {
+                      status?.find((status) => status.id === chamado.statusId)
+                        ?.nome
+                    }
                   </p>
                 </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[12rem]">
-                  <p className="text-center w-[10rem] rounded-md" style={{
-                    backgroundColor: prioridades?.find(
-                      (prioridade) => prioridade.id === chamado.prioridadeId
-                    )?.cor || 'transparent',
-                  }}>
-                    {prioridades?.find((prioridades) => prioridades.id === chamado.prioridadeId)?.nome}
+                <td className="px-2 py-1 border border-slate-300 w-[10rem]">
+                  <p
+                    className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                    style={{
+                      backgroundColor:
+                        prioridades?.find(
+                          (prioridade) => prioridade.id === chamado.prioridadeId
+                        )?.cor || "transparent",
+                    }}
+                  >
+                    {
+                      prioridades?.find(
+                        (prioridades) => prioridades.id === chamado.prioridadeId
+                      )?.nome
+                    }
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
-                    <button onClick={(e) => handleSeletedVisualizar(e, chamado)}>
+                    <button
+                      onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                    >
                       <FaSearch
                         size={20}
                         className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
@@ -450,11 +493,18 @@ export default function Atendimento() {
       </div>
 
       <div className="text-center mt-16">
-        <button onClick={handleOpen} className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all">Listar chamados aberto por erro</button>
+        <button
+          onClick={handleOpen}
+          className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all"
+        >
+          Listar chamados aberto por erro
+        </button>
       </div>
 
-      <ModalListaErros open={open} handleClose={handleClose} />
-
-    </div >
-  )
+      <ModalListaErros
+        open={open}
+        handleClose={handleClose}
+      />
+    </div>
+  );
 }

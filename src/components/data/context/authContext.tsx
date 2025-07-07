@@ -21,16 +21,16 @@ export default function AuthProvider({ children }: any) {
 
   // Configuração global do axios
   axios.defaults.withCredentials = true;
-  // axios.defaults.baseURL = "http://10.21.39.75:4001";
-  axios.defaults.baseURL = "http://localhost:4123";
+  axios.defaults.baseURL = "http://10.21.39.75:4001";
+  // axios.defaults.baseURL = "http://localhost:4123";
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   const axiosInstance = axios.create({
-    // baseURL: "http://10.21.39.75:4001",
-    baseURL: "http://localhost:4123",
+    baseURL: "http://10.21.39.75:4001",
+    // baseURL: "http://localhost:4123",
     withCredentials: true,
   });
 

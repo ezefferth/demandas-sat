@@ -97,7 +97,7 @@ export default function Usuarios() {
           } hover:bg-slate-500 transition-all`}
           onClick={handleBtnIna}
         >
-          Inatios
+          Inativos
         </button>
       </div>
 
