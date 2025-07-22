@@ -15,6 +15,7 @@ import AvatarUsuario from "./avatarUser";
 import ModalAddAnexo from "./modalAddAnexo";
 import { ListaDocumentos, ListaDocumentosComentarios } from "./doc";
 import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
+import ModalAtualizaAssunto from "./modalAssunto";
 
 export default function VerChamadoAdmin() {
   const { usuario } = useContext(AuthContext);
@@ -37,6 +38,10 @@ export default function VerChamadoAdmin() {
   const [openAdd, setOpenAdd] = useState(false);
   const handleOpen = () => setOpenAdd(true);
   const handleClose = () => setOpenAdd(false);
+
+  const [openAtualizaAssunto, setOpenAtualizaAssunto] = useState<boolean>(false);
+  const handleOpenAtualizaAssunto = () => setOpenAtualizaAssunto(true);
+  const handleCloseAtualizaAssunto = () => setOpenAtualizaAssunto(false);
 
   const [openAddDoc, setOpenAddDoc] = useState(false);
   const handleOpenDoc = () => setOpenAddDoc(true);
@@ -286,7 +291,7 @@ export default function VerChamadoAdmin() {
             </div>
             <div className="flex items-center gap-2">
               {localChamado.patrimonios &&
-              localChamado.patrimonios.length > 0 ? (
+                localChamado.patrimonios.length > 0 ? (
                 localChamado.patrimonios.map((st, index) => (
                   <p key={index}>{st.patrimonio}</p>
                 ))
@@ -324,13 +329,24 @@ export default function VerChamadoAdmin() {
             <div className="w-24">
               <p>Assunto:</p>
             </div>
-            <div>
-              {assuntos?.map(
-                (assunto) =>
-                  assunto.id === localChamado.assuntoId && (
-                    <span key={assunto.id}>{assunto.nome}</span>
-                  )
-              )}
+            <div className="flex gap-2 items-center">
+              <span>
+                {assuntos?.map(
+                  (assunto) =>
+                    assunto.id === localChamado.assuntoId && (
+                      <span key={assunto.id}>{assunto.nome}</span>
+                    )
+                )}
+              </span>
+              <button
+                className="cursor-pointer bg-slate-600 hover:bg-slate-800 transition-all rounded-lg p-1 h-[1.45rem]"
+                onClick={handleOpenAtualizaAssunto}
+              >
+                <FaPlus
+                  size={15}
+                  className="text-slate-100"
+                />
+              </button>
             </div>
           </div>
 
@@ -537,14 +553,20 @@ export default function VerChamadoAdmin() {
           chamado={localChamado}
           open={openAddPatrimonios}
           setOpen={setOpenPatrimonios}
-          // handleClose={handleClosePatrimonios}
+        // handleClose={handleClosePatrimonios}
         />
         <ModalAddAnexo
           chamadoId={Number(localChamado.id)}
           openAdd={openAddDoc}
           setOpenAdd={setOpenAddDoc}
           handleClose={handleCloseDoc}
-          //comentarioId={comentarioId} // handleClose={handleClosePatrimonios}
+        //comentarioId={comentarioId} // handleClose={handleClosePatrimonios}
+        />
+        <ModalAtualizaAssunto
+          openAdd={openAtualizaAssunto}
+          setOpenAdd={setOpenAtualizaAssunto}
+          handleClose={handleCloseAtualizaAssunto}
+          chamadoId={localChamado.id}
         />
       </div>
     );

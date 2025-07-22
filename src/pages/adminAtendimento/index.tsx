@@ -186,9 +186,8 @@ export default function Atendimento() {
             {currentItems?.map((chamado: Chamado, index: number) => (
               <tr
                 key={chamado.id}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                } hover:bg-gray-100 transition-all`}
+                className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                  } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">
                   {chamado.id}
@@ -270,9 +269,8 @@ export default function Atendimento() {
               return (
                 <tr
                   key={chamado.id}
-                  className={`${
-                    index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                  } hover:bg-gray-100 transition-all`}
+                  className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                    } hover:bg-gray-100 transition-all`}
                 >
                   <td className="px-2 py-1 border border-slate-300">
                     {chamado.id}
@@ -288,10 +286,23 @@ export default function Atendimento() {
                     {chamado.descricao}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {
-                      setores?.find((setor) => setor.id === chamado.setorId)
-                        ?.nome
-                    }
+                    <Tooltip
+                      title={`Setor de Destino: ${setores?.find(
+                        (setor) =>
+                          setor.id ===
+                          assuntos?.find(
+                            (assunto) => assunto.id === chamado.assuntoId
+                          )?.setorId
+                      )?.nome ?? "Setor não encontrado"
+                        }`}
+                    >
+                      <span>
+                        {
+                          setores?.find((setor) => setor.id === chamado.setorId)
+                            ?.nome
+                        }
+                      </span>
+                    </Tooltip>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {
@@ -406,9 +417,8 @@ export default function Atendimento() {
             {currentItemsFinalizados?.map((chamado: Chamado, index: number) => (
               <tr
                 key={chamado.id}
-                className={`${
-                  index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                } hover:bg-gray-100 transition-all`}
+                className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                  } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">
                   {chamado.id}
@@ -424,7 +434,23 @@ export default function Atendimento() {
                   {chamado.descricao}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find((setor) => setor.id === chamado.setorId)?.nome}
+                  <Tooltip
+                    title={`Setor de Destino: ${setores?.find(
+                      (setor) =>
+                        setor.id ===
+                        assuntos?.find(
+                          (assunto) => assunto.id === chamado.assuntoId
+                        )?.setorId
+                    )?.nome ?? "Setor não encontrado"
+                      }`}
+                  >
+                    <span>
+                      {
+                        setores?.find((setor) => setor.id === chamado.setorId)
+                          ?.nome
+                      }
+                    </span>
+                  </Tooltip>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {

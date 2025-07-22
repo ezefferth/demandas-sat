@@ -22,6 +22,7 @@ export default function AuthProvider({ children }: any) {
   // Configuração global do axios
   axios.defaults.withCredentials = true;
   axios.defaults.baseURL = "http://10.21.39.75:4001";
+  
   // axios.defaults.baseURL = "http://localhost:4123";
 
   const navigate = useNavigate();
@@ -35,41 +36,31 @@ export default function AuthProvider({ children }: any) {
   });
 
   useEffect(() => {
-    axiosInstance.interceptors.request.use((config) => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
-      }
-      return config;
-    });
+    // axiosInstance.interceptors.request.use((config) => {
+    //   const token = localStorage.getItem("authToken");
+    //   if (token) {
+    //     config.headers.Authorization = `Bearer ${token}`;
+    //   }
+    //   return config;
+    // });
     const verificarLogin = async () => {
       try {
-        const response = await axiosInstance.post("/verificarUsuario", {
-          headers: { "Content-Type": "application/json" },
-        });
-        // console.log("Usuário:", response);
-
-        if (response.status === 200) {
-          const data = response.data;
-          setUsuario(data.usuario);
-          // setToken(data.token);
-        }
+        const response = await axiosInstance.get("/verificarUsuario");
+        setUsuario(response.data.usuario);
       } catch (error) {
         console.error("Usuário não autenticado:", error);
         setUsuario(undefined);
-        // setToken(undefined);
         navigate("/login");
       } finally {
-        setLoading(false); // Finaliza o estado de carregamento
+        setLoading(false);
       }
     };
-    const inicializarUsuario = () => {
-      const token = localStorage.getItem("authToken");
-      if (token) {
-        axiosInstance
-          .get("/verificarUsuario")
-          .then((response) => setUsuario(response.data.usuario))
-          .catch(() => localStorage.removeItem("authToken")); // Remove token inválido
+    const inicializarUsuario = async () => {
+      try {
+        const response = await axiosInstance.get("/verificarUsuario");
+        setUsuario(response.data.usuario);
+      } catch {
+        setUsuario(undefined);
       }
     };
 
@@ -94,30 +85,9 @@ export default function AuthProvider({ children }: any) {
 
   // Função de login
   const login = async (nomeUsuario: string, senha: string) => {
-    try {
-      const response = await axios.post("/loginUsuario", {
-        nomeUsuario,
-        senha,
-      });
-
-      if (response.status < 200 || response.status >= 300) {
-        throw new Error("Erro de login");
-      }
-
-      const { usuario } = response.data;
-
-      if (usuario.status === false) {
-        window.alert("Usuário inativo, entre em contato com o administrador.");
-        logout();
-        return;
-      }
-
-      setUsuario(usuario);
-      navigate("/");
-    } catch (error) {
-      console.error("Erro ao fazer login:", error);
-      throw error;
-    }
+    const response = await axios.post("/loginUsuario", { nomeUsuario, senha });
+    setUsuario(response.data.usuario);
+    navigate("/");
   };
 
   return (
