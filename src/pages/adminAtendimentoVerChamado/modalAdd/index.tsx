@@ -7,6 +7,7 @@ import { CriarComentario } from "../../../components/data/fetch/comentario/criar
 import { LerComentarios } from "../../../components/data/fetch/comentario/lerComentarios";
 import { CriarDocumento } from "../../../components/data/fetch/documentos/criarDocumento";
 import { LerDocumento } from "../../../components/data/fetch/documentos/lerDocumentos";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -35,6 +36,8 @@ export default function ModalAddComentario({
   chamadoId,
   usuarioId,
 }: Props) {
+  const [loading, setLoading] = useState<boolean>(false);
+
   const [comentario, setComentario] = useState<string>("");
 
   const { setComentarios, setDocumentos } = useContext(DataContext);
@@ -62,40 +65,62 @@ export default function ModalAddComentario({
   }, [chamadoId, setComentarios]);
 
   const handleAdd = async () => {
-    try {
-      if (comentario.length >= 2) {
-        // 1) Cria o comentário e recebe o response com o ID
-        const response = await CriarComentario({
-          comentario,
-          usuarioId,
-          chamadoId,
-        });
-        const comentarioId = response.data.id;
+    if (loading) return;
+    setLoading(true);
 
-        // 2) Se tiver arquivo anexado
-        if (fileSelecionado) {
-          await CriarDocumento({
+    if (comentario.length <= 2) {
+      toast.error("Favor digitar o comentário corretamente!");
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // 1) Envia o comentário com feedback automático
+      const comentarioResponse = await toast.promise(
+        CriarComentario({ comentario, usuarioId, chamadoId }),
+        {
+          pending: "Enviando comentário...",
+          success: "Comentário criado com sucesso!",
+          error: "Erro ao criar comentário!",
+        }
+      );
+
+      const comentarioId = comentarioResponse.data.id;
+
+      // 2) Se houver arquivo selecionado, faz upload
+      if (fileSelecionado) {
+        await toast.promise(
+          CriarDocumento({
             nome: fileSelecionado.nome,
             mimeType: fileSelecionado.mimeType,
             conteudo: fileSelecionado.conteudoBase64,
-            chamadoId: Number(chamadoId), // Converte chamadoId para Number
-            comentarioId, // AQUI vai o ID do comentário
-          });
-        }
-
-        await LerDocumento({ chamadoId: Number(chamadoId), setDocumentos });
-
-        setOpenAdd(false);
-        setComentario("");
-        setFileSelecionado(null);
-        setTimeout(() => handleOnAdd(), 100);
-      } else {
-        window.alert("Favor digitar o comentário corretamente!");
+            chamadoId: Number(chamadoId),
+            comentarioId,
+          }),
+          {
+            pending: "Enviando anexo...",
+            success: "Anexo enviado com sucesso!",
+            error: "Erro ao enviar anexo.",
+          }
+        );
       }
+
+      // 3) Recarrega documentos
+      await LerDocumento({ chamadoId: Number(chamadoId), setDocumentos });
+
+      // 4) Limpa estado
+      setOpenAdd(false);
+      setComentario("");
+      setFileSelecionado(null);
+      setTimeout(() => handleOnAdd(), 100);
+
     } catch (e: any) {
+      toast.error("Erro inesperado ao adicionar comentário.");
       console.error(e.response?.request?.status);
       setComentario("");
       setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
   };
 

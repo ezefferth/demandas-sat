@@ -9,6 +9,8 @@ import { Status } from '../../../components/types';
 import { LerStatus } from '../../../components/data/fetch/status/lerStatus';
 import { AtualizarStatus } from '../../../components/data/fetch/prioridade/atualizarPrioridade';
 import { TextField } from '@mui/material';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -44,24 +46,49 @@ export default function ModalEditarStatus({ status, openEdit, handleCloseEdit, s
 
 
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleEdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!status) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = status.id
-    try {
-      await AtualizarStatus({ id, nome, cor })
-      setOpenEdit(false)
-      handleOnEdit()
-      setNome('')
+    if (nome.length < 3 || cor.length < 3) {
+      toast.error("Favor preencher corretamente o nome e a cor do status.");
+      setLoading(false);
+      return;
+    }
 
+    const id = status.id;
+
+    const promise: Promise<AxiosResponse> = AtualizarStatus({ id, nome, cor });
+
+    toast.promise(promise, {
+      pending: "Editando status...",
+      success: "Status editado com sucesso!",
+      error: "Erro ao editar status!",
+    });
+
+    try {
+      await promise;
+      setOpenEdit(false);
+      handleOnEdit();
+      setNome("");
+      setCor("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setNome('')
+      setNome("");
+      setCor("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   useEffect(() => {
     if (status) {

@@ -10,6 +10,8 @@ import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { AtualizarSetor } from '../../../components/data/fetch/setores/atualizarSetor';
 import { SelectChangeEvent, TextField } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -45,7 +47,7 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
   const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
 
   useEffect(() => {
-    if(!setor) return;
+    if (!setor) return;
 
     setNome(setor.nome);
 
@@ -58,7 +60,7 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
       setStatusSelected('Não');
     }
 
-    
+
   }, [setor])
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -72,24 +74,47 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
     }
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleREdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!setor) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = setor.id
-    try {
-      await AtualizarSetor({ id, nome, status })
-      setOpenEdit(false)
-      handleOnEdit()
-      setNome('')
+    if (nome.length < 2) {
+      toast.error("Favor preencher corretamente o nome do setor.");
+      setLoading(false);
+      return;
+    }
 
+    const id = setor.id;
+
+    const promise: Promise<AxiosResponse> = AtualizarSetor({ id, nome, status });
+
+    toast.promise(promise, {
+      pending: "Editando setor...",
+      success: "Setor editado com sucesso!",
+      error: "Erro ao editar setor!",
+    });
+
+    try {
+      await promise;
+      setOpenEdit(false);
+      handleOnEdit();
+      setNome("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setNome('')
+      setNome("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div>

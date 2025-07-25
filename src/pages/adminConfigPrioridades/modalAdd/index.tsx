@@ -8,6 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
 import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPrioridades';
 import { CriarPrioridade } from '../../../components/data/fetch/prioridade/criarPrioridade';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -37,22 +39,40 @@ export default function ModalAddPrioridade({ openAdd, handleClose, setOpenAdd }:
     await LerPrioridades({ setPrioridades })
 
   }
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleAdd = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    if (nome.length < 3 || cor.length < 3) {
+      toast.error("Favor digitar o nome da prioridade e a cor corretamente!");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = CriarPrioridade({ nome, cor });
+
+    toast.promise(promise, {
+      pending: "Criando prioridade...",
+      success: "Prioridade criada com sucesso!",
+      error: "Erro ao criar prioridade!",
+    });
+
     try {
-      if (nome.length >= 3 && cor.length >=3) {
-        await CriarPrioridade({ nome, cor })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do status ou cor corretamente!");
-      }
+      await promise;
+      setOpenAdd(false);
+      handleOnAdd();
+      setNome("");
+      setCor("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
-      setNome('')
       setOpenAdd(false);
+      setNome("");
+      setCor("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>

@@ -3,12 +3,14 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 // import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
-import {  Setor } from '../../../components/types';
+import { Setor } from '../../../components/types';
 import { RemoverSetor } from '../../../components/data/fetch/setores/removerSetor';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -39,22 +41,39 @@ export default function ModalRemoverSetor({ setor, openRemove, handleCloseRemove
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleRemove = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!setor) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = setor.id  
-    try {
-      await RemoverSetor({ id })
-      setOpenRemove(false)
-      handleOnRemove()
+    const id = setor.id;
 
+    const promise: Promise<AxiosResponse> = RemoverSetor({ id });
+
+    toast.promise(promise, {
+      pending: "Removendo setor...",
+      success: "Setor removido com sucesso!",
+      error: "Erro ao remover setor!",
+    });
+
+    try {
+      await promise;
+      setOpenRemove(false);
+      handleOnRemove();
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenRemove(false);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div>

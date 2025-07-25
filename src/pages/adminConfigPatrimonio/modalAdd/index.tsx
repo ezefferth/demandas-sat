@@ -8,6 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { CriarPatrimonio } from '../../../components/data/fetch/patrimonio/criarPatrimonio';
 import { LerPatrimonios } from '../../../components/data/fetch/patrimonio/lerPatrimonio';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -28,7 +30,7 @@ type Props = {
 
 export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }: Props) {
 
-  
+
 
   const [descricao, setDescricao] = useState<string>('')
   const [patrimonio, setPatrimonio] = useState<number | null>(null)
@@ -43,27 +45,43 @@ export default function ModalAddPatrimonio({ openAdd, handleClose, setOpenAdd }:
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handleAdd = async () => {
+
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    if (descricao.length <= 2) {
+      toast.error("Favor, preencher a descrição corretamente.");
+      setLoading(false);
+      return
+    }
+    const promise: Promise<AxiosResponse> = CriarPatrimonio({ descricao, patrimonio, tipoPatrimonioId, status, setorId })
+
+    toast.promise(promise, {
+      pending: "Enviando patrimônio...",
+      success: "Patrimônio criado com sucesso!",
+      error: "Erro ao criar patrimônio!",
+    });
+
     try {
-      if (descricao.length >= 2) {
-        await CriarPatrimonio({ descricao, patrimonio, tipoPatrimonioId, status, setorId })
-        setOpenAdd(false)
-        handleOnAdd()
-        setDescricao('')
-        setTipoPatrimonioId('')
-        setPatrimonio(null)
-        setStatus('')
-        setOpenAdd(false);    
-      } else {
-        window.alert("Favor digitar o nome do setor corretamente!");
-      }
+      await promise
+      setOpenAdd(false)
+      handleOnAdd()
+      setDescricao('')
+      setTipoPatrimonioId('')
+      setPatrimonio(null)
+      setStatus('')
+      setOpenAdd(false);
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setDescricao('')
       setTipoPatrimonioId('')
       setPatrimonio(0)
       setStatus('')
-      setOpenAdd(false);      
+      setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
   }
 

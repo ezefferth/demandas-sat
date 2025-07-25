@@ -3,11 +3,13 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import {  Assunto } from '../../../components/types';
+import { Assunto } from '../../../components/types';
 import { RemoverAssunto } from '../../../components/data/fetch/assuntos/removerAssuntos';
 import { LerAssuntos } from '../../../components/data/fetch/assuntos/lerAssuntos';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -38,20 +40,34 @@ export default function ModalRemoverAssunto({ assunto, openRemove, handleCloseRe
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handleRemove = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
     if (!assunto) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
-    const id = assunto.id  
+
+    const id = assunto.id
+
+    const promise: Promise<AxiosResponse> = RemoverAssunto({ id })
+
+    toast.promise(promise, {
+      pending: "Removendo assunto...",
+      success: "Assunto removido com sucesso!",
+      error: "Erro ao removido assunto!",
+    });
     try {
-      await RemoverAssunto({ id })
+      await promise
       setOpenRemove(false)
       handleOnRemove()
-
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenRemove(false);
+    } finally {
+      setLoading(false);
     }
   }
 

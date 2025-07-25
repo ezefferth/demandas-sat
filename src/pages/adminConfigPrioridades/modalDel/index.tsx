@@ -3,11 +3,13 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
-import {  Prioridade } from '../../../components/types';
+import { Prioridade } from '../../../components/types';
 import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPrioridades';
 import { RemoverPrioridade } from '../../../components/data/fetch/prioridade/removerStatus';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -38,22 +40,38 @@ export default function ModalRemoverPrioridade({ prioridade, openRemove, handleC
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleRemove = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!prioridade) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = prioridade.id
-    try {
-      await RemoverPrioridade({ id })
-      setOpenRemove(false)
-      handleOnRemove()
+    const id = prioridade.id;
 
+    const promise: Promise<AxiosResponse> = RemoverPrioridade({ id });
+
+    toast.promise(promise, {
+      pending: "Removendo prioridade...",
+      success: "Prioridade removida com sucesso!",
+      error: "Erro ao remover prioridade!",
+    });
+
+    try {
+      await promise;
+      setOpenRemove(false);
+      handleOnRemove();
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenRemove(false);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div>

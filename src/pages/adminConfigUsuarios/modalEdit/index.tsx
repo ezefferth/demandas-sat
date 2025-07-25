@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { LerUsuarios } from "../../../components/data/fetch/usuarios/lerUsuarios";
 import { AtualizarUsuario } from "../../../components/data/fetch/usuarios/atualizarUsuario";
+import { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -94,23 +96,62 @@ export default function ModalEditarUsuario({
     }
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleEdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!usuario) {
-      return null; // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
+    }
+
+    if (nome.length < 4 || nomeUsuario.length < 4) {
+      toast.error("Favor preencher corretamente o nome e o nome de usuário.");
+      setLoading(false);
+      return;
     }
 
     const id = usuario.id;
+
+    const promise: Promise<AxiosResponse> = AtualizarUsuario({
+      id,
+      nome,
+      senha,
+      admin,
+      nomeUsuario,
+      status,
+    });
+
+    toast.promise(promise, {
+      pending: "Editando usuário...",
+      success: "Usuário editado com sucesso!",
+      error: "Erro ao editar usuário!",
+    });
+
     try {
-      await AtualizarUsuario({ id, nome, senha, admin, nomeUsuario, status });
+      await promise;
       setOpenEdit(false);
       handleOnEdit();
       setNome("");
+      setNomeUsuario("");
+      setSenha("");
+      setAdmin(false);
+      setStatus(false);
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
       setNome("");
+      setNomeUsuario("");
+      setSenha("");
+      setAdmin(false);
+      setStatus(false);
+    } finally {
+      setLoading(false);
     }
   };
+
 
   return (
     <div>

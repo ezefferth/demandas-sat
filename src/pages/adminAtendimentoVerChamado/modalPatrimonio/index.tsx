@@ -9,6 +9,9 @@ import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados
 import { FaArrowRight, FaX } from "react-icons/fa6";
 import { AtualizarRemoverPatrimonioChamado } from '../../../components/data/fetch/chamados/atualizarRemoverPatrimonioChamado';
 
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -65,15 +68,24 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
     }
   }
 
-  const handleCadastrar = async () => {
-    try {
-      // Faz o cadastro de todos os patrimônios na lista auxiliar, um por um
+  const [loading, setLoading] = useState<boolean>(false);
 
-      await AtualizarPatrimonioChamado({ id: chamado.id, patrimonioId });
+  const handleCadastrar = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    const promise: Promise<AxiosResponse> = AtualizarPatrimonioChamado({ id: chamado.id, patrimonioId });
+
+    toast.promise(promise, {
+      pending: "Enviando comentario...",
+      success: "Comentario criado com sucesso!",
+      error: "Erro ao criar comentario!",
+    });
+    try {
+      await promise;
 
       console.log("Todos os patrimônios cadastrados com sucesso!");
 
-      // Limpa a lista auxiliar
       setPatrimoniosAux(undefined);
       setPatrimonioId('');
 
@@ -81,16 +93,30 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
       await LerChamados({ setChamados });
     } catch (e) {
       console.error("Erro ao cadastrar patrimônios:", e);
+    } finally {
+      setLoading(false);
     }
   };
 
+  const [loadingR, setLoadingR] = useState<boolean>(false);
   const handleRemover = async (patrimonioId: string) => {
+    if (loadingR) return; // impede múltiplos cliques
+    setLoadingR(true);
+
+    const promise: Promise<AxiosResponse> = AtualizarRemoverPatrimonioChamado({ id: chamado.id, patrimonioId });
+
+
+    toast.promise(promise, {
+      pending: "Removendo patrimônios...",
+      success: "Patrimônios removido com sucesso!",
+      error: "Erro ao remover patrimônio!",
+    });
     try {
       // Faz o cadastro de todos os patrimônios na lista auxiliar, um por um
 
-      await AtualizarRemoverPatrimonioChamado({ id: chamado.id, patrimonioId });
+      await promise
 
-      console.log("Todos os patrimônios cadastrados com sucesso!");
+      console.log("Todos os patrimônios removidos com sucesso!");
 
       // Limpa a lista auxiliar
       setPatrimoniosAux(undefined);
@@ -100,6 +126,8 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
       await LerChamados({ setChamados });
     } catch (e) {
       console.error("Erro ao remover patrimônios:", e);
+    } finally {
+      setLoadingR(false);
     }
   };
   const handleClose = () => {

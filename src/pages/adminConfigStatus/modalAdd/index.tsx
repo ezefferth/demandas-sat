@@ -8,6 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
 import { LerStatus } from '../../../components/data/fetch/status/lerStatus';
 import { CriarStatus } from '../../../components/data/fetch/status/criarStatus';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -38,21 +40,42 @@ export default function ModalAddStatus({ openAdd, handleClose, setOpenAdd }: Pro
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleAdd = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    if (nome.length < 3 || cor.length < 3) {
+      toast.error("Favor digitar o nome do status e a cor corretamente!");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = CriarStatus({ nome, cor });
+
+    toast.promise(promise, {
+      pending: "Criando status...",
+      success: "Status criado com sucesso!",
+      error: "Erro ao criar status!",
+    });
+
     try {
-      if (nome.length >= 3 && cor.length >=3) {
-        await CriarStatus({ nome, cor })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do status ou cor corretamente!");
-      }
+      await promise;
+      setOpenAdd(false);
+      handleOnAdd();
+      setNome("");
+      setCor("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
-      setNome('')
       setOpenAdd(false);
+      setNome("");
+      setCor("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div>

@@ -8,6 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { CriarSetor } from '../../../components/data/fetch/setores/criarSetor';
 import { TextField } from '@mui/material';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -36,22 +38,39 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
     await LerSetores({ setSetores })
 
   }
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleAdd = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    if (nome.length < 2) {
+      toast.error("Favor digitar o nome do setor corretamente!");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = CriarSetor({ nome });
+
+    toast.promise(promise, {
+      pending: "Criando setor...",
+      success: "Setor criado com sucesso!",
+      error: "Erro ao criar setor!",
+    });
+
     try {
-      if (nome.length >= 2) {
-        await CriarSetor({ nome })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do setor corretamente!");
-      }
+      await promise;
+      setOpenAdd(false);
+      handleOnAdd();
+      setNome("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
-      setNome('')
       setOpenAdd(false);
+      setNome("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div>
@@ -67,7 +86,7 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
           </h2>
           <div className='mt-5'>
             {/* <label>Nome</label> */}
-            <TextField id="standard-basic" label="Nome do setor" variant="standard" onChange={e => setNome(e.target.value)} sx={{width:'16rem'}}/>
+            <TextField id="standard-basic" label="Nome do setor" variant="standard" onChange={e => setNome(e.target.value)} sx={{ width: '16rem' }} />
           </div>
 
           <div className='flex justify-center gap-4 mt-4'>

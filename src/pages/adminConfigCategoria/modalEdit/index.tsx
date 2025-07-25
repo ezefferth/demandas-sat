@@ -9,6 +9,8 @@ import { LerCategorias } from '../../../components/data/fetch/categoria/lerCateg
 import { Categoria } from '../../../components/types';
 import { AtualizarCategoria } from '../../../components/data/fetch/categoria/atualizarCategoria';
 import { TextField } from '@mui/material';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -42,23 +44,36 @@ export default function ModalEditarCategoria({ categoria, openEdit, handleCloseE
   const [nome, setNome] = useState<string>('');
 
 
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleRemove = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
     if (!categoria) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
     const id = categoria.id
+
+    const promise: Promise<AxiosResponse> = AtualizarCategoria({ id, nome })
+
+    toast.promise(promise, {
+      pending: "Removendo categoria...",
+      success: "Categoria removida com sucesso!",
+      error: "Erro ao remover categoria!",
+    });
+
     try {
-      await AtualizarCategoria({ id, nome })
+      await promise
       setOpenEdit(false)
       handleOnEdit()
       setNome('')
-
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
       setNome('')
+    } finally {
+      setLoading(false);
     }
   }
 

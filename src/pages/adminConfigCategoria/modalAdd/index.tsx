@@ -8,6 +8,8 @@ import { CriarCategoria } from '../../../components/data/fetch/categoria/criarCa
 import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -37,21 +39,39 @@ export default function ModalAddCategoria({ openAdd, handleClose, setOpenAdd }: 
     await LerCategorias({ setCategorias })
 
   }
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleAdd = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    if (nome.length <= 4) {
+      toast.error("Favor digitar o nome do setor corretamente!");
+      setLoading(false)
+      return
+    }
+
+    const promise: Promise<AxiosResponse> = CriarCategoria({ nome })
+
+    toast.promise(promise, {
+      pending: "Enviando categoria...",
+      success: "Categoria criada com sucesso!",
+      error: "Erro ao criar categoria!",
+    });
+
     try {
-      if (nome.length >= 4) {
-        await CriarCategoria({ nome })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do setor corretamente!");
-      }
+      await promise
+      setOpenAdd(false)
+      handleOnAdd()
+
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setNome('')
       setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
+
   }
 
   return (

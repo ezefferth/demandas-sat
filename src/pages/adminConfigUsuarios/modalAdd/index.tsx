@@ -10,6 +10,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { LerUsuarios } from '../../../components/data/fetch/usuarios/lerUsuarios';
 import { CriarUsuario } from '../../../components/data/fetch/usuarios/criarUsuario';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -44,29 +46,59 @@ export default function ModalAddUsuario({ openAdd, handleClose, setOpenAdd }: Pr
   }
 
 
+  const[loading, setLoading] = useState<boolean>(false);
+
   const handleAdd = async () => {
+    if (loading) return;
+    setLoading(true);
+
+    if (nome.length < 4 || nomeUsuario.length < 4) {
+      toast.error("Favor digitar corretamente o nome e o nome de usuário!");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = CriarUsuario({
+      nome,
+      senha,
+      admin,
+      nomeUsuario,
+    });
+
+    toast.promise(promise, {
+      pending: "Criando usuário...",
+      success: "Usuário criado com sucesso!",
+      error: "Erro ao criar usuário!",
+    });
+
     try {
-      if (nome.length >= 4 && nomeUsuario.length >= 4) {
-        await CriarUsuario({ nome, senha, admin, nomeUsuario })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do usuario corretamente!");
-      }
+      await promise;
+      setOpenAdd(false);
+      handleOnAdd();
+      setNome("");
+      setNomeUsuario("");
+      setSenha("");
+      setAdmin(false);
     } catch (e: any) {
       console.error(e.response?.request?.status);
-      setNome('')
       setOpenAdd(false);
+      setNome("");
+      setNomeUsuario("");
+      setSenha("");
+      setAdmin(false);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   const handleChange = (event: SelectChangeEvent) => {
-    
-    if(event.target.value == 'Sim'){
+
+    if (event.target.value == 'Sim') {
       setAdmin(true);
       setAdminSelected('Sim');
     }
-    else{
+    else {
       setAdmin(false);
       setAdminSelected('Não');
     }
@@ -106,7 +138,7 @@ export default function ModalAddUsuario({ openAdd, handleClose, setOpenAdd }: Pr
               <MenuItem key='Sim' value='Sim'>
                 Sim
               </MenuItem>
-              
+
             </Select>
           </FormControl>
           <div className='mt-2 mb-4'>

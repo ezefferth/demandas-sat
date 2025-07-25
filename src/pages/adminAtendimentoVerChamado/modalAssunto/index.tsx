@@ -14,6 +14,9 @@ import { AuthContext } from "../../../components/data/context/authContext";
 import { AtualizarAssuntoChamado } from "../../../components/data/fetch/chamados/atualizarAssuntoChamado";
 import { LerChamados } from "../../../components/data/fetch/chamados/lerChamados";
 
+import { toast } from 'react-toastify';
+import { AxiosResponse } from "axios";
+
 
 const style = {
   position: "absolute",
@@ -55,25 +58,42 @@ export default function ModalAtualizaAssunto({
     await LerChamados({ setChamados });
   };
 
-  const handle = async () => {
-    const usuarioId = usuario!.id;
-    try {
-      if (
-        assuntoId.length >= 3 &&
-        usuarioId.length >= 3
-      ) {
-        await AtualizarAssuntoChamado({ id: chamadoId, assuntoId: assuntoId })
+  const [loading, setLoading] = useState<boolean>(false);
 
-        setOpenAdd(false);
-        setAssuntoId("");
-        handleOnAdd();
-      } else {
-        window.alert("Preencha todos os campos obrigatórios.");
-      }
+  const handle = async () => {
+    if (loading) return; // impede múltiplos cliques
+
+    setLoading(true);
+    const usuarioId = usuario!.id;
+
+    if (
+      assuntoId.length <= 3 &&
+      usuarioId.length <= 3
+    ) {
+      toast.error("Preencha todos os campos obrigatórios!");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = AtualizarAssuntoChamado({ id: chamadoId, assuntoId: assuntoId })
+
+    toast.promise(promise, {
+      pending: "Atualizando assunto...",
+      success: "Comentario atualizado com sucesso!",
+      error: "Erro ao atualizar comentario!",
+    });
+
+    try {
+      await promise;
+      setOpenAdd(false);
+      setAssuntoId("");
+      handleOnAdd();
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setAssuntoId("");
       setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -186,6 +206,12 @@ export default function ModalAtualizaAssunto({
           </div>
         </Box>
       </Modal>
+      {/* <Backdrop
+        sx={(theme) => ({ color: '#fff', zIndex: theme.zIndex.drawer + 1 })}
+        open={loading}
+      >
+        <CircularProgress color="inherit" />
+      </Backdrop> */}
     </div>
   );
 }

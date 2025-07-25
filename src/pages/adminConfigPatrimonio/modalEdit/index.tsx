@@ -10,6 +10,8 @@ import { SelectChangeEvent, TextField } from '@mui/material';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import { AtualizarPatrimonio } from '../../../components/data/fetch/patrimonio/atualizarPatrimonio';
 import { LerPatrimonios } from '../../../components/data/fetch/patrimonio/lerPatrimonio';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -56,35 +58,56 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
     }
   }, [patrimonio])
 
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleREdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!patrimonio) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      return null; // não continua se não houver patrimonio
     }
 
-    const id = patrimonio.id
+    const id: string = patrimonio.id; // OK
+    const patrimonioNumero: number = parseInt(newPatrimonio); // novo nome aqui
+
+    const promise: Promise<AxiosResponse> = AtualizarPatrimonio({
+      id,
+      descricao,
+      status,
+      tipoPatrimonioId,
+      patrimonio: patrimonioNumero, // uso aqui
+      setorId,
+    });
+
+    toast.promise(promise, {
+      pending: "Editando patrimônio...",
+      success: "Patrimônio editado com sucesso!",
+      error: "Erro ao editar patrimônio!",
+    });
 
     try {
-      const patrimonio: number = parseInt(newPatrimonio)
-      await AtualizarPatrimonio({ id, descricao, status, tipoPatrimonioId, patrimonio, setorId })
-      setOpenEdit(false)
-      handleOnEdit()
-      setDescricao('')
-      setTipoPatrimonioId('')
-      setStatus('')
-      setNewPatrimonio('')
-      setSetorId('')
-
+      await promise;
+      setOpenEdit(false);
+      handleOnEdit();
+      setDescricao("");
+      setTipoPatrimonioId("");
+      setStatus("");
+      setNewPatrimonio("");
+      setSetorId("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setDescricao('')
-      setTipoPatrimonioId('')
-      setStatus('')
-      setNewPatrimonio('')
-      setSetorId('')
+      setDescricao("");
+      setTipoPatrimonioId("");
+      setStatus("");
+      setNewPatrimonio("");
+      setSetorId("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   const handleChange = (event: SelectChangeEvent) => {
     setTipoPatrimonioId(event.target.value)
@@ -116,11 +139,11 @@ export default function ModalEditarPatrimonio({ patrimonio, openEdit, handleClos
           </p>
 
           <div className='mt-5 mb-2'>
-            <TextField id="standard-basic" label="Descrição" variant="standard" onChange={(e) => setDescricao(e.target.value)} sx={{ width: '100%' }} value={descricao}/>
+            <TextField id="standard-basic" label="Descrição" variant="standard" onChange={(e) => setDescricao(e.target.value)} sx={{ width: '100%' }} value={descricao} />
           </div>
           <div className='mt-1 mb-2'>
             {/* <label>Nome</label> */}
-            <TextField id="standard-basic" label="Número do patrimônio" type='text' variant="standard" onChange={e => setNewPatrimonio(e.target.value)} sx={{ width: '100%' }} value={newPatrimonio}/>
+            <TextField id="standard-basic" label="Número do patrimônio" type='text' variant="standard" onChange={e => setNewPatrimonio(e.target.value)} sx={{ width: '100%' }} value={newPatrimonio} />
           </div>
           <FormControl id='standard-basic' variant="standard" sx={{ width: '100%', }}>
             <InputLabel id="demo-simple-select-standard-label" sx={{}}>Status do Equipamento</InputLabel>

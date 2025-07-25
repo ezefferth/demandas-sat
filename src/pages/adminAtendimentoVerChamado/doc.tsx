@@ -88,23 +88,23 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos }) => {
                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
                   doc.mimeType === "application/vnd.ms-excel" || // .xls
                   doc.mimeType ===
-                    "application/vnd.oasis.opendocument.spreadsheet") && ( // .ods
-                  <FaFileExcel
-                    size={20}
-                    className="text-slate-600"
-                  />
-                )}
+                  "application/vnd.oasis.opendocument.spreadsheet") && ( // .ods
+                    <FaFileExcel
+                      size={20}
+                      className="text-slate-600"
+                    />
+                  )}
 
                 {(doc.mimeType ===
                   "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || // .docx
                   doc.mimeType === "application/msword" || // .doc
                   doc.mimeType ===
-                    "application/vnd.oasis.opendocument.text") && ( // .odt
-                  <FaFileWord
-                    size={20}
-                    className="text-slate-600"
-                  />
-                )}
+                  "application/vnd.oasis.opendocument.text") && ( // .odt
+                    <FaFileWord
+                      size={20}
+                      className="text-slate-600"
+                    />
+                  )}
 
                 {doc.mimeType === "text/csv" && (
                   <FaFileCsv
@@ -117,12 +117,12 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos }) => {
                 {!doc.mimeType.startsWith("image/") &&
                   doc.mimeType !== "application/pdf" &&
                   doc.mimeType !==
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
                   doc.mimeType !== "application/vnd.ms-excel" &&
                   doc.mimeType !==
-                    "application/vnd.oasis.opendocument.spreadsheet" &&
+                  "application/vnd.oasis.opendocument.spreadsheet" &&
                   doc.mimeType !==
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
                   doc.mimeType !== "application/msword" &&
                   doc.mimeType !== "application/vnd.oasis.opendocument.text" &&
                   doc.mimeType !== "text/csv" && (
@@ -166,18 +166,18 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
   documentos,
   id,
 }) => {
-  // const { setDocumentos } = React.useContext(DataContext);
+  const { setDocumentos } = React.useContext(DataContext);
 
-  // const handleDelete = async (id: string, chamadoId: Number) => {
-  //   try {
-  //     await RemoverDocumento({ id });
-  //     await LerDocumento({ chamadoId, setDocumentos });
-  //   } catch (error) {
-  //     console.error("Erro ao remover documento:", error);
-  //     window.alert("Erro ao remover documento. Tente novamente mais tarde.");
-  //     // Aqui você pode adicionar um toast ou mensagem de erro para o usuário
-  //   }
-  // };
+  const handleDelete = async (id: string, chamadoId: Number) => {
+    try {
+      await RemoverDocumento({ id });
+      await LerDocumento({ chamadoId, setDocumentos });
+    } catch (error) {
+      console.error("Erro ao remover documento:", error);
+      window.alert("Erro ao remover documento. Tente novamente mais tarde.");
+      // Aqui você pode adicionar um toast ou mensagem de erro para o usuário
+    }
+  };
 
   return (
     <div className="space-y-2">
@@ -241,23 +241,23 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
                   "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" || // .xlsx
                   doc.mimeType === "application/vnd.ms-excel" || // .xls
                   doc.mimeType ===
-                    "application/vnd.oasis.opendocument.spreadsheet") && ( // .ods
-                  <FaFileExcel
-                    size={20}
-                    className="text-slate-600"
-                  />
-                )}
+                  "application/vnd.oasis.opendocument.spreadsheet") && ( // .ods
+                    <FaFileExcel
+                      size={20}
+                      className="text-slate-600"
+                    />
+                  )}
 
                 {(doc.mimeType ===
                   "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || // .docx
                   doc.mimeType === "application/msword" || // .doc
                   doc.mimeType ===
-                    "application/vnd.oasis.opendocument.text") && ( // .odt
-                  <FaFileWord
-                    size={20}
-                    className="text-slate-600"
-                  />
-                )}
+                  "application/vnd.oasis.opendocument.text") && ( // .odt
+                    <FaFileWord
+                      size={20}
+                      className="text-slate-600"
+                    />
+                  )}
 
                 {doc.mimeType === "text/csv" && (
                   <FaFileCsv
@@ -270,12 +270,12 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
                 {!doc.mimeType.startsWith("image/") &&
                   doc.mimeType !== "application/pdf" &&
                   doc.mimeType !==
-                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
+                  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" &&
                   doc.mimeType !== "application/vnd.ms-excel" &&
                   doc.mimeType !==
-                    "application/vnd.oasis.opendocument.spreadsheet" &&
+                  "application/vnd.oasis.opendocument.spreadsheet" &&
                   doc.mimeType !==
-                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
+                  "application/vnd.openxmlformats-officedocument.wordprocessingml.document" &&
                   doc.mimeType !== "application/msword" &&
                   doc.mimeType !== "application/vnd.oasis.opendocument.text" &&
                   doc.mimeType !== "text/csv" && (
@@ -290,7 +290,7 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
               </button>
 
               {/* Botão de exclusão */}
-              {/* <button
+              <button
                 onClick={() => {
                   const confirmed = window.confirm(
                     "Deseja realmente excluir este documento?"
@@ -303,7 +303,7 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
                 title="Excluir documento"
               >
                 <FaTrash />
-              </button> */}
+              </button>
             </div>
           );
         }

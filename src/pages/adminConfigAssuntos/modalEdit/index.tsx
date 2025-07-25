@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import { AtualizarAssunto } from "../../../components/data/fetch/assuntos/atualizarAssunto";
 import { LerAssuntos } from "../../../components/data/fetch/assuntos/lerAssuntos";
+import { AxiosResponse } from "axios";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -69,12 +71,25 @@ export default function ModalEditarAssunto({
     setSetorId(event.target.value);
   };
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleEdit = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
     if (!assunto) return null;
 
     const id = assunto.id;
+
+    const promise: Promise<AxiosResponse> = AtualizarAssunto({ id, nome, categoriaId, tempoLimite, setorId });
+
+    toast.promise(promise, {
+      pending: "Editando assunto...",
+      success: "Assunto editado com sucesso!",
+      error: "Erro ao editar assunto!",
+    });
     try {
-      await AtualizarAssunto({ id, nome, categoriaId, tempoLimite, setorId });
+      await promise
       setOpenEdit(false);
       handleOnEdit();
       setNome("");
@@ -82,6 +97,8 @@ export default function ModalEditarAssunto({
       console.error(e.response?.request?.status);
       setOpenEdit(false);
       setNome("");
+    } finally {
+      setLoading(false);
     }
   };
 

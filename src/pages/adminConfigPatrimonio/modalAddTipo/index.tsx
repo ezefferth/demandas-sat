@@ -8,6 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
 import { CriarTipoPatrimonio } from '../../../components/data/fetch/tipoPatrimonio/criarTipoPatrimonio';
 import { LerTipoPatrimonios } from '../../../components/data/fetch/tipoPatrimonio/lerTipoPatrimonio';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -35,20 +37,36 @@ export default function ModalAddPatrimonioTipo({ openAdd, handleClose, setOpenAd
   const handleOnAdd = async () => {
     await LerTipoPatrimonios({ setTipoPatrimonio })
   }
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleAdd = async () => {
+
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    if (nome.length <= 2) {
+      toast.error("Favor, preencher o nome corretamente.");
+      setLoading(false);
+      return
+    }
+
+    const promise: Promise<AxiosResponse> = CriarTipoPatrimonio({ nome })
+
+    toast.promise(promise, {
+      pending: "Enviando tipo patrimônio...",
+      success: "Tipo Patrimônio criado com sucesso!",
+      error: "Erro ao criar tipo patrimônio!",
+    });
+
     try {
-      if (nome.length >= 2) {
-        await CriarTipoPatrimonio({ nome })
-        setOpenAdd(false)
-        handleOnAdd()
-      } else {
-        window.alert("Favor digitar o nome do tipo patrimônio corretamente!");
-      }
+      await promise
+      setOpenAdd(false)
+      handleOnAdd()
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setNome('')
       setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
   }
 

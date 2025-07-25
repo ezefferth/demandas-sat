@@ -9,6 +9,8 @@ import { Status } from '../../../components/types';
 import { TextField } from '@mui/material';
 import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPrioridades';
 import { AtualizarPrioridade } from '../../../components/data/fetch/status/atualizarStatus';
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
 
 const style = {
   position: 'absolute',
@@ -44,24 +46,49 @@ export default function ModalEditarPrioridade({ prioridade, openEdit, handleClos
 
 
 
+  const [loading, setLoading] = useState<boolean>(false);
+
   const handleEdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!prioridade) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = prioridade.id
-    try {
-      await AtualizarPrioridade({ id, nome, cor })
-      setOpenEdit(false)
-      handleOnEdit()
-      setNome('')
+    if (nome.length < 3 || cor.length < 3) {
+      toast.error("Favor preencher corretamente o nome e a cor da prioridade.");
+      setLoading(false);
+      return;
+    }
 
+    const id = prioridade.id;
+
+    const promise: Promise<AxiosResponse> = AtualizarPrioridade({ id, nome, cor });
+
+    toast.promise(promise, {
+      pending: "Editando prioridade...",
+      success: "Prioridade editada com sucesso!",
+      error: "Erro ao editar prioridade!",
+    });
+
+    try {
+      await promise;
+      setOpenEdit(false);
+      handleOnEdit();
+      setNome("");
+      setCor("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setNome('')
+      setNome("");
+      setCor("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   useEffect(() => {
     if (prioridade) {

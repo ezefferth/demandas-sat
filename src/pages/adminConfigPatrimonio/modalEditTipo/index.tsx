@@ -10,6 +10,8 @@ import { TextField } from '@mui/material';
 
 import { LerTipoPatrimonios } from '../../../components/data/fetch/tipoPatrimonio/lerTipoPatrimonio';
 import { AtualizarTipoPatrimonio } from '../../../components/data/fetch/tipoPatrimonio/atualizarTipoPatrimonio';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -42,25 +44,40 @@ export default function ModalEditarTipoPatrimonio({ tipoPatrimonio, openEdit, ha
 
   const [nome, setNome] = useState<string>(tipoPatrimonio?.nome || '');
 
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleREdit = async () => {
+    if (loading) return;
+    setLoading(true);
+
     if (!tipoPatrimonio) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
+      setLoading(false);
+      return null;
     }
 
-    const id = tipoPatrimonio.id
-    try {
-      await AtualizarTipoPatrimonio({ id, nome })
-      setOpenEdit(false)
-      handleOnEdit()
-      setNome('')
+    const id = tipoPatrimonio.id;
 
+    const promise: Promise<AxiosResponse> = AtualizarTipoPatrimonio({ id, nome });
+
+    toast.promise(promise, {
+      pending: "Editando tipo de patrimônio...",
+      success: "Tipo de patrimônio editado com sucesso!",
+      error: "Erro ao editar tipo de patrimônio!",
+    });
+
+    try {
+      await promise;
+      setOpenEdit(false);
+      handleOnEdit();
+      setNome("");
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpenEdit(false);
-      setNome('')
+      setNome("");
+    } finally {
+      setLoading(false);
     }
-  }
+  };
+
 
   return (
     <div>

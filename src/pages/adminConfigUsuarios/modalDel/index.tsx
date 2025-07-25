@@ -3,11 +3,13 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { Usuario } from '../../../components/types';
 import { RemoverUsuario } from '../../../components/data/fetch/usuarios/removerUsuario';
 import { LerUsuarios } from '../../../components/data/fetch/usuarios/lerUsuarios';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -37,22 +39,39 @@ export default function ModalRemoverUsuario({ usuario, openRemove, handleCloseRe
     await LerUsuarios({ setUsuarios })
   }
 
-  const handleRemove = async () => {
-    if (!usuario) {
-      return null;  // Caso a categoria seja null, não renderiza o modal
-    }
+  const [loading, setLoading] = useState<boolean>(false);
 
-    const id = usuario.id
-    try {
-      await RemoverUsuario({ id })
-      setOpenRemove(false)
-      handleOnRemove()
+const handleRemove = async () => {
+  if (loading) return;
+  setLoading(true);
 
-    } catch (e: any) {
-      console.error(e.response?.request?.status);
-      setOpenRemove(false);
-    }
+  if (!usuario) {
+    setLoading(false);
+    return null;
   }
+
+  const id = usuario.id;
+
+  const promise: Promise<AxiosResponse> = RemoverUsuario({ id });
+
+  toast.promise(promise, {
+    pending: "Removendo usuário...",
+    success: "Usuário removido com sucesso!",
+    error: "Erro ao remover usuário!",
+  });
+
+  try {
+    await promise;
+    setOpenRemove(false);
+    handleOnRemove();
+  } catch (e: any) {
+    console.error(e.response?.request?.status);
+    setOpenRemove(false);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div>

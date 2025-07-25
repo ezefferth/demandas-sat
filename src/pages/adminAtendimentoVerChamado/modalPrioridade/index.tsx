@@ -11,6 +11,9 @@ import { Chamado } from '../../../components/types';
 import { AtualizarPrioridadeChamado } from '../../../components/data/fetch/chamados/atualizarPrioridadeChamado';
 import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
 
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -43,19 +46,35 @@ export default function ModalPrioridade({ open, handleClose, setOpen, chamado }:
       setPrioridadeId(chamado.prioridadeId || '');
     }
   }, [chamado])
+  const [loading, setLoading] = useState<boolean>(false);
+
 
   const handle = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    const promise: Promise<AxiosResponse> = AtualizarPrioridadeChamado({ id: chamado.id, prioridadeId });
+
+    toast.promise(promise, {
+      pending: "Atualizando prioridade...",
+      success: "Prioridade atualizada com sucesso!",
+      error: "Erro ao atualizar prioridade!",
+    });
+
     try {
-      await AtualizarPrioridadeChamado({ id: chamado.id, prioridadeId });
+      await promise
       setOpen(false);
 
-      await LerChamados({setChamados})
+      await LerChamados({ setChamados })
 
       // Atualiza o contexto global ou o estado local do chamado
       //onUpdate(updatedChamado);
     } catch (e: any) {
+      toast.error("Erro ao atualizar prioridade!");
       console.error(e.response?.request?.status);
       setOpen(false);
+    } finally {
+      setLoading(false);
     }
   };
 

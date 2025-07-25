@@ -3,12 +3,14 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 // import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
 import { TipoPatrimonio } from '../../../components/types';
 import { RemoverTipoPatrimonio } from '../../../components/data/fetch/tipoPatrimonio/removerTipoPatrimonio';
 import { LerTipoPatrimonios } from '../../../components/data/fetch/tipoPatrimonio/lerTipoPatrimonio';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -39,14 +41,26 @@ export default function ModalRemoverTipoPatrimonio({ tipoPatrimonio, openRemove,
 
   }
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handleRemove = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true)
     if (!tipoPatrimonio) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
     const id = tipoPatrimonio.id
+
+    const promise: Promise<AxiosResponse> = RemoverTipoPatrimonio({ id })
+
+    toast.promise(promise, {
+      pending: "Removendo tipo patrimônio...",
+      success: "Tipo Patrimônio removido com sucesso!",
+      error: "Erro ao remover tipo patrimônio!",
+    });
+
     try {
-      await RemoverTipoPatrimonio({ id })
+      await promise
       setOpenRemove(false)
       handleOnRemove()
 

@@ -3,12 +3,14 @@
 
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 // import { LerCategorias } from '../../../components/data/fetch/categoria/lerCategoria';
-import {  Patrimonio } from '../../../components/types';
+import { Patrimonio } from '../../../components/types';
 import { RemoverPatrimonio } from '../../../components/data/fetch/patrimonio/removerPatrimonio';
 import { LerPatrimonios } from '../../../components/data/fetch/patrimonio/lerPatrimonio';
+import { AxiosResponse } from 'axios';
+import { toast } from 'react-toastify';
 
 const style = {
   position: 'absolute',
@@ -38,15 +40,27 @@ export default function ModalRemovePatrimonio({ patrimonio, openRemove, handleCl
     await LerPatrimonios({ setPatrimonios })
   }
 
-
+  const [loading, setLoading] = useState<boolean>(false);
   const handleRemove = async () => {
+
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
     if (!patrimonio) {
       return null;  // Caso a categoria seja null, não renderiza o modal
     }
 
-    const id = patrimonio.id  
+    const id = patrimonio.id
+
+    const promise: Promise<AxiosResponse> = RemoverPatrimonio({ id })
+
+    toast.promise(promise, {
+      pending: "Removendo patrimônio...",
+      success: "Patrimônio removido com sucesso!",
+      error: "Erro ao remover patrimônio!",
+    });
     try {
-      await RemoverPatrimonio({ id })
+      await promise
       setOpenRemove(false)
       handleOnRemove()
 

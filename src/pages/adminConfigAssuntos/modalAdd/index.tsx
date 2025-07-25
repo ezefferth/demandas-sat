@@ -12,6 +12,8 @@ import {
   SelectChangeEvent,
   TextField,
 } from "@mui/material";
+import { toast } from "react-toastify";
+import { AxiosResponse } from "axios";
 
 const style = {
   position: "absolute",
@@ -51,19 +53,36 @@ export default function ModalAddAssunto({
   const [categoriaId, setCategoriaId] = useState<string>("");
   const [setorId, setSetorId] = useState<string>("");
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handleAdd = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    if (nome.length <= 4 && tempoLimite <= 1) {
+      toast.error("Nome do assunto deve ser superior a 4 caracteres.");
+      setLoading(false);
+      return;
+    }
+
+    const promise: Promise<AxiosResponse> = CriarAssunto({ nome, categoriaId, tempoLimite, setorId });
+
+    toast.promise(promise, {
+      pending: "Enviando assunto...",
+      success: "Assunto criado com sucesso!",
+      error: "Erro ao criar assunto!",
+    });
+
     try {
-      if (nome.length >= 4 && tempoLimite > 1) {
-        await CriarAssunto({ nome, categoriaId, tempoLimite, setorId });
-        setOpenAdd(false);
-        handleOnAdd();
-      } else {
-        window.alert("Favor digitar o nome do setor corretamente!");
-      }
+      await promise
+      setOpenAdd(false);
+      handleOnAdd();
+
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setNome("");
       setOpenAdd(false);
+    } finally {
+      setLoading(false);
     }
   };
   const handleChange = (event: SelectChangeEvent) => {

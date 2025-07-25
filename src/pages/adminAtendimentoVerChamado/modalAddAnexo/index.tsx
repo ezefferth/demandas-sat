@@ -4,6 +4,8 @@ import { useContext, useState } from "react";
 import { DataContext } from "../../../components/data/context/dataContext";
 import { LerDocumento } from "../../../components/data/fetch/documentos/lerDocumentos";
 import { CriarDocumento } from "../../../components/data/fetch/documentos/criarDocumento";
+import { toast } from "react-toastify";
+import { AxiosResponse } from "axios";
 
 const style = {
   position: "absolute",
@@ -30,7 +32,7 @@ export default function ModalAddAnexo({
   setOpenAdd,
   chamadoId,
 }: // comentarioId, // Se for usar, descomente aqui e no handleAdd
-Props) {
+  Props) {
   const [nome, setNome] = useState<string>("");
   const [mimeType, setMimeType] = useState<string>("");
   const [conteudo, setConteudo] = useState<string>(""); // Inicialize com string vazia
@@ -70,8 +72,12 @@ Props) {
     };
     reader.readAsDataURL(file); // Lê o arquivo como Data URL (Base64)
   };
-
+  const [loading, setLoading] = useState(false);
   const handleAdd = async () => {
+    if (loading) return;
+
+    setLoading(true);
+
     if (!conteudo) {
       window.alert("Por favor, selecione um anexo para inserir.");
       return;
@@ -82,14 +88,22 @@ Props) {
       return;
     }
 
+    const promise: Promise<AxiosResponse> = CriarDocumento({
+      nome,
+      mimeType,
+      conteudo,
+      chamadoId,
+      // comentarioId, // Descomente se for usar
+    });
+
+    toast.promise(promise, {
+      pending: "Enviando anexo...",
+      success: "Anexo criado com sucesso!",
+      error: "Erro ao criar anexo!",
+    });
+
     try {
-      await CriarDocumento({
-        nome,
-        mimeType,
-        conteudo,
-        chamadoId,
-        // comentarioId, // Descomente se for usar
-      });
+      await promise
       setOpenAdd(false);
       // Um pequeno delay para garantir que o modal feche antes de recarregar
       // ou para dar tempo do backend processar completamente.
@@ -100,15 +114,13 @@ Props) {
       setNome("");
       setMimeType("");
       setConteudo("");
+
     } catch (e: any) {
       console.error("Erro ao adicionar documento:", e);
-      // Exibe uma mensagem de erro mais amigável para o usuário
-      const errorMessage =
-        e.response?.data?.erro ||
-        "Não foi possível inserir o documento. Tente novamente.";
-      window.alert(errorMessage);
       setOpenAdd(false); // Fechar modal mesmo em caso de erro, ou manter aberto para correção
       // Manter os campos para que o usuário possa corrigir
+    } finally {
+      setLoading(false);
     }
   };
 

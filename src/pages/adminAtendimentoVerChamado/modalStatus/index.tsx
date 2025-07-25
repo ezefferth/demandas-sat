@@ -11,6 +11,9 @@ import { AtualizarStatusChamado } from '../../../components/data/fetch/chamados/
 import { Chamado } from '../../../components/types';
 import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
 
+import { toast } from 'react-toastify';
+import { AxiosResponse } from 'axios';
+
 const style = {
   position: 'absolute',
   top: '50%',
@@ -46,9 +49,21 @@ export default function ModalStatus({ open, handleClose, setOpen, chamado }: Pro
     }
   }, [chamado])
 
+  const [loading, setLoading] = useState<boolean>(false);
   const handle = async () => {
+    if (loading) return; // impede múltiplos cliques
+    setLoading(true);
+
+    const promise: Promise<AxiosResponse> = AtualizarStatusChamado({ id: chamado.id, statusId });
+
+    toast.promise(promise, {
+      pending: "Atualizando status...",
+      success: "Status atualizado com sucesso!",
+      error: "Erro ao atualizar status!",
+    });
+
     try {
-      await AtualizarStatusChamado({ id: chamado.id, statusId });
+      await promise
       setOpen(false);
 
       await LerChamados({ setChamados })
@@ -57,6 +72,8 @@ export default function ModalStatus({ open, handleClose, setOpen, chamado }: Pro
     } catch (e: any) {
       console.error(e.response?.request?.status);
       setOpen(false);
+    } finally {
+      setLoading(false);
     }
   };
 
