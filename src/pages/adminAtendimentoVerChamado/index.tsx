@@ -2,7 +2,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { Chamado } from "../../components/types";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../components/data/context/dataContext";
-import { FaPlusSquare } from "react-icons/fa";
+import { FaEdit, FaPlusSquare } from "react-icons/fa";
 import ModalAddComentario from "./modalAdd";
 import { AuthContext } from "../../components/data/context/authContext";
 import { FaArrowLeftLong, FaPlus } from "react-icons/fa6";
@@ -16,6 +16,7 @@ import ModalAddAnexo from "./modalAddAnexo";
 import { ListaDocumentos, ListaDocumentosComentarios } from "./doc";
 import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
 import ModalAtualizaAssunto from "./modalAssunto";
+import ModalAtualizaSetor from "./modalSetor";
 
 export default function VerChamadoAdmin() {
   const { usuario } = useContext(AuthContext);
@@ -42,6 +43,10 @@ export default function VerChamadoAdmin() {
   const [openAtualizaAssunto, setOpenAtualizaAssunto] = useState<boolean>(false);
   const handleOpenAtualizaAssunto = () => setOpenAtualizaAssunto(true);
   const handleCloseAtualizaAssunto = () => setOpenAtualizaAssunto(false);
+
+  const [openAtualizaSetor, setOpenAtualizaSetor] = useState<boolean>(false);
+  const handleOpenAtualizaSetor = () => setOpenAtualizaSetor(true);
+  const handleCloseAtualizaSetor = () => setOpenAtualizaSetor(false);
 
   const [openAddDoc, setOpenAddDoc] = useState(false);
   const handleOpenDoc = () => setOpenAddDoc(true);
@@ -338,15 +343,19 @@ export default function VerChamadoAdmin() {
                     )
                 )}
               </span>
-              <button
-                className="cursor-pointer bg-slate-600 hover:bg-slate-800 transition-all rounded-lg p-1 h-[1.45rem]"
-                onClick={handleOpenAtualizaAssunto}
-              >
-                <FaPlus
-                  size={15}
-                  className="text-slate-100"
-                />
-              </button>
+              {
+                !localChamado.finishedAt && (
+                  <button
+                    onClick={handleOpenAtualizaAssunto}
+                  >
+                    <FaEdit
+                      size={20}
+                      className="cursor-pointer transition-all text-slate-600 hover:text-slate-800"
+                    />
+                  </button>
+                )
+              }
+
             </div>
           </div>
 
@@ -355,13 +364,28 @@ export default function VerChamadoAdmin() {
             <div className="w-36">
               <p>Setor:</p>
             </div>
-            <div>
+            <div className="flex items-center gap-2">
+
               {setores?.map(
                 (setor) =>
                   setor.id === localChamado.setorId && (
                     <span key={setor.id}>{setor.nome}</span>
                   )
               )}
+              {
+                !localChamado.finishedAt && (
+                  <button
+                    onClick={handleOpenAtualizaSetor}
+                  >
+                    <FaEdit
+                      size={20}
+                      className="cursor-pointer transition-all text-slate-600 hover:text-slate-800"
+                    />
+                  </button>
+                )
+              }
+
+
             </div>
           </div>
           <div className="border-b border-slate-300 my-1 w-full" />
@@ -458,16 +482,18 @@ export default function VerChamadoAdmin() {
               <p>Anexos:</p>
             </div>
             <div>
-              <button
-                onClick={handleOpenDoc}
-                className="px-2 flex justify-center items-center gap-2 bg-slate-600 hover:bg-slate-800 transition-all text-slate-50 rounded-md active:bg-slate-900"
-              >
-                <FaPlus className="" /> Anexo
-              </button>
+              {!localChamado.finishedAt && (
+                <button
+                  onClick={handleOpenDoc}
+                  className="px-2 flex justify-center items-center gap-2 bg-slate-600 hover:bg-slate-800 transition-all text-slate-50 rounded-md active:bg-slate-900"
+                >
+                  <FaPlus className="" /> Anexo
+                </button>
+              )}
             </div>
           </div>
           {documentos && documentos?.length > 0 && (
-            <ListaDocumentos documentos={documentos} />
+            <ListaDocumentos documentos={documentos} localChamado={localChamado} />
           )}
 
           <div className="mt-10 p-2">
@@ -566,6 +592,12 @@ export default function VerChamadoAdmin() {
           openAdd={openAtualizaAssunto}
           setOpenAdd={setOpenAtualizaAssunto}
           handleClose={handleCloseAtualizaAssunto}
+          chamadoId={localChamado.id}
+        />
+        <ModalAtualizaSetor
+          openAdd={openAtualizaSetor}
+          setOpenAdd={setOpenAtualizaSetor}
+          handleClose={handleCloseAtualizaSetor}
           chamadoId={localChamado.id}
         />
       </div>

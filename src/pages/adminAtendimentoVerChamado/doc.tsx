@@ -2,7 +2,7 @@ import React from "react";
 // ajuste o caminho se necessário
 import { FiFileText } from "react-icons/fi";
 import { FaFileImage, FaFilePdf } from "react-icons/fa";
-import { Documento } from "../../components/types";
+import { Chamado, Documento } from "../../components/types";
 import { FaFileCsv, FaFileExcel, FaFileWord, FaTrash } from "react-icons/fa6";
 import { RemoverDocumento } from "../../components/data/fetch/documentos/removerDocumento";
 import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
@@ -10,9 +10,10 @@ import { DataContext } from "../../components/data/context/dataContext";
 
 type Props = {
   documentos: Documento[];
+  localChamado: Chamado
 };
 
-export const ListaDocumentos: React.FC<Props> = ({ documentos }) => {
+export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) => {
   const { setDocumentos } = React.useContext(DataContext);
 
   const handleDelete = async (id: string, chamadoId: Number) => {
@@ -135,20 +136,25 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos }) => {
               </button>
 
               {/* Botão de exclusão */}
-              <button
-                onClick={() => {
-                  const confirmed = window.confirm(
-                    "Deseja realmente excluir este documento?"
-                  );
-                  if (confirmed) {
-                    handleDelete(doc.id, doc.chamadoId);
-                  }
-                }}
-                className="ml-2 p-1 hover:text-red-600 transition"
-                title="Excluir documento"
-              >
-                <FaTrash />
-              </button>
+              {
+                !localChamado.finishedAt && (
+                  <button
+                    onClick={() => {
+                      const confirmed = window.confirm(
+                        "Deseja realmente excluir este documento?"
+                      );
+                      if (confirmed) {
+                        handleDelete(doc.id, doc.chamadoId);
+                      }
+                    }}
+                    className="ml-2 p-1 hover:text-red-600 transition"
+                    title="Excluir documento"
+                  >
+                    <FaTrash />
+                  </button>
+                )
+              }
+
             </div>
           );
         }

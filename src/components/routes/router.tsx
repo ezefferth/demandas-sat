@@ -30,6 +30,7 @@ export default function Router() {
           </PrivateRoute>
         }
       >
+        
         <Route
           path="/dashboard"
           element={
@@ -118,14 +119,6 @@ export default function Router() {
             </AdminRoute>
           }
         />
-        {/* <Route
-          path="/carregando"
-          element={
-            <AdminRoute>
-              <Carregando />
-            </AdminRoute>
-          }
-        /> */}
         <Route
           path="/pageNotFound"
           element={<PageNotFound />}
