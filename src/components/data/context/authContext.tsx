@@ -21,28 +21,27 @@ export default function AuthProvider({ children }: any) {
 
   // Configuração global do axios
   axios.defaults.withCredentials = true;
-  axios.defaults.baseURL = "http://10.21.39.75:4001";
-  
-  // axios.defaults.baseURL = "http://localhost:4123";
+  // axios.defaults.baseURL = "http://10.21.39.75:4001";
+
+  axios.defaults.baseURL = "/api";
 
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
 
   const axiosInstance = axios.create({
-    baseURL: "http://10.21.39.75:4001",
-    // baseURL: "http://localhost:4123",
+    // baseURL: "http://10.21.39.75:4001",
+    baseURL: "/api",
     withCredentials: true,
   });
 
   useEffect(() => {
-    // axiosInstance.interceptors.request.use((config) => {
-    //   const token = localStorage.getItem("authToken");
-    //   if (token) {
-    //     config.headers.Authorization = `Bearer ${token}`;
-    //   }
-    //   return config;
-    // });
+    const tokenLocal = localStorage.getItem("authToken");
+    if (tokenLocal) {
+      setToken(tokenLocal);
+      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${tokenLocal}`;
+    }
+
     const verificarLogin = async () => {
       try {
         const response = await axiosInstance.get("/verificarUsuario");
@@ -50,33 +49,23 @@ export default function AuthProvider({ children }: any) {
       } catch (error) {
         console.error("Usuário não autenticado:", error);
         setUsuario(undefined);
+        localStorage.removeItem("authToken");
         navigate("/login");
       } finally {
         setLoading(false);
       }
     };
-    const inicializarUsuario = async () => {
-      try {
-        const response = await axiosInstance.get("/verificarUsuario");
-        setUsuario(response.data.usuario);
-      } catch {
-        setUsuario(undefined);
-      }
-    };
 
-    // console.log(token)
-    inicializarUsuario();
     verificarLogin();
   }, []);
 
   // Função de logout
   const logout = async () => {
     try {
-      // Faz uma requisição ao backend para limpar o cookie
       await axios.post("/logout", {}, { withCredentials: true });
-
       setUsuario(undefined);
-
+      setToken(undefined);
+      localStorage.removeItem("authToken");
       navigate("/login");
     } catch (error) {
       console.error("Erro ao fazer logout:", error);
@@ -87,6 +76,8 @@ export default function AuthProvider({ children }: any) {
   const login = async (nomeUsuario: string, senha: string) => {
     const response = await axios.post("/loginUsuario", { nomeUsuario, senha });
     setUsuario(response.data.usuario);
+    setToken(response.data.token); // se o backend retornar um token
+    localStorage.setItem("authToken", response.data.token); // persistir
     navigate("/");
   };
 

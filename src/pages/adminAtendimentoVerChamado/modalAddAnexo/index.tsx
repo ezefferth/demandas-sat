@@ -152,7 +152,9 @@ export default function ModalAddAnexo({
                 .odt,
                 .xls,
                 .xlsx,
-                .ods
+                .ods,
+                .zip,
+                .rar
               " // Aceita imagens e PDFs
               onChange={handleFileChange}
             />

@@ -3,7 +3,7 @@ import React from "react";
 import { FiFileText } from "react-icons/fi";
 import { FaFileImage, FaFilePdf } from "react-icons/fa";
 import { Chamado, Documento } from "../../components/types";
-import { FaFileCsv, FaFileExcel, FaFileWord, FaTrash } from "react-icons/fa6";
+import { FaFileCsv, FaFileExcel, FaFileWord, FaFileZipper, FaTrash } from "react-icons/fa6";
 import { RemoverDocumento } from "../../components/data/fetch/documentos/removerDocumento";
 import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
 import { DataContext } from "../../components/data/context/dataContext";
@@ -113,6 +113,12 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) =
                     className="text-slate-600"
                   />
                 )}
+                {doc.mimeType === "application/zip" || doc.mimeType === "application/rar" &&(
+                  <FaFileZipper
+                    size={20}
+                    className="text-slate-600"
+                  />
+                )}{/* falta ajustar */}
 
                 {/* Fallback */}
                 {!doc.mimeType.startsWith("image/") &&

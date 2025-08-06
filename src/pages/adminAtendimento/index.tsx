@@ -35,10 +35,9 @@ export default function Atendimento() {
     (chamado: Chamado) => chamado.statusId === null
   );
 
-  const currentItems = filteredChamados!.slice(
-    indexOfFirstItem,
-    indexOfLastItem
-  );
+  const currentItems = filteredChamados
+    ? filteredChamados.slice(indexOfFirstItem, indexOfLastItem)
+    : [];
 
   // Total de páginas
   const totalPages = Math.ceil(currentItems!.length / itemsPerPage);
@@ -57,10 +56,9 @@ export default function Atendimento() {
       chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   ); //f022126a-d338-4aab-af19-0d6e7b31a567
 
-  const currentItemsNotNull = filteredChamadosNotNull?.slice(
-    indexOfFirstItemNotNull,
-    indexOfLastItemNotNull
-  );
+  const currentItemsNotNull = filteredChamadosNotNull
+    ? filteredChamadosNotNull.slice(indexOfFirstItemNotNull, indexOfLastItemNotNull)
+    : [];
   const totalPagesNotNull = Math.ceil(
     (filteredChamadosNotNull?.length || 0) / itemsPerPage
   );
@@ -77,10 +75,9 @@ export default function Atendimento() {
       chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
 
-  const currentItemsFinalizados = filteredChamadosFinalizados?.slice(
-    indexOfFirstItemFinalizados,
-    indexOfLastItemFinalizados
-  );
+  const currentItemsFinalizados = filteredChamadosFinalizados
+    ? filteredChamadosFinalizados.slice(indexOfFirstItemFinalizados, indexOfLastItemFinalizados)
+    : [];
   const totalPagesFinalizados = Math.ceil(
     (filteredChamadosFinalizados?.length || 0) / itemsPerPage
   );
