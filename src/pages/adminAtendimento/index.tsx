@@ -190,7 +190,9 @@ export default function Atendimento() {
                   {chamado.id}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {chamado.descricao}
+                  <Tooltip title={chamado.descricao} placement="bottom-start">
+                    <span>{chamado.descricao}</span>
+                  </Tooltip>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {setores?.find((setor) => setor.id === chamado.setorId)?.nome}
@@ -280,7 +282,9 @@ export default function Atendimento() {
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {chamado.descricao}
+                    <Tooltip title={chamado.descricao} placement="bottom-start">
+                      <span>{chamado.descricao}</span>
+                    </Tooltip>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     <Tooltip
@@ -428,7 +432,9 @@ export default function Atendimento() {
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {chamado.descricao}
+                  <Tooltip title={chamado.descricao} placement="bottom-start">
+                    <span>{chamado.descricao}</span>
+                  </Tooltip>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   <Tooltip
