@@ -8,11 +8,17 @@ import { RxUpdate } from "react-icons/rx";
 import { LerChamados } from "../../components/data/fetch/chamados/lerChamados";
 import { AuthContext } from "../../components/data/context/authContext";
 import ModalListaErros from "./modalListaErros";
+import { FaPlus } from "react-icons/fa6";
+import ModalAddChamado from "./modalAdd";
 
 export default function Atendimento() {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+
+  const [openAdd, setOpenAdd] = useState(false);
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
 
   const { chamados, assuntos, status, prioridades, setChamados, setores } =
     useContext(DataContext);
@@ -146,16 +152,22 @@ export default function Atendimento() {
         <div className="font-normal text-lg">
           <p>Atendimento</p>
         </div>
-        <button
-          className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500"
-          onClick={handleUpdateChamados}
-        >
-          <RxUpdate
-            size={20}
-            color="#fff"
-            className="hover:animate-spin"
-          />
-        </button>
+        <div className="gap-2 flex justify-between">
+          <button onClick={handleOpenAdd} className="bg-slate-600 bg:text-slate-800 transition-all text-slate-50 px-3 py-1 rounded-lg flex gap-1 items-center">
+            {/* <FaPlusSquare className="text-slate-600 hover:text-slate-800 transition-all h-6 w-6" /> */}
+            <FaPlus />Novo Chamado
+          </button>
+          <button
+            className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500"
+            onClick={handleUpdateChamados}
+          >
+            <RxUpdate
+              size={20}
+              color="#fff"
+              className="hover:animate-spin"
+            />
+          </button>
+        </div>
       </div>
 
       <div className="mt-8 text-slate-900 mx-auto">
@@ -529,6 +541,11 @@ export default function Atendimento() {
           Listar chamados aberto por erro
         </button>
       </div>
+      <ModalAddChamado
+        openAdd={openAdd}
+        handleClose={handleCloseAdd}
+        setOpenAdd={setOpenAdd}
+      />
 
       <ModalListaErros
         open={open}
