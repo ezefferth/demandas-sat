@@ -20,7 +20,7 @@ export default function Atendimento() {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-  const { chamados, assuntos, status, prioridades, setChamados, setores } =
+  const { chamados, assuntos, status, prioridades, setChamados, setores, usuarios } =
     useContext(DataContext);
 
   const { usuario } = useContext(AuthContext);
@@ -202,7 +202,13 @@ export default function Atendimento() {
                   {chamado.id}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <Tooltip title={chamado.descricao} placement="bottom-start">
+                  {/* <Tooltip title={chamado.descricao} placement="bottom-start">
+                    <p>
+                      <span>{chamado.descricao}</span>
+                      <br /><span>{usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}</span>
+                    </p>
+                  </Tooltip> */}
+                  <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
                     <span>{chamado.descricao}</span>
                   </Tooltip>
                 </td>
@@ -294,7 +300,7 @@ export default function Atendimento() {
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    <Tooltip title={chamado.descricao} placement="bottom-start">
+                    <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
                       <span>{chamado.descricao}</span>
                     </Tooltip>
                   </td>
@@ -444,7 +450,7 @@ export default function Atendimento() {
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <Tooltip title={chamado.descricao} placement="bottom-start">
+                  <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
                     <span>{chamado.descricao}</span>
                   </Tooltip>
                 </td>
