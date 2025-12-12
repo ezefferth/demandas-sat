@@ -12,6 +12,11 @@ import { FaPlus } from "react-icons/fa6";
 import ModalAddChamado from "./modalAdd";
 
 export default function Atendimento() {
+
+  const { usuario } = useContext(AuthContext);
+
+  
+
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -22,8 +27,6 @@ export default function Atendimento() {
 
   const { chamados, assuntos, status, prioridades, setChamados, setores, usuarios } =
     useContext(DataContext);
-
-  const { usuario } = useContext(AuthContext);
 
   const navigate = useNavigate();
 

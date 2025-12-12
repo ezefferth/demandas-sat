@@ -18,8 +18,14 @@ import Prioridades from "../../pages/adminConfigPrioridades";
 import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
 import Sugestoes from "../../pages/adminConfigSugestoes";
 import Patrimonios from "../../pages/adminConfigPatrimonio";
+import PageNotFoundAdminTI from "../../pages/pageNotFoundAdminTI";
+import { useContext } from "react";
+import { AuthContext } from "../data/context/authContext";
 
 export default function Router() {
+
+  const { usuario } = useContext(AuthContext)
+
   return (
     <Routes>
       <Route
@@ -30,7 +36,7 @@ export default function Router() {
           </PrivateRoute>
         }
       >
-        
+
         <Route
           path="/dashboard"
           element={
@@ -39,6 +45,17 @@ export default function Router() {
             </AdminRoute>
           }
         />
+        {/* <Route
+          path="/atendimento"
+          element={
+            <AdminRoute>
+              {
+                usuario && usuario.id === "45fecf0b-5568-44ca-9f73-3b6d32eb0e70" ? <PageNotFoundAdminTI /> : <Atendimento />
+              }
+
+            </AdminRoute>
+          }
+        /> */}
         <Route
           path="/atendimento"
           element={
@@ -116,6 +133,14 @@ export default function Router() {
           element={
             <AdminRoute>
               <Sugestoes />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/pageNotFoundAdminTI"
+          element={
+            <AdminRoute>
+              <PageNotFoundAdminTI />
             </AdminRoute>
           }
         />

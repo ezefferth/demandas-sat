@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../components/data/context/authContext";
-import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear, FaComputer  } from 'react-icons/fa6'
+import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear, FaComputer } from 'react-icons/fa6'
 import { MdLabelImportantOutline, MdLowPriority } from "react-icons/md";
 import { FaBell, FaQuestionCircle } from "react-icons/fa";
 import { IoSettingsOutline } from "react-icons/io5";
@@ -153,10 +153,12 @@ export default function Home() {
                 <FaChartLine className="w-6 h-6 mr-2" />
                 <p className="cursor-pointer" onClick={() => navigate('/dashboard')}>Dashboard</p>
               </div>
+
               <div className={`flex pb-2 items-center gap-2 hover:pl-2 transition-all ${loc == '/atendimento' && 'pl-2 font-bold'}`}>
                 <TfiHeadphoneAlt className="w-6 h-6 mr-2" />
                 <p className="cursor-pointer" onClick={() => navigate('/atendimento')}>Atendimento</p>
               </div>
+
               <div className="pb-2">
                 <div
                   className={`flex items-center transition-all cursor-pointer ${configExpanded ? "pl-2 font-semibold" : "hover:pl-2 hover:font-bold"
@@ -191,7 +193,7 @@ export default function Home() {
                     </div>
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/prioridades' && 'pl-2 font-bold'}`}>
                       <MdLowPriority className="h-5 w-5" />
-                      <p className="cursor-pointer" onClick={() => navigate('/config/prioridades')}>Pioridades</p>
+                      <p className="cursor-pointer" onClick={() => navigate('/config/prioridades')}>Prioridades</p>
                     </div>
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/usuarios' && 'pl-2 font-bold'}`}>
                       <FaUsersGear className="h-5 w-5" />
@@ -220,8 +222,6 @@ export default function Home() {
             Sair
           </button>
         </div>
-
-
       </aside>
 
 

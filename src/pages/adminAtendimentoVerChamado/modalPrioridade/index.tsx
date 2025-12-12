@@ -93,10 +93,10 @@ export default function ModalPrioridade({ open, handleClose, setOpen, chamado }:
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Alterar Status
+            Alterar Prioridade
           </h2>
           <FormControl variant="standard" sx={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+            <InputLabel id="demo-simple-select-standard-label">Prioridade</InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
