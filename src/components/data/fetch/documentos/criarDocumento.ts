@@ -19,7 +19,7 @@ export async function CriarDocumento({
 Props) {
   try {
     const response = await axios.post(
-      "/criarDocumento",
+      "/criarDocumentoDemanda",
       { nome, mimeType, conteudo, chamadoId, comentarioId /* comentarioId */ },
       {
         headers: { "Content-Type": "application/json" },

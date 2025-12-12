@@ -15,7 +15,7 @@ export async function CriarAssunto({
 }: Props) {
   try {
     const response = await axios.post(
-      "/criarAssunto",
+      "/criarAssuntoDemanda",
       { nome, categoriaId, tempoLimite, setorId },
       {
         headers: { "Content-Type": "application/json" },
@@ -28,3 +28,4 @@ export async function CriarAssunto({
     throw error;
   }
 }
+

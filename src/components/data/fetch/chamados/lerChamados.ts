@@ -10,12 +10,12 @@ type Props = {
 
 export async function LerChamados({ setChamados }: Props) {
   try {
-    const response = await axios.get("/lerChamados", {
+    const response = await axios.get("/lerDemandas", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler chamados!");
+    console.log("Sucesso em ler Demandas!");
     setChamados(response.data);
   } catch (error) {
-    console.log("Erro em ler chamados!", error);
+    console.log("Erro em ler Demandas!", error);
   }
 }

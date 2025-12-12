@@ -8,7 +8,7 @@ type Props = {
 
 export async function RemoverCategoria({ id }: Props) {
   try {
-    const response = await axios.post("/removerCategoria", { id }, {
+    const response = await axios.post("/removerCategoriaDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em remover categoria!", response);

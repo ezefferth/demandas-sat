@@ -18,36 +18,38 @@ export const AuthContext = createContext({} as AuthContextType);
 export default function AuthProvider({ children }: any) {
   const [usuario, setUsuario] = useState<Usuario | undefined>();
   const [token, setToken] = useState<string | undefined>();
-
-  // Configuração global do axios
-  axios.defaults.withCredentials = true;
-  // axios.defaults.baseURL = "http://10.21.39.75:4001";
-
-  axios.defaults.baseURL = "/api";
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
-  const [loading, setLoading] = useState(true);
+  // 🔥 definição correta do ambiente
+  const isLocalhost = window.location.hostname === "localhost";
 
+  const API_BASE = isLocalhost
+    ? "http://10.21.39.75:4001"
+    : "/api";
+
+  // 🔥 axios único e padronizado
   const axiosInstance = axios.create({
-    // baseURL: "http://10.21.39.75:4001",
-    baseURL: "/api",
+    baseURL: API_BASE,
     withCredentials: true,
   });
 
   useEffect(() => {
     const tokenLocal = localStorage.getItem("authToken");
+
     if (tokenLocal) {
       setToken(tokenLocal);
-      axiosInstance.defaults.headers.common["Authorization"] = `Bearer ${tokenLocal}`;
+      axiosInstance.defaults.headers.common[
+        "Authorization"
+      ] = `Bearer ${tokenLocal}`;
     }
 
     const verificarLogin = async () => {
       try {
         const response = await axiosInstance.get("/verificarUsuario");
         setUsuario(response.data.usuario);
-      } catch (error) {
-        console.error("Usuário não autenticado:", error);
+      } catch {
         setUsuario(undefined);
         localStorage.removeItem("authToken");
         navigate("/login");
@@ -59,26 +61,30 @@ export default function AuthProvider({ children }: any) {
     verificarLogin();
   }, []);
 
-  // Função de logout
+  // 🔐 login
+  const login = async (nomeUsuario: string, senha: string) => {
+    const response = await axiosInstance.post("/loginUsuario", {
+      nomeUsuario,
+      senha,
+    });
+
+    setUsuario(response.data.usuario);
+    setToken(response.data.token);
+    localStorage.setItem("authToken", response.data.token);
+
+    navigate("/");
+  };
+
+  // 🔓 logout
   const logout = async () => {
     try {
-      await axios.post("/logout", {}, { withCredentials: true });
+      await axiosInstance.post("/logout");
+    } finally {
       setUsuario(undefined);
       setToken(undefined);
       localStorage.removeItem("authToken");
       navigate("/login");
-    } catch (error) {
-      console.error("Erro ao fazer logout:", error);
     }
-  };
-
-  // Função de login
-  const login = async (nomeUsuario: string, senha: string) => {
-    const response = await axios.post("/loginUsuario", { nomeUsuario, senha });
-    setUsuario(response.data.usuario);
-    setToken(response.data.token); // se o backend retornar um token
-    localStorage.setItem("authToken", response.data.token); // persistir
-    navigate("/");
   };
 
   return (

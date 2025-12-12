@@ -12,13 +12,13 @@ type Props = {
 
 export async function AtualizarFinalizarChamado({ id, statusId, finalizadoPor }: Props) {
   try {
-    const response = await axios.post("/atualizarFinalizarChamado", { id, statusId, finalizadoPor }, {
+    const response = await axios.post("/atualizarFinalizarNaDemanda", { id, statusId, finalizadoPor }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em finalizar chamado!", response);
+    console.log("Sucesso em finalizar demanda!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao finalizar chamado!", error);
+    console.log("Erro ao finalizar demanda!", error);
     throw error;
   }
 }

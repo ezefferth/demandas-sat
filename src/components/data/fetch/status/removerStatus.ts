@@ -8,7 +8,7 @@ type Props = {
 
 export async function RemoverStatus({ id }: Props) {
   try {
-    const response = await axios.post("/removerStatus", { id }, {
+    const response = await axios.post("/removerStatusDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em remover status!", response);

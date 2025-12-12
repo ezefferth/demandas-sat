@@ -10,7 +10,7 @@ type Props = {
 
 export async function AtualizarStatus({ id, nome, cor }: Props) {
   try {
-    const response = await axios.post("/atualizarStatus", { id, nome, cor }, {
+    const response = await axios.post("/atualizarStatusDemanda", { id, nome, cor }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar status!", response);

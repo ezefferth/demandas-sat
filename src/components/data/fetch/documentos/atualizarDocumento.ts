@@ -19,7 +19,7 @@ export async function AtualizarDocumento({
 }: Props) {
   try {
     const response = await axios.post(
-      "/atualizarDocumento",
+      "/atualizarDocumentoDemanda",
       { id, nome, mimeType, conteudo, chamadoId, comentarioId },
       {
         headers: { "Content-Type": "application/json" },

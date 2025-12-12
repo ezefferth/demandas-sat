@@ -8,7 +8,7 @@ type Props = {
 
 export async function RemoverPrioridade({ id }: Props) {
   try {
-    const response = await axios.post("/removerPrioridade", { id }, {
+    const response = await axios.post("/removerPrioridadeDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em remover prioridade!", response);

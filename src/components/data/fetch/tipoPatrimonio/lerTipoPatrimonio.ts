@@ -10,7 +10,7 @@ type Props = {
 
 export async function LerTipoPatrimonios({ setTipoPatrimonio }: Props) {
   try {
-    const response = await axios.get("/lerTipoPatrimonios", {
+    const response = await axios.get("/lerTipoPatrimoniosDemanda", {
       headers: { "Content-Type": "application/json" },
     });
     console.log("Sucesso em tipo patrimonio!");

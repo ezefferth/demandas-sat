@@ -11,13 +11,13 @@ type Props = {
 
 export async function AtualizarRemoverPatrimonioChamado({ id, patrimonioId }: Props) {
   try {
-    const response = await axios.post("/atualizarRemoverPatrimonioChamado", { id, patrimonioId }, {
+    const response = await axios.post("/atualizarRemoverPatrimonioDemanda", { id, patrimonioId }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em atualizar patrimonio chamado!", response);
+    console.log("Sucesso em atualizar patrimonio Demanda!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao atualizar patrimonio chamado!", error);
+    console.log("Erro ao atualizar patrimonio Demanda!", error);
     throw error;
   }
 }

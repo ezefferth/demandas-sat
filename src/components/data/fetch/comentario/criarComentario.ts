@@ -10,13 +10,13 @@ type Props = {
 
 export async function CriarComentario({ chamadoId, usuarioId, comentario }: Props) {
   try {
-    const response = await axios.post("/criarComentario", { chamadoId, usuarioId, comentario }, {
+    const response = await axios.post("/criarComentarioDemanda", { chamadoId, usuarioId, comentario }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar comentario!", response);
+    console.log("Sucesso em criar comentarioDemanda!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao criar comentario!", error);
+    console.log("Erro ao criar comentarioDemanda!", error);
     throw error;
   }
 }

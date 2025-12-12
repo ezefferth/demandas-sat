@@ -8,13 +8,13 @@ type Props = {
 
 export async function RemoverChamado({ id }: Props) {
   try {
-    const response = await axios.post("/removerChamado", { id }, {
+    const response = await axios.post("/removerDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em remover chamado!", response);
+    console.log("Sucesso em remover Demanda!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao remover chamado!", error);
+    console.log("Erro ao remover Demanda!", error);
     throw error;
   }
 }

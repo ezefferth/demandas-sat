@@ -11,13 +11,13 @@ type Props = {
 
 export async function LerChamadosUser({ setChamadosUser, id }: Props) {
   try {
-    const response = await axios.post("/lerChamadosUser", { id }, {
+    const response = await axios.post("/lerDemandasUser", { id }, {
 
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler chamados do usuário!");
+    console.log("Sucesso em ler Demanda do usuário!");
     setChamadosUser(response.data);
   } catch (error) {
-    console.log("Erro em ler chamados do usuário!", error);
+    console.log("Erro em ler Demanda do usuário!", error);
   }
 }

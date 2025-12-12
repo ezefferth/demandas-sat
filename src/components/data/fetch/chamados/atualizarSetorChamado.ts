@@ -11,13 +11,13 @@ type Props = {
 
 export async function AtualizarSetorChamado({ id, setorId }: Props) {
   try {
-    const response = await axios.post("/atualizarSetorChamado", { id, setorId }, {
+    const response = await axios.post("/atualizarSetorDemanda", { id, setorId }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em atualizar setor chamado!", response);
+    console.log("Sucesso em atualizar setor Demanda!", response);
     return response;
   } catch (error) {
-    console.log("Erro ao atualizar setor chamado!", error);
+    console.log("Erro ao atualizar setor Demanda!", error);
     throw error;
   }
 }

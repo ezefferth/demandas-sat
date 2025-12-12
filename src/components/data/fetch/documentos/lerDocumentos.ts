@@ -10,7 +10,7 @@ type Props = {
 export async function LerDocumento({ setDocumentos, chamadoId }: Props) {
   try {
     const response = await axios.post(
-      "/lerDocumentos",
+      "/lerDocumentosDemanda",
       { chamadoId },
       {
         headers: { "Content-Type": "application/json" },

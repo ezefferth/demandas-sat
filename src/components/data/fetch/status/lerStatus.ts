@@ -10,7 +10,7 @@ type Props = {
 
 export async function LerStatus({ setStatus }: Props) {
   try {
-    const response = await axios.get("/lerStatus", {
+    const response = await axios.get("/lerStatusDemanda", {
       headers: { "Content-Type": "application/json" },
     });
     console.log("Sucesso em ler status!");

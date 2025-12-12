@@ -11,14 +11,14 @@ type Props = {
 
 export async function LerComentariosTodos({ setComentariosTodos, id }: Props) {
   try {
-    const response = await axios.post("/lerComentariosTodos", {
+    const response = await axios.post("/lerComentariosTodosDemanda", {
       id, // Envia o ID no corpo da requisição
     }, {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler comentarios admin!");
+    console.log("Sucesso em ler comentariosDemanda admin!");
     setComentariosTodos(response.data);
   } catch (error) {
-    console.log("Erro em ler comentarios admin!", error);
+    console.log("Erro em ler comentariosDemanda admin!", error);
   }
 }

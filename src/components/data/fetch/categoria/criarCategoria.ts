@@ -8,7 +8,7 @@ type Props = {
 
 export async function CriarCategoria({ nome }: Props) {
   try {
-    const response = await axios.post("/criarCategoria", { nome }, {
+    const response = await axios.post("/criarCategoriaDemanda", { nome }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em criar categoria!", response);

@@ -9,7 +9,7 @@ type Props = {
 
 export async function AtualizarTipoPatrimonio({ id, nome }: Props) {
   try {
-    const response = await axios.post("/atualizarTipoPatrimonio", { id, nome }, {
+    const response = await axios.post("/atualizarTipoPatrimonioDemanda", { id, nome }, {
       headers: { "Content-Type": "application/json" }
     });
     console.log("Sucesso em atualizar tipo patrimonio!", response);
