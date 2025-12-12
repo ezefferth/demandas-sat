@@ -17,7 +17,7 @@ export async function AtualizarAssunto({
 }: Props) {
   try {
     const response = await axios.post(
-      "/atualizarAssunto",
+      "/atualizarAssuntoDemanda",
       { id, nome, categoriaId, tempoLimite, setorId },
       {
         headers: { "Content-Type": "application/json" },

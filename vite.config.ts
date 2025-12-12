@@ -9,7 +9,7 @@ export default defineConfig({
   },
   server: {
     host: true, // Permite acesso pela rede local
-    port: 3000, // Defina a porta desejada
+    port: 3010, // Defina a porta desejada
     // https: {
     //   key: fs.readFileSync('./server.key'),
     //   cert: fs.readFileSync('./server.crt'),
