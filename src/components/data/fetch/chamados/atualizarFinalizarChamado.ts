@@ -2,7 +2,8 @@
 
 
 
-import axios from "axios";
+// import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string
@@ -12,10 +13,10 @@ type Props = {
 
 export async function AtualizarFinalizarChamado({ id, statusId, finalizadoPor }: Props) {
   try {
-    const response = await axios.post("/atualizarFinalizarNaDemanda", { id, statusId, finalizadoPor }, {
+    const response = await api.post("/atualizarFinalizarNaDemanda", { id, statusId, finalizadoPor }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em finalizar demanda!", response);
+    // console.log("Sucesso em finalizar demanda!", response);
     return response;
   } catch (error) {
     console.log("Erro ao finalizar demanda!", error);

@@ -174,9 +174,10 @@ export default function ModalEditarUsuario({
                 onChange={(e) => setNome(e.target.value)}
                 sx={{ width: "100%" }}
                 defaultValue={usuario?.nome}
+                disabled
               />
             </div>
-            <div className="mt-1 mb-3">
+            <div className="mt-2">
               <TextField
                 id="standard-basic2"
                 label="Nome de usuário"
@@ -184,77 +185,87 @@ export default function ModalEditarUsuario({
                 onChange={(e) => setNomeUsuario(e.target.value)}
                 sx={{ width: "100%" }}
                 defaultValue={usuario?.nomeUsuario}
+                disabled
               />
             </div>
-            <FormControl
-              variant="standard"
-              sx={{ width: "100%" }}
-            >
-              <InputLabel
-                id="demo-simple-select-standard-label"
-                sx={{ pl: 2 }}
+            <div className="mt-2">
+              <FormControl
+                disabled
+
+                variant="standard"
+                sx={{ width: "100%" }}
               >
-                Administrador?
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={adminSelected}
-                onChange={handleChange}
-                label="Assunto"
-                defaultValue="Não"
-                sx={{ pl: 1.75 }}
+                <InputLabel
+                  id="demo-simple-select-standard-label"
+                  sx={{ pl: 2 }}
+                >
+                  Administrador?
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={adminSelected}
+                  onChange={handleChange}
+                  label="Assunto"
+                  defaultValue="Não"
+                  sx={{ pl: 1.75 }}
+                >
+                  <MenuItem
+                    key="Não"
+                    value="Não"
+                  >
+                    Não
+                  </MenuItem>
+                  <MenuItem
+                    key="Sim"
+                    value="Sim"
+                  >
+                    Sim
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
+            <div className="mt-2">
+
+              <FormControl
+                disabled
+                variant="standard"
+                sx={{ width: "100%" }}
               >
-                <MenuItem
-                  key="Não"
-                  value="Não"
+                <InputLabel
+                  id="demo-simple-select-standard-label"
+                  sx={{ pl: 2 }}
                 >
-                  Não
-                </MenuItem>
-                <MenuItem
-                  key="Sim"
-                  value="Sim"
+                  Status?
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-standard-label"
+                  id="demo-simple-select-standard"
+                  value={statusSelected}
+                  onChange={handleChangeStatus}
+                  label="Assunto"
+                  defaultValue="Não"
+                  sx={{ pl: 1.75 }}
                 >
-                  Sim
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl
-              variant="standard"
-              sx={{ width: "100%" }}
-            >
-              <InputLabel
-                id="demo-simple-select-standard-label"
-                sx={{ pl: 2 }}
-              >
-                Status?
-              </InputLabel>
-              <Select
-                labelId="demo-simple-select-standard-label"
-                id="demo-simple-select-standard"
-                value={statusSelected}
-                onChange={handleChangeStatus}
-                label="Assunto"
-                defaultValue="Não"
-                sx={{ pl: 1.75 }}
-              >
-                <MenuItem
-                  key="Ativo"
-                  value="Ativo"
-                >
-                  Ativo
-                </MenuItem>
-                <MenuItem
-                  key="Inativo"
-                  value="Inativo"
-                >
-                  Inativo
-                </MenuItem>
-              </Select>
-            </FormControl>
+                  <MenuItem
+                    key="Ativo"
+                    value="Ativo"
+                  >
+                    Ativo
+                  </MenuItem>
+                  <MenuItem
+                    key="Inativo"
+                    value="Inativo"
+                  >
+                    Inativo
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </div>
           </div>
-          <div className="mt-1 mb-3">
+          <div className="mt-2 mb-3">
             <TextField
+              disabled
               id="standard-basic"
               type="password"
               label="Senha"
@@ -294,6 +305,7 @@ export default function ModalEditarUsuario({
             <button
               className="border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all"
               onClick={handleEdit}
+              disabled
             >
               Atualizar
             </button>

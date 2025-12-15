@@ -1,6 +1,6 @@
 
 
-import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string;
@@ -8,10 +8,9 @@ type Props = {
 
 export async function RemoverComentario({ id }: Props) {
   try {
-    const response = await axios.post("/removerComentarioDemanda", { id }, {
+    const response = await api.post("/removerComentarioDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em remover comentarioDemanda!", response);
     return response;
   } catch (error) {
     console.log("Erro ao remover comentarioDemanda!", error);

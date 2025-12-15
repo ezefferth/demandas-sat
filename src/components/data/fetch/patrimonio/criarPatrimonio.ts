@@ -1,6 +1,7 @@
 
 
-import axios from "axios";
+
+import { api } from "../../../../services/api";
 
 type Props = {
   descricao: string;
@@ -12,10 +13,9 @@ type Props = {
 
 export async function CriarPatrimonio({ descricao, tipoPatrimonioId, patrimonio, status, setorId }: Props) {
   try {
-    const response = await axios.post("/criarPatrimonioDemanda", { descricao, tipoPatrimonioId, patrimonio, status, setorId }, {
+    const response = await api.post("/criarPatrimonioDemanda", { descricao, tipoPatrimonioId, patrimonio, status, setorId }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar patrimonio!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar patrimonio!", error);

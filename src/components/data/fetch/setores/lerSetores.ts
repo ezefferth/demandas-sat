@@ -1,8 +1,8 @@
 
 
-import axios from "axios";
 
 import { Setor } from "../../../types";
+import { api } from "../../../../services/api";
 
 type Props = {
   setSetores: (value: Array<Setor>) => void;
@@ -10,10 +10,9 @@ type Props = {
 
 export async function LerSetores({ setSetores }: Props) {
   try {
-    const response = await axios.get("/lerSetores", {
+    const response = await api.get("/lerSetores", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler setor!");
     setSetores(response.data);
   } catch (error) {
     console.log("Erro em ler setor!", error);

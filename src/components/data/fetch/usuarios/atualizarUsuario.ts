@@ -1,4 +1,4 @@
-import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string;
@@ -18,7 +18,7 @@ export async function AtualizarUsuario({
   status,
 }: Props) {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "/atualizarUsuario",
       { id, nome, nomeUsuario, senha, admin, status },
       {
@@ -26,7 +26,6 @@ export async function AtualizarUsuario({
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log("Sucesso em atualizar usuario!", response);
     return response;
   } catch (error) {
     console.log("Erro ao atualizar usuario!", error);

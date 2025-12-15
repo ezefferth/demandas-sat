@@ -1,6 +1,7 @@
 
 
-import axios from "axios";
+
+import { api } from "../../../../services/api";
 
 type Props = {
   nome: string;
@@ -9,10 +10,9 @@ type Props = {
 
 export async function CriarPrioridade({ nome, cor }: Props) {
   try {
-    const response = await axios.post("/criarPrioridadeDemanda", { nome, cor }, {
+    const response = await api.post("/criarPrioridadeDemanda", { nome, cor }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar prioridade!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar prioridade!", error);

@@ -1,8 +1,9 @@
 
 
-import axios from "axios";
+
 
 import { Prioridade } from "../../../types";
+import { api } from "../../../../services/api";
 
 type Props = {
   setPrioridades: (value: Array<Prioridade>) => void;
@@ -10,10 +11,9 @@ type Props = {
 
 export async function LerPrioridades({ setPrioridades }: Props) {
   try {
-    const response = await axios.get("/lerPrioridadesDemanda", {
+    const response = await api.get("/lerPrioridadesDemanda", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler prioridades!");
     setPrioridades(response.data);
   } catch (error) {
     console.log("Erro em ler prioridades!", error);

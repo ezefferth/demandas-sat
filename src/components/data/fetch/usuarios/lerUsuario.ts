@@ -1,8 +1,8 @@
 
 
-import axios from "axios";
 
 import { Usuario } from "../../../types";
+import { api } from "../../../../services/api";
 
 type Props = {
   setUsuario: (value: Usuario) => void;
@@ -11,10 +11,9 @@ type Props = {
 
 export async function LerUsuario({ id, setUsuario }: Props) {
   try {
-    const response = await axios.post("/lerUsuario", { id }, {
+    const response = await api.post("/lerUsuario", { id }, {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler usuario!");
     setUsuario(response.data.usuario);
   } catch (error) {
     console.log("Erro em ler usuario!", error);

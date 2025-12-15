@@ -83,7 +83,7 @@ const handleRemove = async () => {
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Remover Setor
+            Remover Usuário
           </h2>
 
           <p className='mt-4'>Tem certeza que deseja remover o usuário "{usuario?.nome}"?</p>
@@ -91,7 +91,7 @@ const handleRemove = async () => {
             <button className='border rounded-lg bg-red-200 px-3 py-1 hover:bg-red-300 transition-all' onClick={() => setOpenRemove(false)}>
               Cancelar
             </button>
-            <button className='border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all' onClick={handleRemove}>
+            <button disabled className='border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all' onClick={handleRemove}>
               Remover
             </button>
           </div>

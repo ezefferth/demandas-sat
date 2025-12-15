@@ -1,4 +1,5 @@
-import axios from "axios";
+// import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   nome: string;
@@ -14,14 +15,14 @@ export async function CriarAssunto({
   setorId,
 }: Props) {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "/criarAssuntoDemanda",
       { nome, categoriaId, tempoLimite, setorId },
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log("Sucesso em criar assunto!", response);
+    // console.log("Sucesso em criar assunto!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar assunto!", error);

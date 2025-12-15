@@ -1,4 +1,5 @@
-import axios from "axios";
+
+import { api } from "../../../../services/api";
 
 type Props = {
   nome: string;
@@ -18,7 +19,7 @@ export async function CriarDocumento({
 
 Props) {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "/criarDocumentoDemanda",
       { nome, mimeType, conteudo, chamadoId, comentarioId /* comentarioId */ },
       {
@@ -26,7 +27,6 @@ Props) {
       }
     );
 
-    console.log("Sucesso em criar documento!", response);
 
     return response;
   } catch (error: any) {

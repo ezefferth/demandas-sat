@@ -1,7 +1,8 @@
 
 
-import axios from "axios";
 
+
+import { api } from "../../../../services/api";
 import {Status } from "../../../types";
 
 type Props = {
@@ -10,10 +11,9 @@ type Props = {
 
 export async function LerStatus({ setStatus }: Props) {
   try {
-    const response = await axios.get("/lerStatusDemanda", {
+    const response = await api.get("/lerStatusDemanda", {
       headers: { "Content-Type": "application/json" },
     });
-    console.log("Sucesso em ler status!");
     setStatus(response.data);
   } catch (error) {
     console.log("Erro em ler status!", error);

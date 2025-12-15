@@ -1,17 +1,18 @@
 
 
-import axios from "axios";
+
+import { api } from "../../../../services/api";
 
 type Props = {
   nome: string;
+  recebeAssunto: boolean;
 };
 
-export async function CriarSetor({ nome }: Props) {
+export async function CriarSetor({ nome, recebeAssunto }: Props) {
   try {
-    const response = await axios.post("/criarSetor", { nome }, {
+    const response = await api.post("/criarSetor", { nome, recebeAssunto }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar setor!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar setor!", error);

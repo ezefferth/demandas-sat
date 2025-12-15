@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "../../../components/data/context/dataContext";
 import {
   FormControl,
@@ -120,9 +120,9 @@ export default function ModalAddChamado({
     });
 
     toast.promise(promise, {
-      pending: "Enviando chamado...",
-      success: "Chamado criado com sucesso!",
-      error: "Erro ao criar chamado!",
+      pending: "Enviando demanda...",
+      success: "Demanda criado com sucesso!",
+      error: "Erro ao criar demanda!",
     });
 
     try {
@@ -160,41 +160,41 @@ export default function ModalAddChamado({
     }
   };
 
-  const [btnInfo, setBtnInfo] = useState<boolean>(true);
-  const [btnAsse, setBtnAsse] = useState<boolean>(false);
-  const [btnDev, setBtnDev] = useState<boolean>(false);
+  // const [btnInfo, setBtnInfo] = useState<boolean>(true);
+  // const [btnAsse, setBtnAsse] = useState<boolean>(false);
+  // const [btnDev, setBtnDev] = useState<boolean>(false);
 
-  const handleBtnAsse = () => {
-    setBtnInfo(false);
-    setBtnAsse(true);
-    setBtnDev(false);
-  };
-  const handleBtnInfo = () => {
-    setBtnInfo(true);
-    setBtnAsse(false);
-    setBtnDev(false);
-  };
-  const handleBtnDev = () => {
-    setBtnInfo(false);
-    setBtnAsse(false);
-    setBtnDev(true);
-  };
+  // const handleBtnAsse = () => {
+  //   setBtnInfo(false);
+  //   setBtnAsse(true);
+  //   setBtnDev(false);
+  // };
+  // const handleBtnInfo = () => {
+  //   setBtnInfo(true);
+  //   setBtnAsse(false);
+  //   setBtnDev(false);
+  // };
+  // const handleBtnDev = () => {
+  //   setBtnInfo(false);
+  //   setBtnAsse(false);
+  //   setBtnDev(true);
+  // };
 
-  const assuntosFiltrados = useMemo(() => {
-    if (btnAsse) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "fdc0248f-ade9-4325-917f-ace517196efb"
-      );
-    } else if (btnInfo) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "66a38650-99d9-4dff-bebd-2281dc29f142"
-      );
-    } else if (btnDev) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "fb203925-c3d9-472c-93e6-3d5c5b110001"
-      );
-    }
-  }, [assuntos, btnInfo, btnAsse, btnDev]);
+  // const assuntosFiltrados = useMemo(() => {
+  //   if (btnAsse) {
+  //     return assuntos?.filter(
+  //       (assunto) => assunto.setorId === "fdc0248f-ade9-4325-917f-ace517196efb"
+  //     );
+  //   } else if (btnInfo) {
+  //     return assuntos?.filter(
+  //       (assunto) => assunto.setorId === "66a38650-99d9-4dff-bebd-2281dc29f142"
+  //     );
+  //   } else if (btnDev) {
+  //     return assuntos?.filter(
+  //       (assunto) => assunto.setorId === "fb203925-c3d9-472c-93e6-3d5c5b110001"
+  //     );
+  //   }
+  // }, [assuntos, btnInfo, btnAsse, btnDev]);
 
   return (
     <div>
@@ -205,8 +205,8 @@ export default function ModalAddChamado({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h2 className="text-center">Abrir novo Chamado</h2>
-          <div className="mt-5 justify-center flex gap-5">
+          <h2 className="text-center">Abrir nova Demanda</h2>
+          {/* <div className="mt-5 justify-center flex gap-5">
             <button
               className={`border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all ${btnAsse && "bg-slate-400"
                 }`}
@@ -228,7 +228,7 @@ export default function ModalAddChamado({
             >
               Unidade de Desenvolvimento
             </button>
-          </div>
+          </div> */}
 
           <div className="mt-5">
             <FormControl
@@ -241,7 +241,7 @@ export default function ModalAddChamado({
                 onChange={handleChange}
                 sx={{ pl: 1.5 }}
               >
-                {assuntosFiltrados?.map((assunto) => (
+                {assuntos?.map((assunto) => (
                   <MenuItem
                     key={assunto.id}
                     value={assunto.id}

@@ -1,6 +1,6 @@
 
 
-import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   nome: string;
@@ -11,10 +11,9 @@ type Props = {
 
 export async function CriarUsuario({ nome, nomeUsuario, senha, admin }: Props) {
   try {
-    const response = await axios.post("/criarUsuario", { nome, nomeUsuario, admin, senha }, {
+    const response = await api.post("/criarUsuario", { nome, nomeUsuario, admin, senha }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar usuario!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar usuario!", error);

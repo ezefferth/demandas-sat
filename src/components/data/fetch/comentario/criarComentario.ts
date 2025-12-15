@@ -1,6 +1,6 @@
 
 
-import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   chamadoId: string;
@@ -10,10 +10,9 @@ type Props = {
 
 export async function CriarComentario({ chamadoId, usuarioId, comentario }: Props) {
   try {
-    const response = await axios.post("/criarComentarioDemanda", { chamadoId, usuarioId, comentario }, {
+    const response = await api.post("/criarComentarioDemanda", { chamadoId, usuarioId, comentario }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em criar comentarioDemanda!", response);
     return response;
   } catch (error) {
     console.log("Erro ao criar comentarioDemanda!", error);

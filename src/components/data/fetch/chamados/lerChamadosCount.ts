@@ -1,6 +1,7 @@
 
 
-import axios from "axios";
+// import axios from "axios";
+import { api } from "../../../../services/api";
 
 
 type Props = {
@@ -9,7 +10,7 @@ type Props = {
 
 export async function LerChamadosCount({ setCountChamado }: Props) {
   try {
-    const response = await axios.post("/lerDemandasCount", {
+    const response = await api.post("/lerDemandasCount", {
       headers: { "Content-Type": "application/json" },
     });
     // console.log("Sucesso em count comentarios!");

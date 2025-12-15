@@ -92,7 +92,7 @@ export default function ModalAddAssunto({
   const handleChangeSetor = (event: SelectChangeEvent<string>) => {
     setSetorId(event.target.value);
   };
-
+  //89e5e7a3-06d6-4ca7-abbb-2a4d769a17a1
   return (
     <div>
       <Modal
@@ -168,19 +168,20 @@ export default function ModalAddAssunto({
             >
               {setores?.map((setor) => {
                 if (
-                  setor.id == "fdc0248f-ade9-4325-917f-ace517196efb" ||
-                  setor.id == "fb203925-c3d9-472c-93e6-3d5c5b110001" ||
-                  setor.id == "66a38650-99d9-4dff-bebd-2281dc29f142"
-                )
+                  setor.recebeAssunto === true &&
+                  setor.id !== "fdc0248f-ade9-4325-917f-ace517196efb" &&
+                  setor.id !== "fb203925-c3d9-472c-93e6-3d5c5b110001" &&
+                  setor.id !== "66a38650-99d9-4dff-bebd-2281dc29f142"
+                ) {
                   return (
-                    <MenuItem
-                      key={setor.id}
-                      value={setor.id}
-                    >
+                    <MenuItem key={setor.id} value={setor.id}>
                       {setor.nome}
                     </MenuItem>
                   );
+                }
+                return null;
               })}
+
             </Select>
           </FormControl>
           <div className="flex justify-center gap-4 mt-4">

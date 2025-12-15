@@ -2,7 +2,8 @@
 
 
 
-import axios from "axios";
+// import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string
@@ -11,10 +12,10 @@ type Props = {
 
 export async function AtualizarPrioridadeChamado({ id, prioridadeId }: Props) {
   try {
-    const response = await axios.post("/atualizarPrioridadeNaDemanda", { id, prioridadeId }, {
+    const response = await api.post("/atualizarPrioridadeNaDemanda", { id, prioridadeId }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em atualizar prioridade Demanda!", response);
+    // console.log("Sucesso em atualizar prioridade Demanda!", response);
     return response;
   } catch (error) {
     console.log("Erro ao atualizar prioridade Demanda!", error);

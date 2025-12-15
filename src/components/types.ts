@@ -23,6 +23,7 @@ export type Setor = {
   createdAt: Date;
   updatedAt: Date;
   status: boolean;
+  recebeAssunto: boolean;
 };
 
 export type Assunto = {

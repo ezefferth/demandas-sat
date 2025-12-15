@@ -1,6 +1,6 @@
 
 
-import axios from "axios";
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string;
@@ -8,10 +8,9 @@ type Props = {
 
 export async function RemoverPatrimonio({ id }: Props) {
   try {
-    const response = await axios.post("/removerPatrimonioDemanda", { id }, {
+    const response = await api.post("/removerPatrimonioDemanda", { id }, {
       headers: { "Content-Type": "application/json" }
     });
-    console.log("Sucesso em remover patrimônio!", response);
     return response;
   } catch (error) {
     console.log("Erro ao remover patrimônio!", error);

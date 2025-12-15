@@ -1,4 +1,5 @@
-import axios from "axios";
+
+import { api } from "../../../../services/api";
 
 type Props = {
   id: string;
@@ -18,14 +19,13 @@ export async function AtualizarDocumento({
   comentarioId,
 }: Props) {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "/atualizarDocumentoDemanda",
       { id, nome, mimeType, conteudo, chamadoId, comentarioId },
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log("Sucesso em atualizar documento!", response);
     return response;
   } catch (error) {
     console.log("Erro ao atualizar documento!", error);

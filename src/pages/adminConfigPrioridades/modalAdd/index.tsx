@@ -10,6 +10,7 @@ import { LerPrioridades } from '../../../components/data/fetch/prioridade/lerPri
 import { CriarPrioridade } from '../../../components/data/fetch/prioridade/criarPrioridade';
 import { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
+import { urlCor } from '../../../services/urlCor';
 
 const style = {
   position: 'absolute',
@@ -98,7 +99,7 @@ export default function ModalAddPrioridade({ openAdd, handleClose, setOpenAdd }:
 
 
           <p className='mt-8 text-center font-thin text-slate-600 text-sm'>A cor deve ser colocada em hexadecimal</p>
-          <p className='mb-4 text-center font-thin text-slate-600 text-sm'>Consulte sugestões de cores <a href='https://celke.com.br/artigo/tabela-de-cores-html-nome-hexadecimal-rgb' target='_blank'>aqui</a></p>
+          <p className='mb-4 text-center font-thin text-slate-600 text-sm'>Consulte sugestões de cores <a href={urlCor} target='_blank'>aqui</a></p>
 
           <div className='flex justify-center gap-4 mt-4'>
             <button className='border rounded-lg bg-red-200 px-3 py-1 hover:bg-red-300 transition-all' onClick={() => setOpenAdd(false)}>

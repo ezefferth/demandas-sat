@@ -123,8 +123,9 @@ export default function Home() {
         {/* Imagem e Título do Usuário */}
         <div className="space-x-3 mb-6">
           <div className="text-slate-50 text-center">
-            <h1 className="font-semibold ">Chama-TI</h1>
-            <h2 className="font-semibold pt-2">Help Desk</h2>
+            <h1 className="font-semibold ">Sistema de Gestão Administrativa</h1>
+            {/* <h2 className="font-semibold ">SAT</h2> */}
+            <h3 className="font-semibold pt-2">Help Desk</h3>
             <div className="flex justify-center pt-5">
               {usuario && usuario.avatar ? (
                 <img

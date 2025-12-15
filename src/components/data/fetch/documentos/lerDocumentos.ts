@@ -1,6 +1,7 @@
-import axios from "axios";
+
 
 import { Documento } from "../../../types";
+import { api } from "../../../../services/api";
 
 type Props = {
   setDocumentos: (value: Array<Documento>) => void;
@@ -9,14 +10,13 @@ type Props = {
 
 export async function LerDocumento({ setDocumentos, chamadoId }: Props) {
   try {
-    const response = await axios.post(
+    const response = await api.post(
       "/lerDocumentosDemanda",
       { chamadoId },
       {
         headers: { "Content-Type": "application/json" },
       }
     );
-    console.log("Sucesso em ler documento!");
     setDocumentos(response.data);
   } catch (error) {
     console.log("Erro em ler documento!", error);

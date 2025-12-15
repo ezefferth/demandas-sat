@@ -11,6 +11,7 @@ import { AtualizarStatus } from '../../../components/data/fetch/prioridade/atual
 import { TextField } from '@mui/material';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
+import { urlCor } from '../../../services/urlCor';
 
 const style = {
   position: 'absolute',
@@ -141,7 +142,7 @@ export default function ModalEditarStatus({ status, openEdit, handleCloseEdit, s
           </div>
 
           <p className='mt-8 text-center font-thin text-slate-600 text-sm'>A cor deve ser colocada em hexadecimal</p>
-          <p className='mb-4 text-center font-thin text-slate-600 text-sm'>Consulte sugestões de cores <a href='https://celke.com.br/artigo/tabela-de-cores-html-nome-hexadecimal-rgb' target='_blank'>aqui</a></p>
+          <p className='mb-4 text-center font-thin text-slate-600 text-sm'>Consulte sugestões de cores <a href={urlCor} target='_blank'>aqui</a></p>
 
 
 

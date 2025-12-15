@@ -23,17 +23,18 @@ export default function AuthProvider({ children }: any) {
   const navigate = useNavigate();
 
   // 🔥 definição correta do ambiente
-  const isLocalhost = window.location.hostname === "localhost";
 
-  const API_BASE = isLocalhost
-    ? "http://10.21.39.75:4001"
-    : "/api";
+  const API_BASE =
+    window.location.hostname.includes("10.21.39.75")
+      ? "http://10.21.39.75:4001"
+      : "/api";
 
   // 🔥 axios único e padronizado
   const axiosInstance = axios.create({
     baseURL: API_BASE,
     withCredentials: true,
   });
+
 
   useEffect(() => {
     const tokenLocal = localStorage.getItem("authToken");

@@ -7,7 +7,7 @@ import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { LerSetores } from '../../../components/data/fetch/setores/lerSetores';
 import { CriarSetor } from '../../../components/data/fetch/setores/criarSetor';
-import { TextField } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField } from '@mui/material';
 import { AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 
@@ -49,7 +49,7 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
       return;
     }
 
-    const promise: Promise<AxiosResponse> = CriarSetor({ nome });
+    const promise: Promise<AxiosResponse> = CriarSetor({ nome, recebeAssunto });
 
     toast.promise(promise, {
       pending: "Criando setor...",
@@ -71,6 +71,21 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
     }
   };
 
+  const [recebeAssunto, setRecebeAssunto] = useState<boolean>(false)
+  const [recebeAssuntoSelected, setRecebeAssuntoSelected] = useState<string>("Não")
+
+  const handleChange = (event: SelectChangeEvent) => {
+
+    if (event.target.value == 'Sim') {
+      setRecebeAssunto(true);
+      setRecebeAssuntoSelected('Sim');
+    }
+    else {
+      setRecebeAssunto(false);
+      setRecebeAssuntoSelected('Não');
+    }
+  };
+
 
   return (
     <div>
@@ -87,6 +102,27 @@ export default function ModalAddSetor({ openAdd, handleClose, setOpenAdd }: Prop
           <div className='mt-5'>
             {/* <label>Nome</label> */}
             <TextField id="standard-basic" label="Nome do setor" variant="standard" onChange={e => setNome(e.target.value)} sx={{ width: '16rem' }} />
+          </div>
+          <div className='mt-2'>
+            <FormControl variant="standard" sx={{ width: '100%' }} disabled>
+              <InputLabel id="demo-simple-select-standard-label">Recebe assunto?</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={recebeAssuntoSelected}
+                onChange={handleChange}
+                label="Assunto"
+                defaultValue='Não'
+              >
+                <MenuItem key='Não' value='Não'>
+                  Não
+                </MenuItem>
+                <MenuItem key='Sim' value='Sim'>
+                  Sim
+                </MenuItem>
+
+              </Select>
+            </FormControl>
           </div>
 
           <div className='flex justify-center gap-4 mt-4'>

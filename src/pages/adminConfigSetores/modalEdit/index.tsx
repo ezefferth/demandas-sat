@@ -45,6 +45,8 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
   const [nome, setNome] = useState<string>(setor?.nome || '');
   const [status, setStatus] = useState<boolean>(setor?.status || false)
   const [statusSelected, setStatusSelected] = useState<string>(setor?.status ? 'Sim' : 'Não')
+  const [recebeAssunto, setRecebeAssunto] = useState<boolean>(setor?.recebeAssunto || false)
+  const [recebeAssuntoSelected, setRecebeAssuntoSelected] = useState<string>(setor?.recebeAssunto ? 'Sim' : 'Não')
 
   useEffect(() => {
     if (!setor) return;
@@ -58,6 +60,15 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
     else {
       setStatus(false);
       setStatusSelected('Não');
+    }
+
+    if (setor.recebeAssunto === true) {
+      setRecebeAssunto(true)
+      setRecebeAssuntoSelected('Sim')
+    }
+    else {
+      setRecebeAssunto(false)
+      setRecebeAssuntoSelected("Não")
     }
 
 
@@ -93,7 +104,7 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
 
     const id = setor.id;
 
-    const promise: Promise<AxiosResponse> = AtualizarSetor({ id, nome, status });
+    const promise: Promise<AxiosResponse> = AtualizarSetor({ id, nome, status, recebeAssunto });
 
     toast.promise(promise, {
       pending: "Editando setor...",
@@ -112,6 +123,20 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
       setNome("");
     } finally {
       setLoading(false);
+    }
+  };
+
+
+
+  const handleChangeR = (event: SelectChangeEvent) => {
+
+    if (event.target.value == 'Sim') {
+      setRecebeAssunto(true);
+      setRecebeAssuntoSelected('Sim');
+    }
+    else {
+      setRecebeAssunto(false);
+      setRecebeAssuntoSelected('Não');
     }
   };
 
@@ -135,26 +160,52 @@ export default function ModalEditarSetor({ setor, openEdit, handleCloseEdit, set
           <div className='mt-5 mb-4 w-72'>
             <TextField id="standard-basic" label="Nome" variant="filled" onChange={(e) => setNome(e.target.value)} sx={{ width: '100%' }} defaultValue={setor?.nome} />
           </div>
-          <FormControl variant="standard" sx={{ width: '100%', }}>
-            <InputLabel id="demo-simple-select-standard-label" sx={{ pl: 2 }}>Ativo?</InputLabel>
-            <Select
-              labelId="demo-simple-select-standard-label"
-              id="demo-simple-select-standard"
-              value={statusSelected}
-              onChange={handleChange}
-              label="Assunto"
-              // defaultValue={setor?.status ? 'Sim' : 'Não'}
-              sx={{ pl: 1.75 }}
-            >
-              <MenuItem key='Não' value='Não'>
-                Não
-              </MenuItem>
-              <MenuItem key='Sim' value='Sim'>
-                Sim
-              </MenuItem>
 
-            </Select>
-          </FormControl>
+          <div className='mt-2'>
+            <FormControl variant="standard" sx={{ width: '100%' }} disabled>
+              <InputLabel id="demo-simple-select-standard-label" sx={{ pl: 2 }}>Recebe assunto?</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={recebeAssuntoSelected}
+                onChange={handleChangeR}
+                label="Assunto"
+                defaultValue='Não'
+                sx={{ pl: 1.75 }}
+              >
+                <MenuItem key='Não' value='Não'>
+                  Não
+                </MenuItem>
+                <MenuItem key='Sim' value='Sim'>
+                  Sim
+                </MenuItem>
+
+              </Select>
+            </FormControl>
+          </div>
+          <div className='mt-2'>
+
+            <FormControl variant="standard" sx={{ width: '100%', }}>
+              <InputLabel id="demo-simple-select-standard-label" sx={{ pl: 2 }}>Ativo?</InputLabel>
+              <Select
+                labelId="demo-simple-select-standard-label"
+                id="demo-simple-select-standard"
+                value={statusSelected}
+                onChange={handleChange}
+                label="Assunto"
+                // defaultValue={setor?.status ? 'Sim' : 'Não'}
+                sx={{ pl: 1.75 }}
+              >
+                <MenuItem key='Não' value='Não'>
+                  Não
+                </MenuItem>
+                <MenuItem key='Sim' value='Sim'>
+                  Sim
+                </MenuItem>
+
+              </Select>
+            </FormControl>
+          </div>
 
           <div className='text-slate-600 font-thin text-xs mt-8'>
             <div className='flex justify-between gap-4'>
