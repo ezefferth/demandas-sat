@@ -12,6 +12,7 @@ import {
   Sugestao,
   TipoPatrimonio,
   Usuario,
+  Material,
 } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
@@ -28,12 +29,15 @@ import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
 import { LerPatrimonios } from "../fetch/patrimonio/lerPatrimonio";
 import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
 import { LerChamadosCount } from "../fetch/chamados/lerChamadosCount";
+import { LerMateriais } from "../fetch/materiais/lerMateriais";
 
 // import audioMsg from '../../../../public/notification-msg.mp3'
 
 type DataContextType = {
   categorias: Categoria[] | undefined;
   setCategorias: (value: Categoria[]) => void;
+  materiais: Material[] | undefined;
+  setMateriais: (value: Material[]) => void;
   setores: Setor[] | undefined;
   setSetores: (value: Setor[]) => void;
   assuntos: Assunto[] | undefined;
@@ -72,6 +76,7 @@ export const DataContext = createContext({} as DataContextType);
 export default function DataProvider({ children }: any) {
   const [categorias, setCategorias] = useState<Categoria[]>();
   const [setores, setSetores] = useState<Setor[]>();
+  const [materiais, setMateriais] = useState<Material[]>();
   const [assuntos, setAssuntos] = useState<Assunto[]>([]);
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [status, setStatus] = useState<Status[]>([]);
@@ -106,6 +111,7 @@ export default function DataProvider({ children }: any) {
           LerAssuntos({ setAssuntos }),
           LerUsuarios({ setUsuarios }),
           LerStatus({ setStatus }),
+          LerMateriais({ setMateriais }),
           LerPrioridades({ setPrioridades }),
           LerChamados({ setChamados }),
           LerComentariosTodos({ id: usuario.id, setComentariosTodos }),
@@ -204,6 +210,8 @@ export default function DataProvider({ children }: any) {
   return (
     <DataContext.Provider
       value={{
+        materiais,
+        setMateriais,
         usuarios,
         setUsuarios,
         categorias,

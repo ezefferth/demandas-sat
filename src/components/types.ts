@@ -112,3 +112,26 @@ export type Documento = {
   chamadoId: number;
   comentarioId?: string | null;
 };
+
+export type TipoMaterial = "LIMPEZA" | "EXPEDIENTE";
+
+export type Material = {
+  id: string;
+  nome: string;
+  descricao?: string | null;
+  tipo: TipoMaterial;
+  unidade: string;
+  qtd: number;
+  qtdBetha?: number | null;
+  ativo: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type StatusDemanda = {
+  id: string;
+  nome: string;
+  cor: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

@@ -19,12 +19,13 @@ import VerChamadoAdmin from "../../pages/adminAtendimentoVerChamado";
 import Sugestoes from "../../pages/adminConfigSugestoes";
 import Patrimonios from "../../pages/adminConfigPatrimonio";
 import PageNotFoundAdminTI from "../../pages/pageNotFoundAdminTI";
-import { useContext } from "react";
-import { AuthContext } from "../data/context/authContext";
+// import { useContext } from "react";
+// import { AuthContext } from "../data/context/authContext";
+import MateriaisPage from "../../pages/adminConfigStatus copy";
 
 export default function Router() {
 
-  const { usuario } = useContext(AuthContext)
+  // const { usuario } = useContext(AuthContext)
 
   return (
     <Routes>
@@ -77,6 +78,14 @@ export default function Router() {
           element={
             <AdminRoute>
               <Categorias />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/config/materiais"
+          element={
+            <AdminRoute>
+              <MateriaisPage />
             </AdminRoute>
           }
         />

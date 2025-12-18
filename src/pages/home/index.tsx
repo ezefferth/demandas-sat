@@ -4,7 +4,7 @@ import { AuthContext } from "../../components/data/context/authContext";
 import { FaAngleDown, FaAngleUp, FaChartLine, FaCircleUser, FaUsersGear, FaComputer } from 'react-icons/fa6'
 import { MdLabelImportantOutline, MdLowPriority } from "react-icons/md";
 import { FaBell, FaQuestionCircle } from "react-icons/fa";
-import { IoSettingsOutline } from "react-icons/io5";
+import { IoDocumentTextOutline, IoSettingsOutline } from "react-icons/io5";
 import { SiAwsorganizations } from "react-icons/si";
 import { RiOrganizationChart } from "react-icons/ri";
 import { TfiHeadphoneAlt } from "react-icons/tfi";
@@ -195,6 +195,10 @@ export default function Home() {
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/prioridades' && 'pl-2 font-bold'}`}>
                       <MdLowPriority className="h-5 w-5" />
                       <p className="cursor-pointer" onClick={() => navigate('/config/prioridades')}>Prioridades</p>
+                    </div>
+                    <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/materiais' && 'pl-2 font-bold'}`}>
+                      <IoDocumentTextOutline className="h-5 w-5" />
+                      <p className="cursor-pointer" onClick={() => navigate('/config/materiais')}>Materiais</p>
                     </div>
                     <div className={`flex items-center gap-2 hover:pl-2 transition-all ${loc == '/config/usuarios' && 'pl-2 font-bold'}`}>
                       <FaUsersGear className="h-5 w-5" />
