@@ -3,14 +3,14 @@
 import { api } from "../../../../services/api";
 
 type Props = {
-  chamadoId: string;
+  demandaId: string;
   usuarioId: string
   comentario: string;
 };
 
-export async function CriarComentario({ chamadoId, usuarioId, comentario }: Props) {
+export async function CriarComentario({ demandaId, usuarioId, comentario }: Props) {
   try {
-    const response = await api.post("/criarComentarioDemanda", { chamadoId, usuarioId, comentario }, {
+    const response = await api.post("/criarComentarioDemanda", { demandaId, usuarioId, comentario }, {
       headers: { "Content-Type": "application/json" }
     });
     return response;

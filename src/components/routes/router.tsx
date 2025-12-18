@@ -21,7 +21,7 @@ import Patrimonios from "../../pages/adminConfigPatrimonio";
 import PageNotFoundAdminTI from "../../pages/pageNotFoundAdminTI";
 // import { useContext } from "react";
 // import { AuthContext } from "../data/context/authContext";
-import MateriaisPage from "../../pages/adminConfigStatus copy";
+import MateriaisPage from "../../pages/adminConfigMateriais";
 
 export default function Router() {
 

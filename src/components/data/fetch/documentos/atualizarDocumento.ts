@@ -6,7 +6,7 @@ type Props = {
   nome: string;
   mimeType: string;
   conteudo: Uint8Array;
-  chamadoId: string; // SetorId é opcional, pois pode não ser necessário em todos os casos
+  demandaId: string; // SetorId é opcional, pois pode não ser necessário em todos os casos
   comentarioId?: string;
 };
 
@@ -15,13 +15,13 @@ export async function AtualizarDocumento({
   nome,
   mimeType,
   conteudo,
-  chamadoId,
+  demandaId,
   comentarioId,
 }: Props) {
   try {
     const response = await api.post(
       "/atualizarDocumentoDemanda",
-      { id, nome, mimeType, conteudo, chamadoId, comentarioId },
+      { id, nome, mimeType, conteudo, demandaId, comentarioId },
       {
         headers: { "Content-Type": "application/json" },
       }

@@ -5,7 +5,7 @@ type Props = {
   nome: string;
   mimeType: string;
   conteudo: string;
-  chamadoId: Number; // SetorId é opcional, pois pode não ser necessário em todos os casos
+  demandaId: Number; // SetorId é opcional, pois pode não ser necessário em todos os casos
   comentarioId?: string; // SetorId é opcional, pois pode não ser necessário em todos os casos
 };
 
@@ -13,7 +13,7 @@ export async function CriarDocumento({
   nome,
   mimeType,
   conteudo,
-  chamadoId,
+  demandaId,
   comentarioId,
 }: //comentarioId,
 
@@ -21,7 +21,7 @@ Props) {
   try {
     const response = await api.post(
       "/criarDocumentoDemanda",
-      { nome, mimeType, conteudo, chamadoId, comentarioId /* comentarioId */ },
+      { nome, mimeType, conteudo, demandaId, comentarioId /* comentarioId */ },
       {
         headers: { "Content-Type": "application/json" },
       }

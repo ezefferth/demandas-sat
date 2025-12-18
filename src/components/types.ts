@@ -56,7 +56,7 @@ export type Comentario = {
   comentario: string;
   createdAt: Date;
   updatedAt: Date;
-  chamadoId: string;
+  demandaId: string;
   usuarioId: string;
 };
 
@@ -109,7 +109,7 @@ export type Documento = {
   conteudo: Uint8Array;
   createdAt: Date;
   updatedAt: Date;
-  chamadoId: number;
+  demandaId: number;
   comentarioId?: string | null;
 };
 
@@ -135,3 +135,4 @@ export type StatusDemanda = {
   createdAt: Date;
   updatedAt: Date;
 };
+

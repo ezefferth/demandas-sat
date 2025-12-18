@@ -111,7 +111,7 @@ export default function VerChamadoAdmin() {
   const [setorDestino, setSetorDestino] = useState<string>("");
 
   const handleDoc = async () => {
-    await LerDocumento({ setDocumentos, chamadoId: Number(localChamado.id) });
+    await LerDocumento({ setDocumentos, demandaId: Number(localChamado.id) });
   };
 
   useEffect(() => {
@@ -161,10 +161,10 @@ export default function VerChamadoAdmin() {
 
     const fetchComentariosAdmin = async () => {
       try {
-        if (countChamadoAtual < countChamado) {
+        if ((countChamadoAtual) && (countChamado) && countChamadoAtual < countChamado) {
           try {
             await LerComentarios({
-              chamadoId: localChamado.id,
+              demandaId: Number(localChamado.id),
               setComentarios,
             });
           } catch (error) {

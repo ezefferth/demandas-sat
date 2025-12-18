@@ -16,10 +16,10 @@ type Props = {
 export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) => {
   const { setDocumentos } = React.useContext(DataContext);
 
-  const handleDelete = async (id: string, chamadoId: Number) => {
+  const handleDelete = async (id: string, demandaId: Number) => {
     try {
       await RemoverDocumento({ id });
-      await LerDocumento({ chamadoId, setDocumentos });
+      await LerDocumento({ demandaId, setDocumentos });
     } catch (error) {
       console.error("Erro ao remover documento:", error);
       window.alert("Erro ao remover documento. Tente novamente mais tarde.");
@@ -150,7 +150,7 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) =
                         "Deseja realmente excluir este documento?"
                       );
                       if (confirmed) {
-                        handleDelete(doc.id, doc.chamadoId);
+                        handleDelete(doc.id, doc.demandaId);
                       }
                     }}
                     className="ml-2 p-1 hover:text-red-600 transition"
@@ -180,10 +180,10 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
 }) => {
   const { setDocumentos } = React.useContext(DataContext);
 
-  const handleDelete = async (id: string, chamadoId: Number) => {
+  const handleDelete = async (id: string, demandaId: Number) => {
     try {
       await RemoverDocumento({ id });
-      await LerDocumento({ chamadoId, setDocumentos });
+      await LerDocumento({ demandaId, setDocumentos });
     } catch (error) {
       console.error("Erro ao remover documento:", error);
       window.alert("Erro ao remover documento. Tente novamente mais tarde.");
@@ -308,7 +308,7 @@ export const ListaDocumentosComentarios: React.FC<Props2> = ({
                     "Deseja realmente excluir este documento?"
                   );
                   if (confirmed) {
-                    handleDelete(doc.id, doc.chamadoId);
+                    handleDelete(doc.id, doc.demandaId);
                   }
                 }}
                 className="ml-2 p-1 hover:text-red-600 transition"

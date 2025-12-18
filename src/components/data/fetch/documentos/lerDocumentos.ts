@@ -5,14 +5,14 @@ import { api } from "../../../../services/api";
 
 type Props = {
   setDocumentos: (value: Array<Documento>) => void;
-  chamadoId: Number;
+  demandaId: Number;
 };
 
-export async function LerDocumento({ setDocumentos, chamadoId }: Props) {
+export async function LerDocumento({ setDocumentos, demandaId }: Props) {
   try {
     const response = await api.post(
       "/lerDocumentosDemanda",
-      { chamadoId },
+      { demandaId },
       {
         headers: { "Content-Type": "application/json" },
       }
