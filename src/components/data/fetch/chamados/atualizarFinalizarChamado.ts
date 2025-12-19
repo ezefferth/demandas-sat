@@ -13,7 +13,7 @@ type Props = {
 
 export async function AtualizarFinalizarDemanda({ id, statusId, finalizadoPor }: Props) {
   try {
-    const response = await api.post("/atualizarFinalizarNaDemanda", { id, statusId, finalizadoPor }, {
+    const response = await api.post("/atualizarFinalizarDemanda", { id, statusId, finalizadoPor }, {
       headers: { "Content-Type": "application/json" }
     });
     // console.log("Sucesso em finalizar demanda!", response);

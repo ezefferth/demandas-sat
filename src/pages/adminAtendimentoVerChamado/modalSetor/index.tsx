@@ -106,7 +106,7 @@ export default function ModalAtualizaSetor({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h2 className="text-center">Atualiza Setor</h2>
+          <h2 className="text-center">Alterar Setor</h2>
 
           <div className="mt-5">
             <FormControl

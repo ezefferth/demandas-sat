@@ -42,7 +42,7 @@ const AvatarUsuario: React.FC<AvatarUsuarioProps> = ({
   }, [usuarioSelecionado]);
 
   return (
-    <div onClick={() => console.log(usuarioSelecionado)}>
+    <div>
       {imagemUrl && imagemCarregada ? (
         <img
           src={imagemUrl}

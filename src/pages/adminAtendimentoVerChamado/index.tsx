@@ -211,7 +211,7 @@ export default function VerChamadoAdmin() {
                 type="button"
                 onClick={handleFinalizar}
               >
-                Encerrar chamado
+                Encerrar demanda
               </button>
             </div>
           ) : (

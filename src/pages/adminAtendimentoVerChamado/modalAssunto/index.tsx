@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
-import { useContext, useMemo, useState } from "react";
+import { useContext, useState } from "react";
 import { DataContext } from "../../../components/data/context/dataContext";
 import {
   FormControl,
@@ -15,6 +15,7 @@ import { LerDemandas } from "../../../components/data/fetch/chamados/lerChamados
 import { toast } from 'react-toastify';
 import { AxiosResponse } from "axios";
 import { AtualizarAssuntoDemanda } from "../../../components/data/fetch/chamados/atualizarAssuntoChamado";
+import { Assunto } from "../../../components/types";
 
 
 const style = {
@@ -96,42 +97,7 @@ export default function ModalAtualizaAssunto({
     }
   };
 
-  const [btnInfo, setBtnInfo] = useState<boolean>(true);
-  const [btnAsse, setBtnAsse] = useState<boolean>(false);
-  const [btnDev, setBtnDev] = useState<boolean>(false);
-
-  const handleBtnAsse = () => {
-    setBtnInfo(false);
-    setBtnAsse(true);
-    setBtnDev(false);
-  };
-  const handleBtnInfo = () => {
-    setBtnInfo(true);
-    setBtnAsse(false);
-    setBtnDev(false);
-  };
-  const handleBtnDev = () => {
-    setBtnInfo(false);
-    setBtnAsse(false);
-    setBtnDev(true);
-  };
-
-  const assuntosFiltrados = useMemo(() => {
-    if (btnAsse) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "fdc0248f-ade9-4325-917f-ace517196efb"
-      );
-    } else if (btnInfo) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "66a38650-99d9-4dff-bebd-2281dc29f142"
-      );
-    } else if (btnDev) {
-      return assuntos?.filter(
-        (assunto) => assunto.setorId === "fb203925-c3d9-472c-93e6-3d5c5b110001"
-      );
-    }
-  }, [assuntos, btnInfo, btnAsse, btnDev]);
-
+ 
   return (
     <div>
       <Modal
@@ -141,31 +107,8 @@ export default function ModalAtualizaAssunto({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h2 className="text-center">Atualiza Assunto</h2>
-          <div className="mt-5 justify-center flex gap-5">
-            <button
-              className={`border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all ${btnAsse && "bg-slate-400"
-                }`}
-              onClick={handleBtnAsse}
-            >
-              Assessoria de TI
-            </button>
-            <button
-              className={`border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all ${btnInfo && "bg-slate-400"
-                }`}
-              onClick={handleBtnInfo}
-            >
-              Unidade de Informática
-            </button>
-            <button
-              className={`border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all ${btnDev && "bg-slate-400"
-                }`}
-              onClick={handleBtnDev}
-            >
-              Unidade de Desenvolvimento
-            </button>
-          </div>
-
+          <h2 className="text-center">Alterar Assunto</h2>
+          
           <div className="mt-5">
             <FormControl
               variant="standard"
@@ -177,7 +120,7 @@ export default function ModalAtualizaAssunto({
                 onChange={handleChange}
                 sx={{ pl: 1.5 }}
               >
-                {assuntosFiltrados?.map((assunto) => (
+                {assuntos?.map((assunto: Assunto) => (
                   <MenuItem
                     key={assunto.id}
                     value={assunto.id}

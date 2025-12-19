@@ -50,17 +50,17 @@ export default function ModalAddFinalizar({ open, handleClose, setOpen, demanda 
     setLoading(true);
 
     if (demanda.statusId === null && demanda.prioridadeId !== null) {
-      window.alert("Não é possível atualizar chamado sem status. Por favor verifique novamente o andamento do chamado!")
+      toast.error("Não é possível atualizar chamado sem status. Por favor verifique novamente o andamento do chamado!")
       setLoading(false);
       return;
     }
     else if (demanda.prioridadeId === null && demanda.statusId !== null) {
-      window.alert("Não é possível atualizar chamado sem prioridade. Por favor verifique novamente o andamento do chamado!")
+      toast.error("Não é possível atualizar chamado sem prioridade. Por favor verifique novamente o andamento do chamado!")
       setLoading(false);
       return;
     }
     else if (demanda.prioridadeId === null && demanda.statusId === null) {
-      window.alert("Não é possível atualizar chamado sem status e prioridade. Por favor verifique novamente o andamento do chamado!")
+      toast.error("Não é possível atualizar chamado sem status e prioridade. Por favor verifique novamente o andamento do chamado!")
       setLoading(false);
       return;
     }
@@ -69,7 +69,7 @@ export default function ModalAddFinalizar({ open, handleClose, setOpen, demanda 
     else {
       const id = demanda.id
       const finalizadoPor = usuario!.id
-      const statusId = 'aa4357cd-f1de-4b37-95cc-4beeab958854' // Por padrão, se não houver status, assume-se que o chamado está em andamento (statusId = 1)
+      const statusId = 'aed62d86-ccb6-42b8-903f-c7aead3ffc02' // Por padrão, se não houver status, assume-se que o chamado está em andamento (statusId = 1)
 
       const promise: Promise<AxiosResponse> = AtualizarFinalizarDemanda({ id, statusId, finalizadoPor })
 
