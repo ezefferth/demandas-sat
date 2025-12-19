@@ -122,7 +122,7 @@ export default function Router() {
           }
         />
         <Route
-          path="/verChamadoAdmin"
+          path="/verDemandaAdmin"
           element={
             <AdminRoute>
               <VerChamadoAdmin />

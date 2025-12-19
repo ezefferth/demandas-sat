@@ -4,7 +4,7 @@ import Modal from "@mui/material/Modal";
 import { useState, useContext } from "react";
 import { DataContext } from "../../../components/data/context/dataContext";
 import Pagination from "@mui/material/Pagination";
-import { Chamado } from "../../../components/types";
+import { Demanda } from "../../../components/types";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 
@@ -26,7 +26,7 @@ type Props = {
 };
 
 export default function ModalListaErros({ open, handleClose }: Props) {
-  const { chamados, assuntos } = useContext(DataContext);
+  const { demandas, assuntos } = useContext(DataContext);
 
   // Paginação
   const [currentPageErros, setCurrentPageErros] = useState(1);
@@ -34,8 +34,8 @@ export default function ModalListaErros({ open, handleClose }: Props) {
   const indexOfLastItemErros = currentPageErros * itemsPerPageErros;
   const indexOfFirstItemErros = indexOfLastItemErros - itemsPerPageErros;
 
-  const chamadosErros = chamados?.filter(
-    (chamado) => chamado.statusId === "f022126a-d338-4aab-af19-0d6e7b31a567"
+  const chamadosErros = demandas?.filter(
+    (demanda) => demanda.statusId === "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
 
   const currentItemsErros = chamadosErros?.slice(
@@ -56,10 +56,10 @@ export default function ModalListaErros({ open, handleClose }: Props) {
 
   const navigate = useNavigate()
 
-  const handleSeletedVisualizar = (e: React.MouseEvent<HTMLButtonElement>, chamado: Chamado): void => {
+  const handleSeletedVisualizar = (e: React.MouseEvent<HTMLButtonElement>, demanda: Demanda): void => {
     e.preventDefault();
 
-    navigate(`/verChamadoAdmin/`, { state: chamado });
+    navigate(`/verChamadoAdmin/`, { state: demanda });
   };
 
   return (

@@ -7,7 +7,7 @@ type Props = {
   id: string;
 };
 
-export async function RemoverChamado({ id }: Props) {
+export async function RemoverDemanda({ id }: Props) {
   try {
     const response = await api.post("/removerDemanda", { id }, {
       headers: { "Content-Type": "application/json" }

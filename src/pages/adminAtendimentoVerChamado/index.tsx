@@ -1,5 +1,5 @@
 import { useLocation, useNavigate } from "react-router-dom";
-import { Chamado } from "../../components/types";
+import { Demanda } from "../../components/types";
 import { useContext, useEffect, useState } from "react";
 import { DataContext } from "../../components/data/context/dataContext";
 import { FaEdit, FaPlusSquare } from "react-icons/fa";
@@ -22,9 +22,9 @@ export default function VerChamadoAdmin() {
   const { usuario } = useContext(AuthContext);
 
   const {
-    chamados,
-    countChamado,
-    countChamadoAtual,
+    demandas,
+    countDemanda,
+    countDemandaAtual,
     assuntos,
     setores,
     comentarios,
@@ -69,9 +69,9 @@ export default function VerChamadoAdmin() {
   const handleCloseFinalizar = () => setOpenFinalizar(false);
 
   const location = useLocation();
-  const chamado = location.state as Chamado;
+  const demanda = location.state as Demanda;
 
-  const [localChamado, setLocalChamado] = useState<Chamado>(chamado);
+  const [localDemanda, setLocalDemanda] = useState<Demanda>(demanda);
 
   const [duration, setDuration] = useState("");
   // const [comentarioId, setComentarioId] = useState<string | undefined>(
@@ -79,13 +79,13 @@ export default function VerChamadoAdmin() {
   // );
 
   useEffect(() => {
-    if (!localChamado?.createdAt) return;
+    if (!localDemanda?.createdAt) return;
 
     // Função para calcular a duração
     const calculateDuration = () => {
-      const startTime = new Date(localChamado.createdAt).getTime();
-      const endTime = localChamado.finishedAt
-        ? new Date(localChamado.finishedAt).getTime()
+      const startTime = new Date(localDemanda.createdAt).getTime();
+      const endTime = localDemanda.finishedAt
+        ? new Date(localDemanda.finishedAt).getTime()
         : Date.now(); // Usa o momento atual se o chamado estiver em andamento
 
       const diffInSeconds = Math.floor((endTime - startTime) / 1000);
@@ -98,7 +98,7 @@ export default function VerChamadoAdmin() {
       setDuration(`${days}d ${hours}h ${minutes}m ${seconds}s`);
     };
 
-    if (!localChamado.finishedAt) {
+    if (!localDemanda.finishedAt) {
       // Atualiza a cada segundo se o chamado estiver em andamento
       const intervalId = setInterval(calculateDuration, 1000);
       return () => clearInterval(intervalId); // Limpa o intervalo ao desmontar o componente
@@ -106,17 +106,17 @@ export default function VerChamadoAdmin() {
       // Calcula uma única vez se o chamado estiver finalizado
       calculateDuration();
     }
-  }, [localChamado?.createdAt, localChamado?.finishedAt]);
+  }, [localDemanda?.createdAt, localDemanda?.finishedAt]);
 
   const [setorDestino, setSetorDestino] = useState<string>("");
 
   const handleDoc = async () => {
-    await LerDocumento({ setDocumentos, demandaId: Number(localChamado.id) });
+    await LerDocumento({ setDocumentos, demandaId: Number(localDemanda.id) });
   };
 
   useEffect(() => {
     const assunto = assuntos?.find(
-      (assunto) => assunto.id === localChamado.assuntoId
+      (assunto) => assunto.id === localDemanda.assuntoId
     );
 
     const setorDestinoId = assunto?.setorId;
@@ -126,12 +126,12 @@ export default function VerChamadoAdmin() {
     if (nome) setSetorDestino(nome);
 
     handleDoc();
-  }, [localChamado]);
+  }, [localDemanda]);
 
   const navigate = useNavigate();
 
   const handleFinalizar = () => {
-    if (localChamado.finishedAt) {
+    if (localDemanda.finishedAt) {
       window.alert(
         "Não é possível finalizar o chamado pois já se econtra finalizado!"
       );
@@ -142,16 +142,16 @@ export default function VerChamadoAdmin() {
   };
 
   useEffect(() => {
-    if (chamados && chamado) {
+    if (demandas && demanda) {
       // Encontra o chamado correspondente
-      const chamadoCorrespondente = chamados.find((ch) => ch.id === chamado.id);
+      const demandaCorrespondente = demandas.find((ch) => ch.id === demanda.id);
 
-      // Atualiza o estado localChamado se o chamado correspondente for encontrado
-      if (chamadoCorrespondente) {
-        setLocalChamado(chamadoCorrespondente);
+      // Atualiza o estado localDemanda se o chamado correspondente for encontrado
+      if (demandaCorrespondente) {
+        setLocalDemanda(demandaCorrespondente);
       }
     }
-  }, [chamados, chamado]);
+  }, [demandas, demanda]);
 
   useEffect(() => {
     if (!usuario) {
@@ -161,10 +161,10 @@ export default function VerChamadoAdmin() {
 
     const fetchComentariosAdmin = async () => {
       try {
-        if ((countChamadoAtual) && (countChamado) && countChamadoAtual < countChamado) {
+        if ((countDemandaAtual) && (countDemanda) && countDemandaAtual < countDemanda) {
           try {
             await LerComentarios({
-              demandaId: Number(localChamado.id),
+              demandaId: Number(localDemanda.id),
               setComentarios,
             });
           } catch (error) {
@@ -177,9 +177,9 @@ export default function VerChamadoAdmin() {
     };
 
     fetchComentariosAdmin();
-  }, [localChamado, countChamado, countChamadoAtual]);
+  }, [localDemanda, countDemanda, countDemandaAtual]);
 
-  if (localChamado) {
+  if (localDemanda) {
     return (
       <div className="p-12">
         <button
@@ -194,17 +194,17 @@ export default function VerChamadoAdmin() {
             {/* <div className='w-10' /> */}
             <div>
               <p className="text-xl font-semibold text-slate-800">
-                Chamado N.º{chamado.id}
+                Demanda N.º{demanda.id}
               </p>
             </div>
             <div>
               <AvatarUsuario
-                usuarioId={localChamado.usuarioId}
+                usuarioId={localDemanda.usuarioId}
                 usuarios={usuarios}
               />
             </div>
           </div>
-          {!localChamado.finishedAt ? (
+          {!localDemanda.finishedAt ? (
             <div className="flex justify-end mt-4">
               <button
                 className=" bg-gray-500 text-slate-950 rounded-md px-2"
@@ -223,16 +223,16 @@ export default function VerChamadoAdmin() {
               <p>Status:</p>
             </div>
             <div>
-              {localChamado.statusId ? (
+              {localDemanda.statusId ? (
                 status?.map((st) => {
-                  if (st.id === localChamado.statusId) {
+                  if (st.id === localDemanda.statusId) {
                     return (
                       <button
                         key={st.id}
                         className="cursor-pointer rounded-lg px-2 text-slate-950"
                         style={{ backgroundColor: st.cor }}
                         onClick={() => {
-                          if (!localChamado.finishedAt) {
+                          if (!localDemanda.finishedAt) {
                             handleOpenStatus();
                           }
                         }}
@@ -259,16 +259,16 @@ export default function VerChamadoAdmin() {
               <p>Prioridade:</p>
             </div>
             <div>
-              {localChamado.prioridadeId ? (
+              {localDemanda.prioridadeId ? (
                 prioridades?.map((st) => {
-                  if (st.id === localChamado.prioridadeId) {
+                  if (st.id === localDemanda.prioridadeId) {
                     return (
                       <button
                         key={st.id}
                         className="cursor-pointer rounded-lg px-2 text-slate-950"
                         style={{ backgroundColor: st.cor }}
                         onClick={() => {
-                          if (!localChamado.finishedAt) {
+                          if (!localDemanda.finishedAt) {
                             handleOpenPrioridade();
                           }
                         }}
@@ -295,9 +295,9 @@ export default function VerChamadoAdmin() {
               <p>Patrimônios:</p>
             </div>
             <div className="flex items-center gap-2">
-              {localChamado.patrimonios &&
-                localChamado.patrimonios.length > 0 ? (
-                localChamado.patrimonios.map((st, index) => (
+              {localDemanda.patrimonios &&
+                localDemanda.patrimonios.length > 0 ? (
+                localDemanda.patrimonios.map((st, index) => (
                   <p key={index}>{st.patrimonio}</p>
                 ))
               ) : (
@@ -323,7 +323,7 @@ export default function VerChamadoAdmin() {
             <div>
               {usuarios?.map(
                 (user) =>
-                  user.id === localChamado.usuarioId && (
+                  user.id === localDemanda.usuarioId && (
                     <span key={user.id}>{user.nome}</span>
                   )
               )}
@@ -338,13 +338,13 @@ export default function VerChamadoAdmin() {
               <span>
                 {assuntos?.map(
                   (assunto) =>
-                    assunto.id === localChamado.assuntoId && (
+                    assunto.id === localDemanda.assuntoId && (
                       <span key={assunto.id}>{assunto.nome}</span>
                     )
                 )}
               </span>
               {
-                !localChamado.finishedAt && (
+                !localDemanda.finishedAt && (
                   <button
                     onClick={handleOpenAtualizaAssunto}
                   >
@@ -368,12 +368,12 @@ export default function VerChamadoAdmin() {
 
               {setores?.map(
                 (setor) =>
-                  setor.id === localChamado.setorId && (
+                  setor.id === localDemanda.setorId && (
                     <span key={setor.id}>{setor.nome}</span>
                   )
               )}
               {
-                !localChamado.finishedAt && (
+                !localDemanda.finishedAt && (
                   <button
                     onClick={handleOpenAtualizaSetor}
                   >
@@ -403,7 +403,7 @@ export default function VerChamadoAdmin() {
               <p>Descrição:</p>
             </div>
             <div>
-              <p className="pl-2 ">{localChamado.descricao}</p>
+              <p className="pl-2 ">{localDemanda.descricao}</p>
             </div>
           </div>
           <div className="border-b border-slate-300 my-1 w-full" />
@@ -413,8 +413,8 @@ export default function VerChamadoAdmin() {
             </div>
             <div>
               <p>
-                {localChamado?.createdAt
-                  ? new Date(localChamado.createdAt).toLocaleString()
+                {localDemanda?.createdAt
+                  ? new Date(localDemanda.createdAt).toLocaleString()
                   : ""}
               </p>
             </div>
@@ -426,13 +426,13 @@ export default function VerChamadoAdmin() {
             </div>
             <div>
               <p>
-                {localChamado?.updatedAt
-                  ? new Date(localChamado.updatedAt).toLocaleString()
+                {localDemanda?.updatedAt
+                  ? new Date(localDemanda.updatedAt).toLocaleString()
                   : ""}
               </p>
             </div>
           </div>
-          {localChamado?.finishedAt && (
+          {localDemanda?.finishedAt && (
             <>
               <div className="border-b border-slate-300 my-1 w-full" />
               <div className="flex mt-1 mb-1 justify-between">
@@ -440,12 +440,12 @@ export default function VerChamadoAdmin() {
                   <p>Finalizado:</p>
                 </div>
                 <div>
-                  <p>{new Date(localChamado.finishedAt).toLocaleString()}</p>
+                  <p>{new Date(localDemanda.finishedAt).toLocaleString()}</p>
                 </div>
               </div>
             </>
           )}
-          {localChamado?.finalizadoPor && (
+          {localDemanda?.finalizadoPor && (
             <>
               <div className="border-b border-slate-300 my-1 w-full" />
               <div className="flex mt-1 mb-1 justify-between">
@@ -456,7 +456,7 @@ export default function VerChamadoAdmin() {
                   <p>
                     {usuarios?.map(
                       (user) =>
-                        user.id === localChamado.finalizadoPor && (
+                        user.id === localDemanda.finalizadoPor && (
                           <span key={user.id}>{user.nome}</span>
                         )
                     )}
@@ -482,7 +482,7 @@ export default function VerChamadoAdmin() {
               <p>Anexos:</p>
             </div>
             <div>
-              {!localChamado.finishedAt && (
+              {!localDemanda.finishedAt && (
                 <button
                   onClick={handleOpenDoc}
                   className="px-2 flex justify-center items-center gap-2 bg-slate-600 hover:bg-slate-800 transition-all text-slate-50 rounded-md active:bg-slate-900"
@@ -493,14 +493,14 @@ export default function VerChamadoAdmin() {
             </div>
           </div>
           {documentos && documentos?.length > 0 && (
-            <ListaDocumentos documentos={documentos} localChamado={localChamado} />
+            <ListaDocumentos documentos={documentos} localDemanda={localDemanda} />
           )}
 
           <div className="mt-10 p-2">
             <div className="flex justify-between">
               <div />
               <p className="text-lg font-bold text-slate-700">Comentários</p>
-              {!localChamado.finishedAt ? (
+              {!localDemanda.finishedAt ? (
                 <div>
                   <button onClick={handleOpen}>
                     <FaPlusSquare className="text-slate-600 text hover:text-slate-800 transition-all h-6 w-6" />
@@ -550,20 +550,20 @@ export default function VerChamadoAdmin() {
           </div>
         </div>
         <ModalAddComentario
-          chamadoId={chamado.id}
+          demandaId={demanda.id}
           openAdd={openAdd}
           handleClose={handleClose}
           usuarioId={usuario!.id}
           setOpenAdd={setOpenAdd}
         />
         <ModalStatus
-          chamado={localChamado}
+          demanda={localDemanda}
           open={openAddStatus}
           setOpen={setOpenStatus}
           handleClose={handleCloseStatus}
         />
         <ModalPrioridade
-          chamado={localChamado}
+          demanda={localDemanda}
           open={openAddPrioridade}
           setOpen={setOpenPrioridade}
           handleClose={handleClosePrioridade}
@@ -572,17 +572,17 @@ export default function VerChamadoAdmin() {
           open={openFinalizar}
           setOpen={setOpenFinalizar}
           handleClose={handleCloseFinalizar}
-          chamado={localChamado}
+          demanda={localDemanda}
         />
 
         <ModalPatrimonio
-          chamado={localChamado}
+          demanda={localDemanda}
           open={openAddPatrimonios}
           setOpen={setOpenPatrimonios}
         // handleClose={handleClosePatrimonios}
         />
         <ModalAddAnexo
-          chamadoId={Number(localChamado.id)}
+          demandaId={Number(localDemanda.id)}
           openAdd={openAddDoc}
           setOpenAdd={setOpenAddDoc}
           handleClose={handleCloseDoc}
@@ -592,13 +592,13 @@ export default function VerChamadoAdmin() {
           openAdd={openAtualizaAssunto}
           setOpenAdd={setOpenAtualizaAssunto}
           handleClose={handleCloseAtualizaAssunto}
-          chamadoId={localChamado.id}
+          demandaId={localDemanda.id}
         />
         <ModalAtualizaSetor
           openAdd={openAtualizaSetor}
           setOpenAdd={setOpenAtualizaSetor}
           handleClose={handleCloseAtualizaSetor}
-          chamadoId={localChamado.id}
+          demandaId={localDemanda.id}
         />
       </div>
     );

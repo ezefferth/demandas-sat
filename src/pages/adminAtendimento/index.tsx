@@ -1,15 +1,16 @@
 import { FaExclamationCircle, FaSearch } from "react-icons/fa";
-import { Chamado } from "../../components/types";
+import { Demanda } from "../../components/types";
 import { useContext, useState } from "react";
 import { DataContext } from "../../components/data/context/dataContext";
 import { Pagination, Tooltip } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { RxUpdate } from "react-icons/rx";
-import { LerChamados } from "../../components/data/fetch/chamados/lerChamados";
 import { AuthContext } from "../../components/data/context/authContext";
 import ModalListaErros from "./modalListaErros";
 import { FaPlus } from "react-icons/fa6";
-import ModalAddChamado from "./modalAdd";
+import { LerDemandas } from "../../components/data/fetch/chamados/lerChamados";
+import { toast } from "react-toastify";
+import ModalAddDemanda from "./modalAdd";
 
 export default function Atendimento() {
 
@@ -25,7 +26,7 @@ export default function Atendimento() {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-  const { chamados, assuntos, status, prioridades, setChamados, setores, usuarios } =
+  const { demandas, assuntos, status, prioridades, setDemandas, setores, usuarios } =
     useContext(DataContext);
 
   const navigate = useNavigate();
@@ -38,14 +39,14 @@ export default function Atendimento() {
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
 
-  // Filtrar os chamados para exibir apenas os da página atual
+  // Filtrar os demandas para exibir apenas os da página atual
 
-  const filteredChamados = chamados?.filter(
-    (chamado: Chamado) => chamado.statusId === null
+  const filtereddemandas = demandas?.filter(
+    (demanda: Demanda) => demanda.statusId === null
   );
 
-  const currentItems = filteredChamados
-    ? filteredChamados.slice(indexOfFirstItem, indexOfLastItem)
+  const currentItems = filtereddemandas
+    ? filtereddemandas.slice(indexOfFirstItem, indexOfLastItem)
     : [];
 
   // Total de páginas
@@ -57,19 +58,19 @@ export default function Atendimento() {
   const indexOfLastItemNotNull = currentPageNotNull * itemsPerPage;
   const indexOfFirstItemNotNull = indexOfLastItemNotNull - itemsPerPage;
 
-  // Filtrar os chamados com `statusId !== null`
-  const filteredChamadosNotNull = chamados?.filter(
-    (chamado: Chamado) =>
-      chamado.statusId !== null &&
-      chamado.finishedAt === null &&
-      chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
+  // Filtrar os demandas com `statusId !== null`
+  const filtereddemandasNotNull = demandas?.filter(
+    (demanda: Demanda) =>
+      demanda.statusId !== null &&
+      demanda.finishedAt === null &&
+      demanda.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   ); //f022126a-d338-4aab-af19-0d6e7b31a567
 
-  const currentItemsNotNull = filteredChamadosNotNull
-    ? filteredChamadosNotNull.slice(indexOfFirstItemNotNull, indexOfLastItemNotNull)
+  const currentItemsNotNull = filtereddemandasNotNull
+    ? filtereddemandasNotNull.slice(indexOfFirstItemNotNull, indexOfLastItemNotNull)
     : [];
   const totalPagesNotNull = Math.ceil(
-    (filteredChamadosNotNull?.length || 0) / itemsPerPage
+    (filtereddemandasNotNull?.length || 0) / itemsPerPage
   );
   /* ============= PAGINACAO EM ATENDIMENTO ============= */
   /* ============= PAGINACAO FINALIZADOS ============= */
@@ -77,28 +78,28 @@ export default function Atendimento() {
   const indexOfLastItemFinalizados = currentPageFinalizados * itemsPerPage;
   const indexOfFirstItemFinalizados = indexOfLastItemFinalizados - itemsPerPage;
 
-  // Filtrar os chamados com `statusId !== null`
-  const filteredChamadosFinalizados = chamados?.filter(
-    (chamado: Chamado) =>
-      chamado.finishedAt !== null &&
-      chamado.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
+  // Filtrar os demandas com `statusId !== null`
+  const filtereddemandasFinalizados = demandas?.filter(
+    (demanda: Demanda) =>
+      demanda.finishedAt !== null &&
+      demanda.statusId !== "f022126a-d338-4aab-af19-0d6e7b31a567"
   );
 
-  const currentItemsFinalizados = filteredChamadosFinalizados
-    ? filteredChamadosFinalizados.slice(indexOfFirstItemFinalizados, indexOfLastItemFinalizados)
+  const currentItemsFinalizados = filtereddemandasFinalizados
+    ? filtereddemandasFinalizados.slice(indexOfFirstItemFinalizados, indexOfLastItemFinalizados)
     : [];
   const totalPagesFinalizados = Math.ceil(
-    (filteredChamadosFinalizados?.length || 0) / itemsPerPage
+    (filtereddemandasFinalizados?.length || 0) / itemsPerPage
   );
   /* ============= PAGINACAO FINALIZADOS ============= */
 
-  function CalculaDuracaoEAtraso(chamado: Chamado) {
-    if (!chamado?.createdAt) return { duration: "", atraso: 0 };
+  function CalculaDuracaoEAtraso(demanda: Demanda) {
+    if (!demanda?.createdAt) return { duration: "", atraso: 0 };
 
-    const startTime = new Date(chamado.createdAt).getTime();
-    const endTime = chamado.finishedAt
-      ? new Date(chamado.finishedAt).getTime()
-      : Date.now(); // Usa o momento atual se o chamado estiver em andamento
+    const startTime = new Date(demanda.createdAt).getTime();
+    const endTime = demanda.finishedAt
+      ? new Date(demanda.finishedAt).getTime()
+      : Date.now(); // Usa o momento atual se o demanda estiver em andamento
 
     const diffInSeconds = Math.floor((endTime - startTime) / 1000);
 
@@ -127,24 +128,26 @@ export default function Atendimento() {
 
   const handleSeletedVisualizar = (
     e: React.MouseEvent<HTMLButtonElement>,
-    chamado: Chamado
+    demanda: Demanda
   ): void => {
     e.preventDefault();
 
-    navigate(`/verChamadoAdmin/`, { state: chamado });
+    navigate(`/verDemandaAdmin/`, { state: demanda });
   };
 
-  const handleUpdateChamados = async () => {
+  const handleUpdatedemandas = async () => {
     if (usuario) {
       try {
         if (usuario.admin) {
-          await LerChamados({ setChamados });
+          await LerDemandas({ setDemandas });
         } else {
           // const id = usuario.id;
-          await LerChamados({ setChamados });
+          await LerDemandas({ setDemandas });
         }
+        toast.success("Atualizado com sucesso!")
+
       } catch (error) {
-        console.error("Erro ao buscar chamados:", error);
+        toast.error("Erro ao atualizar demandas!")
       }
     }
   };
@@ -158,11 +161,11 @@ export default function Atendimento() {
         <div className="gap-2 flex justify-between">
           <button onClick={handleOpenAdd} className="bg-slate-600 bg:text-slate-800 transition-all text-slate-50 px-3 py-1 rounded-lg flex gap-1 items-center">
             {/* <FaPlusSquare className="text-slate-600 hover:text-slate-800 transition-all h-6 w-6" /> */}
-            <FaPlus />Novo Chamado
+            <FaPlus />Novo demanda
           </button>
           <button
             className="bg-slate-700 p-1 rounded-md hover:bg-slate-600 active:bg-slate-500"
-            onClick={handleUpdateChamados}
+            onClick={handleUpdatedemandas}
           >
             <RxUpdate
               size={20}
@@ -195,49 +198,49 @@ export default function Atendimento() {
             </tr>
           </thead>
           <tbody>
-            {currentItems?.map((chamado: Chamado, index: number) => (
+            {currentItems?.map((demanda: Demanda, index: number) => (
               <tr
-                key={chamado.id}
+                key={demanda.id}
                 className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">
-                  {chamado.id}
+                  {demanda.id}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {/* <Tooltip title={chamado.descricao} placement="bottom-start">
+                  {/* <Tooltip title={demanda.descricao} placement="bottom-start">
                     <p>
-                      <span>{chamado.descricao}</span>
-                      <br /><span>{usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}</span>
+                      <span>{demanda.descricao}</span>
+                      <br /><span>{usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}</span>
                     </p>
                   </Tooltip> */}
-                  <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
-                    <span>{chamado.descricao}</span>
+                  <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                    <span>{demanda.descricao}</span>
                   </Tooltip>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find((setor) => setor.id === chamado.setorId)?.nome}
+                  {setores?.find((setor) => setor.id === demanda.setorId)?.nome}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {setores?.find(
                     (setor) =>
                       setor.id ===
                       assuntos?.find(
-                        (assunto) => assunto.id === chamado.assuntoId
+                        (assunto) => assunto.id === demanda.assuntoId
                       )?.setorId
                   )?.nome ?? "Setor não encontrado"}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {
                     assuntos?.find(
-                      (assunto) => assunto.id === chamado.assuntoId
+                      (assunto) => assunto.id === demanda.assuntoId
                     )?.nome
                   }
                 </td>
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
                     <button
-                      onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                      onClick={(e) => handleSeletedVisualizar(e, demanda)}
                     >
                       <FaSearch
                         size={20}
@@ -283,28 +286,28 @@ export default function Atendimento() {
             </tr>
           </thead>
           <tbody>
-            {currentItemsNotNull?.map((chamado: Chamado, index: number) => {
-              const { atraso, duration } = CalculaDuracaoEAtraso(chamado);
+            {currentItemsNotNull?.map((demanda: Demanda, index: number) => {
+              const { atraso, duration } = CalculaDuracaoEAtraso(demanda);
 
               return (
                 <tr
-                  key={chamado.id}
+                  key={demanda.id}
                   className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
                     } hover:bg-gray-100 transition-all`}
                 >
                   <td className="px-2 py-1 border border-slate-300">
-                    {chamado.id}
+                    {demanda.id}
                   </td>
                   <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     <p>
-                      {chamado.createdAt
-                        ? new Date(chamado.createdAt).toLocaleDateString()
+                      {demanda.createdAt
+                        ? new Date(demanda.createdAt).toLocaleDateString()
                         : ""}
                     </p>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
-                      <span>{chamado.descricao}</span>
+                    <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                      <span>{demanda.descricao}</span>
                     </Tooltip>
                   </td>
                   <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
@@ -313,14 +316,14 @@ export default function Atendimento() {
                         (setor) =>
                           setor.id ===
                           assuntos?.find(
-                            (assunto) => assunto.id === chamado.assuntoId
+                            (assunto) => assunto.id === demanda.assuntoId
                           )?.setorId
                       )?.nome ?? "Setor não encontrado"
                         }`}
                     >
                       <span>
                         {
-                          setores?.find((setor) => setor.id === chamado.setorId)
+                          setores?.find((setor) => setor.id === demanda.setorId)
                             ?.nome
                         }
                       </span>
@@ -329,7 +332,7 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                     {
                       assuntos?.find(
-                        (assunto) => assunto.id === chamado.assuntoId
+                        (assunto) => assunto.id === demanda.assuntoId
                       )?.nome
                     }
                   </td>
@@ -339,16 +342,16 @@ export default function Atendimento() {
                       style={{
                         backgroundColor:
                           status?.find(
-                            (status) => status.id === chamado.statusId
+                            (status) => status.id === demanda.statusId
                           )?.cor || "transparent",
                       }}
                     >
                       {assuntos?.find(
-                        (assunto) => assunto.id === chamado.assuntoId
+                        (assunto) => assunto.id === demanda.assuntoId
                       )?.tempoLimite &&
                         atraso > 0 &&
                         assuntos.find(
-                          (assunto) => assunto.id === chamado.assuntoId
+                          (assunto) => assunto.id === demanda.assuntoId
                         )?.tempoLimite! < atraso && (
                           <Tooltip title={`Atrasado em ${duration}`}>
                             <span>
@@ -364,7 +367,7 @@ export default function Atendimento() {
                           </Tooltip>
                         )}
                       {
-                        status?.find((status) => status.id === chamado.statusId)
+                        status?.find((status) => status.id === demanda.statusId)
                           ?.nome
                       }
                     </p>
@@ -376,14 +379,14 @@ export default function Atendimento() {
                         backgroundColor:
                           prioridades?.find(
                             (prioridade) =>
-                              prioridade.id === chamado.prioridadeId
+                              prioridade.id === demanda.prioridadeId
                           )?.cor || "transparent",
                       }}
                     >
                       {
                         prioridades?.find(
                           (prioridades) =>
-                            prioridades.id === chamado.prioridadeId
+                            prioridades.id === demanda.prioridadeId
                         )?.nome
                       }
                     </p>
@@ -391,7 +394,7 @@ export default function Atendimento() {
                   <td className="px-2 py-1 border border-slate-300">
                     <div className="flex items-center justify-center gap-2">
                       <button
-                        onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                        onClick={(e) => handleSeletedVisualizar(e, demanda)}
                       >
                         <FaSearch
                           size={20}
@@ -436,25 +439,25 @@ export default function Atendimento() {
             </tr>
           </thead>
           <tbody>
-            {currentItemsFinalizados?.map((chamado: Chamado, index: number) => (
+            {currentItemsFinalizados?.map((demanda: Demanda, index: number) => (
               <tr
-                key={chamado.id}
+                key={demanda.id}
                 className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
                   } hover:bg-gray-100 transition-all`}
               >
                 <td className="px-2 py-1 border border-slate-300">
-                  {chamado.id}
+                  {demanda.id}
                 </td>
                 <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   <p>
-                    {chamado.createdAt
-                      ? new Date(chamado.createdAt).toLocaleDateString()
+                    {demanda.createdAt
+                      ? new Date(demanda.createdAt).toLocaleDateString()
                       : ""}
                   </p>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <Tooltip title={`${chamado.descricao} / ${usuarios?.find((user) => user.id === chamado.usuarioId)?.nome}`} placement="bottom-start">
-                    <span>{chamado.descricao}</span>
+                  <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                    <span>{demanda.descricao}</span>
                   </Tooltip>
                 </td>
                 <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
@@ -463,14 +466,14 @@ export default function Atendimento() {
                       (setor) =>
                         setor.id ===
                         assuntos?.find(
-                          (assunto) => assunto.id === chamado.assuntoId
+                          (assunto) => assunto.id === demanda.assuntoId
                         )?.setorId
                     )?.nome ?? "Setor não encontrado"
                       }`}
                   >
                     <span>
                       {
-                        setores?.find((setor) => setor.id === chamado.setorId)
+                        setores?.find((setor) => setor.id === demanda.setorId)
                           ?.nome
                       }
                     </span>
@@ -479,7 +482,7 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
                   {
                     assuntos?.find(
-                      (assunto) => assunto.id === chamado.assuntoId
+                      (assunto) => assunto.id === demanda.assuntoId
                     )?.nome
                   }
                 </td>
@@ -488,12 +491,12 @@ export default function Atendimento() {
                     className="text-center px-1 rounded-md"
                     style={{
                       backgroundColor:
-                        status?.find((status) => status.id === chamado.statusId)
+                        status?.find((status) => status.id === demanda.statusId)
                           ?.cor || "transparent",
                     }}
                   >
                     {
-                      status?.find((status) => status.id === chamado.statusId)
+                      status?.find((status) => status.id === demanda.statusId)
                         ?.nome
                     }
                   </p>
@@ -504,13 +507,13 @@ export default function Atendimento() {
                     style={{
                       backgroundColor:
                         prioridades?.find(
-                          (prioridade) => prioridade.id === chamado.prioridadeId
+                          (prioridade) => prioridade.id === demanda.prioridadeId
                         )?.cor || "transparent",
                     }}
                   >
                     {
                       prioridades?.find(
-                        (prioridades) => prioridades.id === chamado.prioridadeId
+                        (prioridades) => prioridades.id === demanda.prioridadeId
                       )?.nome
                     }
                   </p>
@@ -518,7 +521,7 @@ export default function Atendimento() {
                 <td className="px-2 py-1 border border-slate-300">
                   <div className="flex items-center justify-center gap-2">
                     <button
-                      onClick={(e) => handleSeletedVisualizar(e, chamado)}
+                      onClick={(e) => handleSeletedVisualizar(e, demanda)}
                     >
                       <FaSearch
                         size={20}
@@ -547,10 +550,10 @@ export default function Atendimento() {
           onClick={handleOpen}
           className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all"
         >
-          Listar chamados aberto por erro
+          Listar demandas aberto por erro
         </button>
       </div>
-      <ModalAddChamado
+      <ModalAddDemanda
         openAdd={openAdd}
         handleClose={handleCloseAdd}
         setOpenAdd={setOpenAdd}

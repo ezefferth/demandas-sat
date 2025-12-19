@@ -10,7 +10,7 @@ type Props = {
   patrimonioId: string
 };
 
-export async function AtualizarRemoverPatrimonioChamado({ id, patrimonioId }: Props) {
+export async function AtualizarRemoverPatrimonioDemanda({ id, patrimonioId }: Props) {
   try {
     const response = await api.post("/atualizarRemoverPatrimonioDemanda", { id, patrimonioId }, {
       headers: { "Content-Type": "application/json" }

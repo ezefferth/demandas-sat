@@ -1,21 +1,21 @@
 
 
-import { Chamado } from "../../../types";
+import { Demanda } from "../../../types";
 import { api } from "../../../../services/api";
 
 type Props = {
-  setChamadosUser: (value: Array<Chamado>) => void;
+  setDemandasUser: (value: Array<Demanda>) => void;
   id: string
 };
 
-export async function LerChamadosUser({ setChamadosUser, id }: Props) {
+export async function LerDemandasUser({ setDemandasUser, id }: Props) {
   try {
     const response = await api.post("/lerDemandasUser", { id }, {
 
       headers: { "Content-Type": "application/json" },
     });
     // console.log("Sucesso em ler Demanda do usuário!");
-    setChamadosUser(response.data);
+    setDemandasUser(response.data);
   } catch (error) {
     console.log("Erro em ler Demanda do usuário!", error);
   }

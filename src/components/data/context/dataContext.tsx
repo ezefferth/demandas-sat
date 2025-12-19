@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState } from "react";
 import {
   Assunto,
   Categoria,
-  Chamado,
+  Demanda,
   Comentario,
   Documento,
   Patrimonio,
@@ -20,7 +20,7 @@ import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
 import { LerUsuarios } from "../fetch/usuarios/lerUsuarios";
 import { LerStatus } from "../fetch/status/lerStatus";
 import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
-import { LerChamados } from "../fetch/chamados/lerChamados";
+import { LerDemandas } from "../fetch/chamados/lerChamados";
 import { AuthContext } from "./authContext";
 import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
@@ -28,7 +28,7 @@ import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
 import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
 import { LerPatrimonios } from "../fetch/patrimonio/lerPatrimonio";
 import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
-import { LerChamadosCount } from "../fetch/chamados/lerChamadosCount";
+import { LerDemandasCount } from "../fetch/chamados/lerChamadosCount";
 import { LerMateriais } from "../fetch/materiais/lerMateriais";
 
 // import audioMsg from '../../../../public/notification-msg.mp3'
@@ -48,18 +48,18 @@ type DataContextType = {
   setStatus: (value: Status[]) => void;
   prioridades: Status[] | undefined;
   setPrioridades: (value: Prioridade[]) => void;
-  chamados: Chamado[] | undefined;
-  setChamados: (value: Chamado[]) => void;
-  chamadosUser: Chamado[] | undefined;
-  setChamadosUser: (value: Chamado[]) => void;
+  demandas: Demanda[] | undefined;
+  setDemandas: (value: Demanda[]) => void;
+  demandasUser: Demanda[] | undefined;
+  setDemandasUser: (value: Demanda[]) => void;
   comentarios: Comentario[] | undefined;
   setComentarios: (value: Comentario[]) => void;
   comentariosTodos: Comentario[] | undefined;
   setComentariosTodos: (value: Comentario[]) => void;
-  countChamado: number | undefined;
-  setCountChamado: (value: number) => void;
-  countChamadoAtual: number | undefined;
-  setCountChamadoAtual: (value: number) => void;
+  countDemanda: number | undefined;
+  setCountDemanda: (value: number) => void;
+  countDemandaAtual: number | undefined;
+  setCountDemandaAtual: (value: number) => void;
   sugestoes: Sugestao[] | undefined;
   setSugestoes: (value: Sugestao[]) => void;
   patrimonios: Patrimonio[] | undefined;
@@ -81,12 +81,12 @@ export default function DataProvider({ children }: any) {
   const [usuarios, setUsuarios] = useState<Usuario[]>([]);
   const [status, setStatus] = useState<Status[]>([]);
   const [prioridades, setPrioridades] = useState<Prioridade[]>();
-  const [chamados, setChamados] = useState<Chamado[]>();
-  const [chamadosUser, setChamadosUser] = useState<Chamado[]>();
+  const [demandas, setDemandas] = useState<Demanda[]>();
+  const [demandasUser, setDemandasUser] = useState<Demanda[]>();
   const [comentarios, setComentarios] = useState<Comentario[]>();
   const [comentariosTodos, setComentariosTodos] = useState<Comentario[]>();
-  const [countChamado, setCountChamado] = useState<number>(0);
-  const [countChamadoAtual, setCountChamadoAtual] = useState<number>(0);
+  const [countDemanda, setCountDemanda] = useState<number>(0);
+  const [countDemandaAtual, setCountDemandaAtual] = useState<number>(0);
   const [countComentario, setCountComentario] = useState<number>(0);
   const [countComentarioAtual, setCountComentarioAtual] = useState<number>(0);
   const [sugestoes, setSugestoes] = useState<Sugestao[]>();
@@ -113,7 +113,7 @@ export default function DataProvider({ children }: any) {
           LerStatus({ setStatus }),
           LerMateriais({ setMateriais }),
           LerPrioridades({ setPrioridades }),
-          LerChamados({ setChamados }),
+          LerDemandas({ setDemandas }),
           LerComentariosTodos({ id: usuario.id, setComentariosTodos }),
           LerPatrimonios({ setPatrimonios }),
           LerTipoPatrimonios({ setTipoPatrimonio }),
@@ -121,8 +121,8 @@ export default function DataProvider({ children }: any) {
 
         // Inicializando as contagens
         // Inicializando as contagens
-        const chamadosCount = await LerChamadosCount({ setCountChamado });
-        setCountChamadoAtual(chamadosCount); // Sincroniza o valor inicial corretamente
+        const chamadosCount = await LerDemandasCount({ setCountDemanda});
+        setCountDemandaAtual(chamadosCount); // Sincroniza o valor inicial corretamente
 
         const comentariosCount = await LerComentariosCount({
           id: usuario.id,
@@ -144,10 +144,10 @@ export default function DataProvider({ children }: any) {
 
     const updateChamados = async () => {
       try {
-        const novosChamadosCount = await LerChamadosCount({ setCountChamado });
+        const novosChamadosCount = await LerDemandasCount({ setCountDemanda });
 
         // Só dispara notificação se countChamadoAtual já foi sincronizado anteriormente
-        if (countChamadoAtual > 0 && novosChamadosCount > countChamadoAtual) {
+        if (countDemandaAtual > 0 && novosChamadosCount > countDemandaAtual) {
           const audio = new Audio(
             "../../../../public/notification-chamado.mp3"
           );
@@ -160,8 +160,8 @@ export default function DataProvider({ children }: any) {
             closeOnClick: true,
           });
         }
-        setCountChamadoAtual(novosChamadosCount); // Atualiza o contador atual
-        await LerChamados({ setChamados });
+        setCountDemandaAtual(novosChamadosCount); // Atualiza o contador atual
+        await LerDemandas({ setDemandas });
       } catch (error) {
         console.error("Erro ao atualizar chamados:", error);
       }
@@ -169,7 +169,7 @@ export default function DataProvider({ children }: any) {
 
     const interval = setInterval(updateChamados, 30000); // A cada 30 segundos
     return () => clearInterval(interval);
-  }, [usuario, initialLoadComplete, countChamadoAtual]);
+  }, [usuario, initialLoadComplete, countDemandaAtual]);
 
   useEffect(() => {
     if (!usuario || !initialLoadComplete) return;
@@ -224,19 +224,19 @@ export default function DataProvider({ children }: any) {
         setStatus,
         prioridades,
         setPrioridades,
-        chamados,
-        setChamados,
-        chamadosUser,
-        setChamadosUser,
+        demandas,
+        setDemandas,
+        demandasUser,
+        setDemandasUser,
         comentarios,
         setComentarios,
         comentariosTodos,
         setComentariosTodos,
-        countChamado,
-        setCountChamado,
-        countChamadoAtual,
+        countDemanda,
+        setCountDemanda,
+        countDemandaAtual,
         countComentario,
-        setCountChamadoAtual,
+        setCountDemandaAtual,
         sugestoes,
         setSugestoes,
         tipoPatrimonio,

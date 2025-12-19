@@ -36,7 +36,7 @@ export type Assunto = {
   updatedAt: Date;
 };
 
-export type Chamado = {
+export type Demanda = {
   id: string;
   assuntoId: string;
   usuarioId: string;

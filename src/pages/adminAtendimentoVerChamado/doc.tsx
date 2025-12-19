@@ -2,7 +2,7 @@ import React from "react";
 // ajuste o caminho se necessário
 import { FiFileText } from "react-icons/fi";
 import { FaFileImage, FaFilePdf } from "react-icons/fa";
-import { Chamado, Documento } from "../../components/types";
+import { Demanda, Documento } from "../../components/types";
 import { FaFileCsv, FaFileExcel, FaFileWord, FaFileZipper, FaTrash } from "react-icons/fa6";
 import { RemoverDocumento } from "../../components/data/fetch/documentos/removerDocumento";
 import { LerDocumento } from "../../components/data/fetch/documentos/lerDocumentos";
@@ -10,10 +10,10 @@ import { DataContext } from "../../components/data/context/dataContext";
 
 type Props = {
   documentos: Documento[];
-  localChamado: Chamado
+  localDemanda: Demanda
 };
 
-export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) => {
+export const ListaDocumentos: React.FC<Props> = ({ documentos, localDemanda }) => {
   const { setDocumentos } = React.useContext(DataContext);
 
   const handleDelete = async (id: string, demandaId: Number) => {
@@ -143,7 +143,7 @@ export const ListaDocumentos: React.FC<Props> = ({ documentos, localChamado }) =
 
               {/* Botão de exclusão */}
               {
-                !localChamado.finishedAt && (
+                !localDemanda.finishedAt && (
                   <button
                     onClick={() => {
                       const confirmed = window.confirm(

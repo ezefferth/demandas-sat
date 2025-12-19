@@ -11,8 +11,8 @@ import {
   TextField,
 } from "@mui/material";
 import { AuthContext } from "../../../components/data/context/authContext";
-import { CriarChamado } from "../../../components/data/fetch/chamados/criarChamado";
-import { LerChamadosUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
+import { CriarDemanda } from "../../../components/data/fetch/chamados/criarChamado";
+import { LerDemandasUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
 import { CriarDocumento } from "../../../components/data/fetch/documentos/criarDocumento";
 import { LerDocumento } from "../../../components/data/fetch/documentos/lerDocumentos";
 import { toast } from 'react-toastify';
@@ -34,7 +34,7 @@ type Props = {
   handleClose: (value: boolean) => void;
 };
 
-export default function ModalAddChamado({
+export default function ModalAddDemanda({
   openAdd,
   handleClose,
   setOpenAdd,
@@ -52,7 +52,7 @@ export default function ModalAddChamado({
   };
 
   const { usuario } = useContext(AuthContext);
-  const { setChamadosUser, assuntos, setores, setDocumentos } =
+  const { setDemandasUser, assuntos, setores, setDocumentos } =
     useContext(DataContext);
 
   const [fileSelecionado, setFileSelecionado] = useState<{
@@ -87,7 +87,7 @@ export default function ModalAddChamado({
 
   const handleOnAdd = async () => {
     const id = usuario!.id;
-    await LerChamadosUser({ setChamadosUser, id });
+    await LerDemandasUser({ setDemandasUser, id });
   };
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -98,7 +98,7 @@ export default function ModalAddChamado({
     setLoading(true);
 
     const usuarioId = usuario!.id;
-    if(descricao.length < 10){
+    if (descricao.length < 10) {
       toast.error("Preencha a descrição corretamente. Mínimo 10 caracteres.");
       return;
     }
@@ -112,7 +112,7 @@ export default function ModalAddChamado({
       return;
     }
 
-    const promise: Promise<AxiosResponse> = CriarChamado({
+    const promise: Promise<AxiosResponse> = CriarDemanda({
       usuarioId,
       descricao,
       setorId,
@@ -129,7 +129,7 @@ export default function ModalAddChamado({
       // 1) Cria o chamado e recebe o ID
       const response = await promise
 
-      const chamadoId = response.data.id;
+      const demandaId = response.data.id;
 
       // 2) Se tiver anexo
       if (fileSelecionado) {
@@ -137,10 +137,10 @@ export default function ModalAddChamado({
           nome: fileSelecionado.nome,
           mimeType: fileSelecionado.mimeType,
           conteudo: fileSelecionado.conteudoBase64,
-          chamadoId,
+          demandaId,
         });
         // Opcional: recarregar lista de anexos
-        await LerDocumento({ chamadoId, setDocumentos });
+        await LerDocumento({ demandaId, setDocumentos });
       }
       setOpenAdd(false);
       setDescricao("");

@@ -11,7 +11,7 @@ type Props = {
   patrimonioId: string
 };
 
-export async function AtualizarPatrimonioChamado({ id, patrimonioId }: Props) {
+export async function AtualizarPatrimonioDemanda({ id, patrimonioId }: Props) {
   try {
     const response = await api.post("/atualizarPatrimonioNaDemanda", { id, patrimonioId }, {
       headers: { "Content-Type": "application/json" }

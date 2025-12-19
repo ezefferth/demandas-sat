@@ -10,7 +10,7 @@ type Props = {
   descricao: string;
 };
 
-export async function CriarChamado({ assuntoId, usuarioId, descricao, setorId }: Props) {
+export async function CriarDemanda({ assuntoId, usuarioId, descricao, setorId }: Props) {
   try {
     const response = await api.post("/criarDemanda", { assuntoId, usuarioId, descricao, setorId }, {
       headers: { "Content-Type": "application/json" }

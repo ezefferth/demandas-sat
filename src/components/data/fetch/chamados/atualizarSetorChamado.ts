@@ -10,7 +10,7 @@ type Props = {
   setorId: string
 };
 
-export async function AtualizarSetorChamado({ id, setorId }: Props) {
+export async function AtualizarSetorDemanda({ id, setorId }: Props) {
   try {
     const response = await api.post("/atualizarSetorDemanda", { id, setorId }, {
       headers: { "Content-Type": "application/json" }

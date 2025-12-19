@@ -7,9 +7,9 @@ import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
-import { AtualizarStatusChamado } from '../../../components/data/fetch/chamados/atualizarStatusChamado';
-import { Chamado } from '../../../components/types';
-import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
+import { AtualizarStatusDemanda } from '../../../components/data/fetch/chamados/atualizarStatusChamado';
+import { Demanda } from '../../../components/types';
+import { LerDemandas } from '../../../components/data/fetch/chamados/lerChamados';
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
@@ -30,31 +30,31 @@ type Props = {
   open: boolean;
   setOpen: (value: boolean) => void
   handleClose: (value: boolean) => void
-  chamado: Chamado;
+  demanda: Demanda;
   // onUpdate: (updatedChamado: Chamado) => void;
 }
 
-export default function ModalStatus({ open, handleClose, setOpen, chamado }: Props) {
+export default function ModalStatus({ open, handleClose, setOpen, demanda }: Props) {
 
 
   const [statusId, setStatusId] = useState<string>('')
 
-  const { status, setChamados } = useContext(DataContext)
+  const { status, setDemandas } = useContext(DataContext)
 
 
 
   useEffect(() => {
-    if (chamado) {
-      setStatusId(chamado.statusId || '');
+    if (demanda) {
+      setStatusId(demanda.statusId || '');
     }
-  }, [chamado])
+  }, [demanda])
 
   const [loading, setLoading] = useState<boolean>(false);
   const handle = async () => {
     if (loading) return; // impede múltiplos cliques
     setLoading(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarStatusChamado({ id: chamado.id, statusId });
+    const promise: Promise<AxiosResponse> = AtualizarStatusDemanda({ id: demanda.id, statusId });
 
     toast.promise(promise, {
       pending: "Atualizando status...",
@@ -66,7 +66,7 @@ export default function ModalStatus({ open, handleClose, setOpen, chamado }: Pro
       await promise
       setOpen(false);
 
-      await LerChamados({ setChamados })
+      await LerDemandas({ setDemandas })
       // Atualiza o contexto global ou o estado local do chamado
       //onUpdate(updatedChamado);
     } catch (e: any) {
@@ -102,7 +102,7 @@ export default function ModalStatus({ open, handleClose, setOpen, chamado }: Pro
               value={statusId}
               onChange={handleChange}
               defaultValue={
-                status?.find(st => st.id === chamado.statusId)?.nome || ''
+                status?.find(st => st.id === demanda.statusId)?.nome || ''
               }
               label="Status"
             >

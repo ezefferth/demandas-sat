@@ -22,7 +22,7 @@ type Props = {
   openAdd: boolean;
   setOpenAdd: (value: boolean) => void;
   handleClose: (value: boolean) => void;
-  chamadoId: number; // Mudei para number, pois é um ID
+  demandaId: number; // Mudei para number, pois é um ID
   comentarioId?: string; // Opcional
 };
 
@@ -30,7 +30,7 @@ export default function ModalAddAnexo({
   openAdd,
   handleClose,
   setOpenAdd,
-  chamadoId,
+  demandaId,
 }: // comentarioId, // Se for usar, descomente aqui e no handleAdd
   Props) {
   const [nome, setNome] = useState<string>("");
@@ -41,7 +41,7 @@ export default function ModalAddAnexo({
 
   const handleOnAdd = async () => {
     // Recarregar documentos após adição
-    await LerDocumento({ chamadoId, setDocumentos });
+    await LerDocumento({ demandaId, setDocumentos });
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +92,7 @@ export default function ModalAddAnexo({
       nome,
       mimeType,
       conteudo,
-      chamadoId,
+      demandaId,
       // comentarioId, // Descomente se for usar
     });
 

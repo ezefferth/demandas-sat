@@ -25,7 +25,7 @@ type Props = {
   openAdd: boolean;
   setOpenAdd: (value: boolean) => void;
   handleClose: (value: boolean) => void;
-  chamadoId: string;
+  demandaId: string;
   usuarioId: string;
 };
 
@@ -33,7 +33,7 @@ export default function ModalAddComentario({
   openAdd,
   handleClose,
   setOpenAdd,
-  chamadoId,
+  demandaId,
   usuarioId,
 }: Props) {
   const [loading, setLoading] = useState<boolean>(false);
@@ -43,7 +43,7 @@ export default function ModalAddComentario({
   const { setComentarios, setDocumentos } = useContext(DataContext);
 
   const handleOnAdd = async () => {
-    await LerComentarios({ chamadoId, setComentarios });
+    await LerComentarios({ demandaId: Number(demandaId), setComentarios });
   };
 
   const [fileSelecionado, setFileSelecionado] = useState<{
@@ -55,14 +55,14 @@ export default function ModalAddComentario({
   useEffect(() => {
     const fetchComentarios = async () => {
       try {
-        await LerComentarios({ chamadoId, setComentarios });
+        await LerComentarios({ demandaId: Number(demandaId), setComentarios });
       } catch (error) {
         console.error("Erro ao buscar comentários:", error);
       }
     };
 
     fetchComentarios();
-  }, [chamadoId, setComentarios]);
+  }, [demandaId, setComentarios]);
 
   const handleAdd = async () => {
     if (loading) return;
@@ -77,7 +77,7 @@ export default function ModalAddComentario({
     try {
       // 1) Envia o comentário com feedback automático
       const comentarioResponse = await toast.promise(
-        CriarComentario({ comentario, usuarioId, chamadoId }),
+        CriarComentario({ comentario, usuarioId, demandaId }),
         {
           pending: "Enviando comentário...",
           success: "Comentário criado com sucesso!",
@@ -94,7 +94,7 @@ export default function ModalAddComentario({
             nome: fileSelecionado.nome,
             mimeType: fileSelecionado.mimeType,
             conteudo: fileSelecionado.conteudoBase64,
-            chamadoId: Number(chamadoId),
+            demandaId: Number(demandaId),
             comentarioId,
           }),
           {
@@ -106,7 +106,7 @@ export default function ModalAddComentario({
       }
 
       // 3) Recarrega documentos
-      await LerDocumento({ chamadoId: Number(chamadoId), setDocumentos });
+      await LerDocumento({ demandaId: Number(demandaId), setDocumentos });
 
       // 4) Limpa estado
       setOpenAdd(false);

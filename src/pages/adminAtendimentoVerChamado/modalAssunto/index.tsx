@@ -11,11 +11,10 @@ import {
 } from "@mui/material";
 import { AuthContext } from "../../../components/data/context/authContext";
 // import { LerChamadosUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
-import { AtualizarAssuntoChamado } from "../../../components/data/fetch/chamados/atualizarAssuntoChamado";
-import { LerChamados } from "../../../components/data/fetch/chamados/lerChamados";
-
+import { LerDemandas } from "../../../components/data/fetch/chamados/lerChamados";
 import { toast } from 'react-toastify';
 import { AxiosResponse } from "axios";
+import { AtualizarAssuntoDemanda } from "../../../components/data/fetch/chamados/atualizarAssuntoChamado";
 
 
 const style = {
@@ -33,14 +32,14 @@ type Props = {
   openAdd: boolean;
   setOpenAdd: (value: boolean) => void;
   handleClose: (value: boolean) => void;
-  chamadoId: string;
+  demandaId: string;
 };
 
 export default function ModalAtualizaAssunto({
   openAdd,
   handleClose,
   setOpenAdd,
-  chamadoId
+  demandaId
 }: Props) {
 
   const [assuntoId, setAssuntoId] = useState<string>("");
@@ -50,12 +49,12 @@ export default function ModalAtualizaAssunto({
 
 
   const { usuario } = useContext(AuthContext);
-  const { setChamados, assuntos } =
+  const { setDemandas, assuntos } =
     useContext(DataContext);
 
 
   const handleOnAdd = async () => {
-    await LerChamados({ setChamados });
+    await LerDemandas({ setDemandas });
   };
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -75,7 +74,7 @@ export default function ModalAtualizaAssunto({
       return;
     }
 
-    const promise: Promise<AxiosResponse> = AtualizarAssuntoChamado({ id: chamadoId, assuntoId: assuntoId })
+    const promise: Promise<AxiosResponse> = AtualizarAssuntoDemanda({ id: demandaId, assuntoId: assuntoId })
 
     toast.promise(promise, {
       pending: "Atualizando assunto...",

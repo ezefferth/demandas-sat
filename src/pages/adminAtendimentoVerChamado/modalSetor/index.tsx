@@ -12,12 +12,11 @@ import {
 import { AuthContext } from "../../../components/data/context/authContext";
 // import { LerChamadosUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
 
-import { LerChamados } from "../../../components/data/fetch/chamados/lerChamados";
+import { LerDemandas } from "../../../components/data/fetch/chamados/lerChamados";
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from "axios";
-import { AtualizarSetorChamado } from "../../../components/data/fetch/chamados/atualizarSetorChamado";
-
+import { AtualizarSetorDemanda } from "../../../components/data/fetch/chamados/atualizarSetorChamado";
 
 const style = {
   position: "absolute",
@@ -34,14 +33,14 @@ type Props = {
   openAdd: boolean;
   setOpenAdd: (value: boolean) => void;
   handleClose: (value: boolean) => void;
-  chamadoId: string;
+  demandaId: string;
 };
 
 export default function ModalAtualizaSetor({
   openAdd,
   handleClose,
   setOpenAdd,
-  chamadoId
+  demandaId
 }: Props) {
 
   const [setorId, setSetorId] = useState<string>("");
@@ -51,12 +50,12 @@ export default function ModalAtualizaSetor({
 
 
   const { usuario } = useContext(AuthContext);
-  const { setChamados, setores } =
+  const { setDemandas, setores } =
     useContext(DataContext);
 
 
   const handleOnAdd = async () => {
-    await LerChamados({ setChamados });
+    await LerDemandas({ setDemandas });
   };
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -76,7 +75,7 @@ export default function ModalAtualizaSetor({
       return;
     }
 
-    const promise: Promise<AxiosResponse> = AtualizarSetorChamado({ id: chamadoId, setorId: setorId })
+    const promise: Promise<AxiosResponse> = AtualizarSetorDemanda({ id: demandaId, setorId: setorId })
 
     toast.promise(promise, {
       pending: "Atualizando setor...",

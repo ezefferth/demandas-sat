@@ -7,9 +7,9 @@ import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
-import { Chamado } from '../../../components/types';
-import { AtualizarPrioridadeChamado } from '../../../components/data/fetch/chamados/atualizarPrioridadeChamado';
-import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
+import { Demanda } from '../../../components/types';
+import { AtualizarPrioridadeDemanda } from '../../../components/data/fetch/chamados/atualizarPrioridadeChamado';
+import { LerDemandas } from '../../../components/data/fetch/chamados/lerChamados';
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
@@ -30,22 +30,22 @@ type Props = {
   open: boolean;
   setOpen: (value: boolean) => void
   handleClose: (value: boolean) => void
-  chamado: Chamado;
+  demanda: Demanda;
   // onUpdate: (updatedChamado: Chamado) => void;
 }
 
-export default function ModalPrioridade({ open, handleClose, setOpen, chamado }: Props) {
+export default function ModalPrioridade({ open, handleClose, setOpen, demanda }: Props) {
 
 
   const [prioridadeId, setPrioridadeId] = useState<string>('')
 
-  const { prioridades, setChamados } = useContext(DataContext)
+  const { prioridades, setDemandas } = useContext(DataContext)
 
   useEffect(() => {
-    if (chamado) {
-      setPrioridadeId(chamado.prioridadeId || '');
+    if (demanda) {
+      setPrioridadeId(demanda.prioridadeId || '');
     }
-  }, [chamado])
+  }, [demanda])
   const [loading, setLoading] = useState<boolean>(false);
 
 
@@ -53,7 +53,7 @@ export default function ModalPrioridade({ open, handleClose, setOpen, chamado }:
     if (loading) return; // impede múltiplos cliques
     setLoading(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarPrioridadeChamado({ id: chamado.id, prioridadeId });
+    const promise: Promise<AxiosResponse> = AtualizarPrioridadeDemanda({ id: demanda.id, prioridadeId });
 
     toast.promise(promise, {
       pending: "Atualizando prioridade...",
@@ -65,7 +65,7 @@ export default function ModalPrioridade({ open, handleClose, setOpen, chamado }:
       await promise
       setOpen(false);
 
-      await LerChamados({ setChamados })
+      await LerDemandas({ setDemandas })
 
       // Atualiza o contexto global ou o estado local do chamado
       //onUpdate(updatedChamado);
@@ -103,7 +103,7 @@ export default function ModalPrioridade({ open, handleClose, setOpen, chamado }:
               value={prioridadeId}
               onChange={handleChange}
               defaultValue={
-                prioridades?.find(st => st.id === chamado.prioridadeId)?.nome || ''
+                prioridades?.find(st => st.id === demanda.prioridadeId)?.nome || ''
               }
               label="Status"
             >

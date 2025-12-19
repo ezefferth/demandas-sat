@@ -3,14 +3,14 @@ import Modal from '@mui/material/Modal';
 import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
-import { AtualizarPatrimonioChamado } from '../../../components/data/fetch/chamados/atualizarPatrimonioChamado';
-import { Chamado, Patrimonio } from '../../../components/types';
-import { LerChamados } from '../../../components/data/fetch/chamados/lerChamados';
+import { Demanda, Patrimonio } from '../../../components/types';
+import { LerDemandas } from '../../../components/data/fetch/chamados/lerChamados';
 import { FaArrowRight, FaX } from "react-icons/fa6";
-import { AtualizarRemoverPatrimonioChamado } from '../../../components/data/fetch/chamados/atualizarRemoverPatrimonioChamado';
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
+import { AtualizarPatrimonioDemanda } from '../../../components/data/fetch/chamados/atualizarPatrimonioChamado';
+import { AtualizarRemoverPatrimonioDemanda } from '../../../components/data/fetch/chamados/atualizarRemoverPatrimonioChamado';
 
 const style = {
   position: 'absolute',
@@ -26,22 +26,22 @@ const style = {
 type Props = {
   open: boolean;
   setOpen: (value: boolean) => void;
-  chamado: Chamado;
+  demanda: Demanda;
 };
 
-export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
+export default function ModalPatrimonio({ open, setOpen, demanda }: Props) {
   const [patrimonioId, setPatrimonioId] = useState<string>(''); // Usando apenas um ID de patrimônio
   const [patrimonio, setPatrimonio] = useState<string>(''); // Usando apenas um ID de patrimônio
   const [error, setError] = useState<boolean>(false);
   const [error2, setError2] = useState<boolean>(false);
 
-  const { patrimonios, setChamados } = useContext(DataContext);
+  const { patrimonios, setDemandas } = useContext(DataContext);
   const [patrimoniosAux, setPatrimoniosAux] = useState<Patrimonio>();
 
   function handleAddPatrimonio() {
     // Verifica se o patrimônio já está na lista auxiliar
 
-    const aux = chamado.patrimonios.filter(pt => Number(pt.patrimonio) === Number(patrimonio))
+    const aux = demanda.patrimonios.filter(pt => Number(pt.patrimonio) === Number(patrimonio))
 
 
     if (patrimonio) {
@@ -74,7 +74,7 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
     if (loading) return; // impede múltiplos cliques
     setLoading(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarPatrimonioChamado({ id: chamado.id, patrimonioId });
+    const promise: Promise<AxiosResponse> = AtualizarPatrimonioDemanda({ id: demanda.id, patrimonioId });
 
     toast.promise(promise, {
       pending: "Enviando comentario...",
@@ -90,7 +90,7 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
       setPatrimonioId('');
 
       // Atualiza a lista de chamados após o sucesso
-      await LerChamados({ setChamados });
+      await LerDemandas({ setDemandas });
     } catch (e) {
       console.error("Erro ao cadastrar patrimônios:", e);
     } finally {
@@ -103,7 +103,7 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
     if (loadingR) return; // impede múltiplos cliques
     setLoadingR(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarRemoverPatrimonioChamado({ id: chamado.id, patrimonioId });
+    const promise: Promise<AxiosResponse> = AtualizarRemoverPatrimonioDemanda({ id: demanda.id, patrimonioId });
 
 
     toast.promise(promise, {
@@ -123,7 +123,7 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
       setPatrimonioId('');
 
       // Atualiza a lista de chamados após o sucesso
-      await LerChamados({ setChamados });
+      await LerDemandas({ setDemandas });
     } catch (e) {
       console.error("Erro ao remover patrimônios:", e);
     } finally {
@@ -199,7 +199,7 @@ export default function ModalPatrimonio({ open, setOpen, chamado }: Props) {
             <div className='mt-6'>
               <p className='text-sm text-center mb-2'>Patrimônios cadastrados:</p>
               {
-                chamado.patrimonios?.map((pt, index) => {
+                demanda.patrimonios?.map((pt, index) => {
                   return (
                     <div key={index} className='flex justify-between mt-1'>
                       <div className='flex gap-2 hover:pl-1 h-6 cursor-pointer transition-all' key={pt.id}>
