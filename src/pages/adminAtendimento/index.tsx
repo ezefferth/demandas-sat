@@ -8,15 +8,19 @@ import { RxUpdate } from "react-icons/rx";
 import { AuthContext } from "../../components/data/context/authContext";
 import ModalListaErros from "./modalListaErros";
 import { FaPlus } from "react-icons/fa6";
-import { LerDemandas } from "../../components/data/fetch/chamados/lerChamados";
+import { LerDemandas } from "../../components/data/fetch/demandas/lerDemandas";
 import { toast } from "react-toastify";
 import ModalAddDemanda from "./modalAdd";
+
+
+type TipoAtendimento = "DEMANDA" | "MATERIAL";
 
 export default function Atendimento() {
 
   const { usuario } = useContext(AuthContext);
 
-  
+  const [tipoAtendimento, setTipoAtendimento] =
+    useState<TipoAtendimento>("DEMANDA");
 
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -26,7 +30,7 @@ export default function Atendimento() {
   const handleOpenAdd = () => setOpenAdd(true);
   const handleCloseAdd = () => setOpenAdd(false);
 
-  const { demandas, assuntos, status, prioridades, setDemandas, setores, usuarios } =
+  const { demandas, assuntos, status, prioridades, setDemandas, setores, usuarios, solicitacaoMaterial } =
     useContext(DataContext);
 
   const navigate = useNavigate();
@@ -152,6 +156,125 @@ export default function Atendimento() {
     }
   };
 
+  const solicitacoesAguardando = solicitacaoMaterial?.filter(
+    (s) => s.statusDemandaId === null
+  );
+
+  const solicitacoesEmAtendimento = solicitacaoMaterial?.filter(
+    (s) => s.statusDemandaId !== null && s.finishedAt === null
+  );
+
+  const solicitacoesFinalizadas = solicitacaoMaterial?.filter(
+    (s) => s.finishedAt !== null
+  );
+
+  const TabelaSolicitacaoMaterial = ({
+    titulo,
+    dados,
+    mostrarPrioridade = false,
+  }: {
+    titulo: string;
+    dados: any[];
+    mostrarPrioridade?: boolean;
+  }) => (
+    <div className="mt-8 text-slate-900 mx-auto">
+      <div className="mb-2">
+        <span className="border-b-2 px-4 border-gray-400">
+          {titulo}
+        </span>
+      </div>
+
+      <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
+        <thead>
+          <tr className="text-slate-900 font-semibold bg-gray-400">
+            <th className="px-2 py-1 border">ID</th>
+            <th className="px-2 py-1 border">Descrição</th>
+            <th className="px-2 py-1 border">Setor</th>
+            <th className="px-2 py-1 border">Status</th>
+
+            {mostrarPrioridade && (
+              <th className="px-2 py-1 border">Prioridade</th>
+            )}
+
+            <th className="px-2 py-1 border text-center w-[2rem]">
+              Ações
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {dados?.map((solicitacao, index) => (
+            <tr
+              key={solicitacao.id}
+              className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                } hover:bg-gray-100 transition-all`}
+            >
+              <td className="px-2 py-1 border">{solicitacao.id}</td>
+
+              <td className="px-2 py-1 border max-w-[16rem] truncate">
+                {solicitacao.descricao || "—"}
+              </td>
+
+              <td className="px-2 py-1 border">
+                {setores?.find(
+                  (setor) => setor.id === solicitacao.setorId
+                )?.nome}
+              </td>
+
+              <td className="px-2 py-1 border">
+                {solicitacao.statusDemandaId ? (
+                  status
+                    ?.find((st) => st.id === solicitacao.statusDemandaId)
+                    ?.nome
+                ) : (
+                  <span className="bg-gray-400 rounded-lg px-2">
+                    Aguardando triagem
+                  </span>
+                )}
+              </td>
+              {mostrarPrioridade && (
+                <td className="px-2 py-1 border w-[10rem]">
+                  <p
+                    className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                    style={{
+                      backgroundColor:
+                        prioridades?.find(
+                          (p) => p.id === solicitacao.prioridadeId
+                        )?.cor || "transparent",
+                    }}
+                  >
+                    {
+                      prioridades?.find(
+                        (p) => p.id === solicitacao.prioridadeId
+                      )?.nome ?? "—"
+                    }
+                  </p>
+                </td>
+              )}
+
+              <td className="px-2 py-1 border">
+                <div className="flex justify-center">
+                  <button
+                    onClick={() =>
+                      navigate("/verSolicitacaoMaterialAdmin", {
+                        state: solicitacao,
+                      })
+                    }
+                  >
+                    <FaSearch
+                      size={18}
+                      className="text-slate-800 hover:text-slate-700"
+                    />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
   return (
     <div className="p-12">
       <div className="flex justify-between items-center">
@@ -176,383 +299,438 @@ export default function Atendimento() {
         </div>
       </div>
 
-      <div className="mt-8 text-slate-900 mx-auto">
-        <div className="mb-2">
-          <span className="border-b-2 px-4 border-gray-400">
-            Aguardando Triagem
-          </span>
-        </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
-          <thead>
-            <tr className="text-slate-900 font-semibold bg-gray-400">
-              <th className="px-2 py-1 border border-slate-300">ID</th>
-              <th className="px-2 py-1 border border-slate-300">Descrição</th>
-              <th className="px-2 py-1 border border-slate-300">Setor</th>
-              <th className="px-2 py-1 border border-slate-300">
-                Setor Destino
-              </th>
-              <th className="px-2 py-1 border border-slate-300">Assunto</th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItems?.map((demanda: Demanda, index: number) => (
-              <tr
-                key={demanda.id}
-                className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                  } hover:bg-gray-100 transition-all`}
-              >
-                <td className="px-2 py-1 border border-slate-300">
-                  {demanda.id}
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {/* <Tooltip title={demanda.descricao} placement="bottom-start">
+      <div className="flex mt-6 justify-center gap-3">
+        <button
+          onClick={() => setTipoAtendimento("DEMANDA")}
+          className={`px-4 py-1 rounded transition-all ${tipoAtendimento === "DEMANDA"
+            ? "bg-slate-600 text-white"
+            : "bg-slate-300 hover:bg-slate-400"
+            }`}
+        >
+          Demandas (Serviço / Patrimônio)
+        </button>
+
+        <button
+          onClick={() => setTipoAtendimento("MATERIAL")}
+          className={`px-4 py-1 rounded transition-all ${tipoAtendimento === "MATERIAL"
+            ? "bg-slate-600 text-white"
+            : "bg-slate-300 hover:bg-slate-400"
+            }`}
+        >
+          Solicitações de Materiais
+        </button>
+      </div>
+
+      {
+        tipoAtendimento === "DEMANDA" ? (
+          <>
+            <div className="mt-8 text-slate-900 mx-auto">
+              <div className="mb-2">
+                <span className="border-b-2 px-4 border-gray-400">
+                  Aguardando Triagem
+                </span>
+              </div>
+              <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
+                <thead>
+                  <tr className="text-slate-900 font-semibold bg-gray-400">
+                    <th className="px-2 py-1 border border-slate-300">ID</th>
+                    <th className="px-2 py-1 border border-slate-300">Descrição</th>
+                    <th className="px-2 py-1 border border-slate-300">Setor</th>
+                    <th className="px-2 py-1 border border-slate-300">
+                      Setor Destino
+                    </th>
+                    <th className="px-2 py-1 border border-slate-300">Assunto</th>
+                    <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItems?.map((demanda: Demanda, index: number) => (
+                    <tr
+                      key={demanda.id}
+                      className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                        } hover:bg-gray-100 transition-all`}
+                    >
+                      <td className="px-2 py-1 border border-slate-300">
+                        {demanda.id}
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {/* <Tooltip title={demanda.descricao} placement="bottom-start">
                     <p>
                       <span>{demanda.descricao}</span>
                       <br /><span>{usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}</span>
                     </p>
                   </Tooltip> */}
-                  <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
-                    <span>{demanda.descricao}</span>
-                  </Tooltip>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find((setor) => setor.id === demanda.setorId)?.nome}
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {setores?.find(
-                    (setor) =>
-                      setor.id ===
-                      assuntos?.find(
-                        (assunto) => assunto.id === demanda.assuntoId
-                      )?.setorId
-                  )?.nome ?? "Setor não encontrado"}
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {
-                    assuntos?.find(
-                      (assunto) => assunto.id === demanda.assuntoId
-                    )?.nome
-                  }
-                </td>
-                <td className="px-2 py-1 border border-slate-300">
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={(e) => handleSeletedVisualizar(e, demanda)}
-                    >
-                      <FaSearch
-                        size={20}
-                        className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
-                      />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-center items-center mt-4">
-          <Pagination
-            count={totalPages}
-            page={currentPage}
-            onChange={handleChangePage}
-            color="standard"
-            shape="rounded"
-          />
-        </div>
-      </div>
-
-      <div className="mt-2 text-slate-900 mx-auto">
-        <div className="mb-2 mt-4 flex justify-between">
-          <span className="border-b-2 px-4 border-gray-400">
-            Em Atendimento
-          </span>
-        </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
-          <thead>
-            <tr className="text-slate-900 font-semibold bg-gray-400">
-              <th className="px-2 py-1 border border-slate-300">ID</th>
-              <th className="px-2 py-1 border border-slate-300">Data</th>
-              <th className="px-2 py-1 border border-slate-300">Descrição</th>
-              <th className="px-2 py-1 border border-slate-300">Setor</th>
-              <th className="px-2 py-1 border border-slate-300">Assunto</th>
-              <th className="px-2 py-1 border border-slate-300">Status</th>
-              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItemsNotNull?.map((demanda: Demanda, index: number) => {
-              const { atraso, duration } = CalculaDuracaoEAtraso(demanda);
-
-              return (
-                <tr
-                  key={demanda.id}
-                  className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                    } hover:bg-gray-100 transition-all`}
-                >
-                  <td className="px-2 py-1 border border-slate-300">
-                    {demanda.id}
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    <p>
-                      {demanda.createdAt
-                        ? new Date(demanda.createdAt).toLocaleDateString()
-                        : ""}
-                    </p>
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
-                      <span>{demanda.descricao}</span>
-                    </Tooltip>
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    <Tooltip
-                      title={`Setor de Destino: ${setores?.find(
-                        (setor) =>
-                          setor.id ===
+                        <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                          <span>{demanda.descricao}</span>
+                        </Tooltip>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {setores?.find((setor) => setor.id === demanda.setorId)?.nome}
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {setores?.find(
+                          (setor) =>
+                            setor.id ===
+                            assuntos?.find(
+                              (assunto) => assunto.id === demanda.assuntoId
+                            )?.setorId
+                        )?.nome ?? "Setor não encontrado"}
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[10rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {
                           assuntos?.find(
                             (assunto) => assunto.id === demanda.assuntoId
-                          )?.setorId
-                      )?.nome ?? "Setor não encontrado"
-                        }`}
-                    >
-                      <span>
-                        {
-                          setores?.find((setor) => setor.id === demanda.setorId)
-                            ?.nome
+                          )?.nome
                         }
-                      </span>
-                    </Tooltip>
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                    {
-                      assuntos?.find(
-                        (assunto) => assunto.id === demanda.assuntoId
-                      )?.nome
-                    }
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 w-[12rem] ">
-                    <p
-                      className="rounded-md flex items-center gap-1 justify-center w-full max-w-[12rem] px-2 overflow-hidden text-ellipsis whitespace-nowrap"
-                      style={{
-                        backgroundColor:
-                          status?.find(
-                            (status) => status.id === demanda.statusId
-                          )?.cor || "transparent",
-                      }}
-                    >
-                      {assuntos?.find(
-                        (assunto) => assunto.id === demanda.assuntoId
-                      )?.tempoLimite &&
-                        atraso > 0 &&
-                        assuntos.find(
-                          (assunto) => assunto.id === demanda.assuntoId
-                        )?.tempoLimite! < atraso && (
-                          <Tooltip title={`Atrasado em ${duration}`}>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={(e) => handleSeletedVisualizar(e, demanda)}
+                          >
+                            <FaSearch
+                              size={20}
+                              className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex justify-center items-center mt-4">
+                <Pagination
+                  count={totalPages}
+                  page={currentPage}
+                  onChange={handleChangePage}
+                  color="standard"
+                  shape="rounded"
+                />
+              </div>
+            </div>
+
+            <div className="mt-2 text-slate-900 mx-auto">
+              <div className="mb-2 mt-4 flex justify-between">
+                <span className="border-b-2 px-4 border-gray-400">
+                  Em Atendimento
+                </span>
+              </div>
+              <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
+                <thead>
+                  <tr className="text-slate-900 font-semibold bg-gray-400">
+                    <th className="px-2 py-1 border border-slate-300">ID</th>
+                    <th className="px-2 py-1 border border-slate-300">Data</th>
+                    <th className="px-2 py-1 border border-slate-300">Descrição</th>
+                    <th className="px-2 py-1 border border-slate-300">Setor</th>
+                    <th className="px-2 py-1 border border-slate-300">Assunto</th>
+                    <th className="px-2 py-1 border border-slate-300">Status</th>
+                    <th className="px-2 py-1 border border-slate-300">Prioridade</th>
+                    <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItemsNotNull?.map((demanda: Demanda, index: number) => {
+                    const { atraso, duration } = CalculaDuracaoEAtraso(demanda);
+
+                    return (
+                      <tr
+                        key={demanda.id}
+                        className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                          } hover:bg-gray-100 transition-all`}
+                      >
+                        <td className="px-2 py-1 border border-slate-300">
+                          {demanda.id}
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                          <p>
+                            {demanda.createdAt
+                              ? new Date(demanda.createdAt).toLocaleDateString()
+                              : ""}
+                          </p>
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                          <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                            <span>{demanda.descricao}</span>
+                          </Tooltip>
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                          <Tooltip
+                            title={`Setor de Destino: ${setores?.find(
+                              (setor) =>
+                                setor.id ===
+                                assuntos?.find(
+                                  (assunto) => assunto.id === demanda.assuntoId
+                                )?.setorId
+                            )?.nome ?? "Setor não encontrado"
+                              }`}
+                          >
                             <span>
-                              <FaExclamationCircle
-                                className="text-slate-800"
-                                size={16}
-                                style={{
-                                  display: "inline-block",
-                                  verticalAlign: "middle",
-                                }}
-                              />
+                              {
+                                setores?.find((setor) => setor.id === demanda.setorId)
+                                  ?.nome
+                              }
                             </span>
                           </Tooltip>
-                        )}
-                      {
-                        status?.find((status) => status.id === demanda.statusId)
-                          ?.nome
-                      }
-                    </p>
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300 w-[10rem]">
-                    <p
-                      className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
-                      style={{
-                        backgroundColor:
-                          prioridades?.find(
-                            (prioridade) =>
-                              prioridade.id === demanda.prioridadeId
-                          )?.cor || "transparent",
-                      }}
-                    >
-                      {
-                        prioridades?.find(
-                          (prioridades) =>
-                            prioridades.id === demanda.prioridadeId
-                        )?.nome
-                      }
-                    </p>
-                  </td>
-                  <td className="px-2 py-1 border border-slate-300">
-                    <div className="flex items-center justify-center gap-2">
-                      <button
-                        onClick={(e) => handleSeletedVisualizar(e, demanda)}
-                      >
-                        <FaSearch
-                          size={20}
-                          className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
-                        />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-        <div className="flex justify-center items-center mt-4">
-          <Pagination
-            count={totalPagesNotNull}
-            page={currentPageNotNull}
-            onChange={handleChangePageNotNull}
-            color="standard"
-            shape="rounded"
-          />
-        </div>
-      </div>
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                          {
+                            assuntos?.find(
+                              (assunto) => assunto.id === demanda.assuntoId
+                            )?.nome
+                          }
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 w-[12rem] ">
+                          <p
+                            className="rounded-md flex items-center gap-1 justify-center w-full max-w-[12rem] px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                            style={{
+                              backgroundColor:
+                                status?.find(
+                                  (status) => status.id === demanda.statusId
+                                )?.cor || "transparent",
+                            }}
+                          >
+                            {assuntos?.find(
+                              (assunto) => assunto.id === demanda.assuntoId
+                            )?.tempoLimite &&
+                              atraso > 0 &&
+                              assuntos.find(
+                                (assunto) => assunto.id === demanda.assuntoId
+                              )?.tempoLimite! < atraso && (
+                                <Tooltip title={`Atrasado em ${duration}`}>
+                                  <span>
+                                    <FaExclamationCircle
+                                      className="text-slate-800"
+                                      size={16}
+                                      style={{
+                                        display: "inline-block",
+                                        verticalAlign: "middle",
+                                      }}
+                                    />
+                                  </span>
+                                </Tooltip>
+                              )}
+                            {
+                              status?.find((status) => status.id === demanda.statusId)
+                                ?.nome
+                            }
+                          </p>
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300 w-[10rem]">
+                          <p
+                            className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                            style={{
+                              backgroundColor:
+                                prioridades?.find(
+                                  (prioridade) =>
+                                    prioridade.id === demanda.prioridadeId
+                                )?.cor || "transparent",
+                            }}
+                          >
+                            {
+                              prioridades?.find(
+                                (prioridades) =>
+                                  prioridades.id === demanda.prioridadeId
+                              )?.nome
+                            }
+                          </p>
+                        </td>
+                        <td className="px-2 py-1 border border-slate-300">
+                          <div className="flex items-center justify-center gap-2">
+                            <button
+                              onClick={(e) => handleSeletedVisualizar(e, demanda)}
+                            >
+                              <FaSearch
+                                size={20}
+                                className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
+                              />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+              <div className="flex justify-center items-center mt-4">
+                <Pagination
+                  count={totalPagesNotNull}
+                  page={currentPageNotNull}
+                  onChange={handleChangePageNotNull}
+                  color="standard"
+                  shape="rounded"
+                />
+              </div>
+            </div>
 
-      <div className="mt-2 text-slate-900 mx-auto">
-        <div className="mb-2 mt-4">
-          <span className="border-b-2 px-4 border-gray-400">Finalizados</span>
-        </div>
-        <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
-          <thead>
-            <tr className="text-slate-900 font-semibold bg-gray-400">
-              <th className="px-2 py-1 border border-slate-300">ID</th>
-              <th className="px-2 py-1 border border-slate-300">Data</th>
-              <th className="px-2 py-1 border border-slate-300">Descrição</th>
-              <th className="px-2 py-1 border border-slate-300">Setor</th>
-              <th className="px-2 py-1 border border-slate-300">Assunto</th>
-              <th className="px-2 py-1 border border-slate-300">Status</th>
-              <th className="px-2 py-1 border border-slate-300">Prioridade</th>
-              <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
-                Ações
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {currentItemsFinalizados?.map((demanda: Demanda, index: number) => (
-              <tr
-                key={demanda.id}
-                className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
-                  } hover:bg-gray-100 transition-all`}
+            <div className="mt-2 text-slate-900 mx-auto">
+              <div className="mb-2 mt-4">
+                <span className="border-b-2 px-4 border-gray-400">Finalizados</span>
+              </div>
+              <table className="table-auto w-full border-collapse border border-slate-300 text-left text-sm">
+                <thead>
+                  <tr className="text-slate-900 font-semibold bg-gray-400">
+                    <th className="px-2 py-1 border border-slate-300">ID</th>
+                    <th className="px-2 py-1 border border-slate-300">Data</th>
+                    <th className="px-2 py-1 border border-slate-300">Descrição</th>
+                    <th className="px-2 py-1 border border-slate-300">Setor</th>
+                    <th className="px-2 py-1 border border-slate-300">Assunto</th>
+                    <th className="px-2 py-1 border border-slate-300">Status</th>
+                    <th className="px-2 py-1 border border-slate-300">Prioridade</th>
+                    <th className="px-2 py-1 border border-slate-300 text-center w-[2rem]">
+                      Ações
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {currentItemsFinalizados?.map((demanda: Demanda, index: number) => (
+                    <tr
+                      key={demanda.id}
+                      className={`${index % 2 === 0 ? "bg-gray-200" : "bg-gray-300"
+                        } hover:bg-gray-100 transition-all`}
+                    >
+                      <td className="px-2 py-1 border border-slate-300">
+                        {demanda.id}
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <p>
+                          {demanda.createdAt
+                            ? new Date(demanda.createdAt).toLocaleDateString()
+                            : ""}
+                        </p>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
+                          <span>{demanda.descricao}</span>
+                        </Tooltip>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        <Tooltip
+                          title={`Setor de Destino: ${setores?.find(
+                            (setor) =>
+                              setor.id ===
+                              assuntos?.find(
+                                (assunto) => assunto.id === demanda.assuntoId
+                              )?.setorId
+                          )?.nome ?? "Setor não encontrado"
+                            }`}
+                        >
+                          <span>
+                            {
+                              setores?.find((setor) => setor.id === demanda.setorId)
+                                ?.nome
+                            }
+                          </span>
+                        </Tooltip>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
+                        {
+                          assuntos?.find(
+                            (assunto) => assunto.id === demanda.assuntoId
+                          )?.nome
+                        }
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 w-[12rem]">
+                        <p
+                          className="text-center px-1 rounded-md"
+                          style={{
+                            backgroundColor:
+                              status?.find((status) => status.id === demanda.statusId)
+                                ?.cor || "transparent",
+                          }}
+                        >
+                          {
+                            status?.find((status) => status.id === demanda.statusId)
+                              ?.nome
+                          }
+                        </p>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300 w-[10rem]">
+                        <p
+                          className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
+                          style={{
+                            backgroundColor:
+                              prioridades?.find(
+                                (prioridade) => prioridade.id === demanda.prioridadeId
+                              )?.cor || "transparent",
+                          }}
+                        >
+                          {
+                            prioridades?.find(
+                              (prioridades) => prioridades.id === demanda.prioridadeId
+                            )?.nome
+                          }
+                        </p>
+                      </td>
+                      <td className="px-2 py-1 border border-slate-300">
+                        <div className="flex items-center justify-center gap-2">
+                          <button
+                            onClick={(e) => handleSeletedVisualizar(e, demanda)}
+                          >
+                            <FaSearch
+                              size={20}
+                              className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
+                            />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <div className="flex justify-center items-center mt-4">
+                <Pagination
+                  count={totalPagesFinalizados}
+                  page={currentPageFinalizados}
+                  onChange={handleChangePageFinalizados}
+                  color="standard"
+                  shape="rounded"
+                />
+              </div>
+            </div>
+
+            <div className="text-center mt-16">
+              <button
+                onClick={handleOpen}
+                className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all"
               >
-                <td className="px-2 py-1 border border-slate-300">
-                  {demanda.id}
-                </td>
-                <td className="px-2 py-1 border border-slate-300 w-[7rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <p>
-                    {demanda.createdAt
-                      ? new Date(demanda.createdAt).toLocaleDateString()
-                      : ""}
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <Tooltip title={`${demanda.descricao} / ${usuarios?.find((user) => user.id === demanda.usuarioId)?.nome}`} placement="bottom-start">
-                    <span>{demanda.descricao}</span>
-                  </Tooltip>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[8rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  <Tooltip
-                    title={`Setor de Destino: ${setores?.find(
-                      (setor) =>
-                        setor.id ===
-                        assuntos?.find(
-                          (assunto) => assunto.id === demanda.assuntoId
-                        )?.setorId
-                    )?.nome ?? "Setor não encontrado"
-                      }`}
-                  >
-                    <span>
-                      {
-                        setores?.find((setor) => setor.id === demanda.setorId)
-                          ?.nome
-                      }
-                    </span>
-                  </Tooltip>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 max-w-[16rem] overflow-hidden text-ellipsis whitespace-nowrap">
-                  {
-                    assuntos?.find(
-                      (assunto) => assunto.id === demanda.assuntoId
-                    )?.nome
-                  }
-                </td>
-                <td className="px-2 py-1 border border-slate-300 w-[12rem]">
-                  <p
-                    className="text-center px-1 rounded-md"
-                    style={{
-                      backgroundColor:
-                        status?.find((status) => status.id === demanda.statusId)
-                          ?.cor || "transparent",
-                    }}
-                  >
-                    {
-                      status?.find((status) => status.id === demanda.statusId)
-                        ?.nome
-                    }
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300 w-[10rem]">
-                  <p
-                    className="text-center w-full rounded-md px-2 overflow-hidden text-ellipsis whitespace-nowrap"
-                    style={{
-                      backgroundColor:
-                        prioridades?.find(
-                          (prioridade) => prioridade.id === demanda.prioridadeId
-                        )?.cor || "transparent",
-                    }}
-                  >
-                    {
-                      prioridades?.find(
-                        (prioridades) => prioridades.id === demanda.prioridadeId
-                      )?.nome
-                    }
-                  </p>
-                </td>
-                <td className="px-2 py-1 border border-slate-300">
-                  <div className="flex items-center justify-center gap-2">
-                    <button
-                      onClick={(e) => handleSeletedVisualizar(e, demanda)}
-                    >
-                      <FaSearch
-                        size={20}
-                        className="text-slate-800 hover:text-slate-700 transition-all cursor-pointer active:text-slate-600"
-                      />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="flex justify-center items-center mt-4">
-          <Pagination
-            count={totalPagesFinalizados}
-            page={currentPageFinalizados}
-            onChange={handleChangePageFinalizados}
-            color="standard"
-            shape="rounded"
-          />
-        </div>
-      </div>
+                Listar demandas aberto por erro
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            {tipoAtendimento === "MATERIAL" && (
+              <>
+                <TabelaSolicitacaoMaterial
+                  titulo="Aguardando Triagem"
+                  dados={solicitacoesAguardando}
+                  mostrarPrioridade={false}
+                />
 
-      <div className="text-center mt-16">
-        <button
-          onClick={handleOpen}
-          className="border rounded-md px-4 py-1 bg-slate-300 border-slate-500 hover:bg-slate-400 transition-all"
-        >
-          Listar demandas aberto por erro
-        </button>
-      </div>
+                <TabelaSolicitacaoMaterial
+                  titulo="Em Atendimento"
+                  dados={solicitacoesEmAtendimento}
+                  mostrarPrioridade={true}
+                />
+
+                <TabelaSolicitacaoMaterial
+                  titulo="Finalizados"
+                  dados={solicitacoesFinalizadas}
+                  mostrarPrioridade={true}
+                />
+              </>
+            )}
+          </>
+
+        )
+      }
+
+
       <ModalAddDemanda
         openAdd={openAdd}
         handleClose={handleCloseAdd}

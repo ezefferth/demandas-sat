@@ -13,6 +13,8 @@ import {
   TipoPatrimonio,
   Usuario,
   Material,
+  SolicitacaoMaterial,
+  ComentarioSolicitacaoMaterial,
 } from "../../types";
 import { LerCategorias } from "../fetch/categoria/lerCategoria";
 import { LerSetores } from "../fetch/setores/lerSetores";
@@ -20,7 +22,7 @@ import { LerAssuntos } from "../fetch/assuntos/lerAssuntos";
 import { LerUsuarios } from "../fetch/usuarios/lerUsuarios";
 import { LerStatus } from "../fetch/status/lerStatus";
 import { LerPrioridades } from "../fetch/prioridade/lerPrioridades";
-import { LerDemandas } from "../fetch/chamados/lerChamados";
+import { LerDemandas } from "../fetch/demandas/lerDemandas";
 import { AuthContext } from "./authContext";
 import { LerComentariosCount } from "../fetch/comentario/lerComentariosCount";
 import { toast } from "react-toastify";
@@ -28,8 +30,12 @@ import { LerComentariosTodos } from "../fetch/comentario/lerComentariosTodos";
 import { LerSugestoes } from "../fetch/sugestoes/lerSugestes";
 import { LerPatrimonios } from "../fetch/patrimonio/lerPatrimonio";
 import { LerTipoPatrimonios } from "../fetch/tipoPatrimonio/lerTipoPatrimonio";
-import { LerDemandasCount } from "../fetch/chamados/lerChamadosCount";
+import { LerDemandasCount } from "../fetch/demandas/lerDemandasCount";
 import { LerMateriais } from "../fetch/materiais/lerMateriais";
+import { LerSolicitacaoMaterialUser } from "../fetch/demandasSolicitacaoMateriais/lerSolicitacaoMaterialUser";
+import { LerSolicitacaoMateriais } from "../fetch/demandasSolicitacaoMateriais/lerSolicitacaoMaterial";
+import { LerComentariosSolicitacaoMaterialCount } from "../fetch/comentarioSolicitacao/lerComentariosCount";
+import { LerComentariosTodosSolicitacaoMaterial } from "../fetch/comentarioSolicitacao/lerComentariosTodos";
 
 // import audioMsg from '../../../../public/notification-msg.mp3'
 
@@ -51,6 +57,10 @@ type DataContextType = {
   demandas: Demanda[] | undefined;
   setDemandas: (value: Demanda[]) => void;
   demandasUser: Demanda[] | undefined;
+  solicitacaoMaterial: SolicitacaoMaterial[]
+  setSolicitacaoMaterial: (value: SolicitacaoMaterial[]) => void
+  solicitacaoMaterialUser: SolicitacaoMaterial[]
+  setSolicitacaoMaterialUser: (value: SolicitacaoMaterial[]) => void
   setDemandasUser: (value: Demanda[]) => void;
   comentarios: Comentario[] | undefined;
   setComentarios: (value: Comentario[]) => void;
@@ -69,7 +79,15 @@ type DataContextType = {
   countComentario: number | undefined;
   documentos: Documento[] | undefined;
   setDocumentos: (value: Documento[]) => void;
-};
+  comentariosSolicitacaoMaterial: ComentarioSolicitacaoMaterial[] | undefined;
+  setComentariosSolicitacaoMaterial: (value: ComentarioSolicitacaoMaterial[]) => void;
+  comentariosTodosSolicitacaoMaterial: ComentarioSolicitacaoMaterial[] | undefined;
+  setComentariosTodosSolicitacaoMaterial: (value: ComentarioSolicitacaoMaterial[]) => void;
+  countSolicitacaoMaterial: number;
+  setCountSolicitacaoMaterial: (value: number) => void;
+  countSolicitacaoMaterialAtual: number;
+  setCountSolicitacaoMaterialAtual: (value: number) => void;
+  };
 
 export const DataContext = createContext({} as DataContextType);
 
@@ -84,6 +102,8 @@ export default function DataProvider({ children }: any) {
   const [demandas, setDemandas] = useState<Demanda[]>();
   const [demandasUser, setDemandasUser] = useState<Demanda[]>();
   const [comentarios, setComentarios] = useState<Comentario[]>();
+  const [comentariosSolicitacaoMaterial, setComentariosSolicitacaoMaterial] = useState<ComentarioSolicitacaoMaterial[]>();
+  const [comentariosTodosSolicitacaoMaterial, setComentariosTodosSolicitacaoMaterial] = useState<ComentarioSolicitacaoMaterial[]>();
   const [comentariosTodos, setComentariosTodos] = useState<Comentario[]>();
   const [countDemanda, setCountDemanda] = useState<number>(0);
   const [countDemandaAtual, setCountDemandaAtual] = useState<number>(0);
@@ -93,6 +113,11 @@ export default function DataProvider({ children }: any) {
   const [patrimonios, setPatrimonios] = useState<Patrimonio[]>();
   const [tipoPatrimonio, setTipoPatrimonio] = useState<TipoPatrimonio[]>();
   const [documentos, setDocumentos] = useState<Documento[]>();
+  const [solicitacaoMaterial, setSolicitacaoMaterial] = useState<SolicitacaoMaterial[]>([])
+  const [solicitacaoMaterialUser, setSolicitacaoMaterialUser] = useState<SolicitacaoMaterial[]>([])
+  const [countSolicitacaoMaterial, setCountSolicitacaoMaterial] = useState<number>(0);
+  const [countSolicitacaoMaterialAtual, setCountSolicitacaoMaterialAtual] = useState<number>(0);
+
 
   const { usuario } = useContext(AuthContext);
 
@@ -117,11 +142,13 @@ export default function DataProvider({ children }: any) {
           LerComentariosTodos({ id: usuario.id, setComentariosTodos }),
           LerPatrimonios({ setPatrimonios }),
           LerTipoPatrimonios({ setTipoPatrimonio }),
+          LerSolicitacaoMaterialUser({ id: usuario.id, setSolicitacaoMaterialUser }),
+          LerSolicitacaoMateriais({ setSolicitacaoMaterial })
         ]);
 
         // Inicializando as contagens
         // Inicializando as contagens
-        const chamadosCount = await LerDemandasCount({ setCountDemanda});
+        const chamadosCount = await LerDemandasCount({ setCountDemanda });
         setCountDemandaAtual(chamadosCount); // Sincroniza o valor inicial corretamente
 
         const comentariosCount = await LerComentariosCount({
@@ -207,6 +234,43 @@ export default function DataProvider({ children }: any) {
     return () => clearInterval(interval);
   }, [usuario, initialLoadComplete, countComentarioAtual]);
 
+  
+  useEffect(() => {
+    if (!usuario || !initialLoadComplete) return;
+
+    const updateComentarios = async () => {
+      try {
+        const novosComentariosCount = await LerComentariosSolicitacaoMaterialCount({
+          id: usuario.id,
+          setCountSolicitacaoMaterial,
+        });
+
+        // Só dispara notificação se countComentarioAtual já foi sincronizado anteriormente
+        if (
+          countSolicitacaoMaterialAtual > 0 &&
+          novosComentariosCount > countSolicitacaoMaterial
+        ) {
+          const audio = new Audio("../../../../public/notification-msg.mp3");
+          audio
+            .play()
+            .catch((error) => console.error("Erro ao tocar som: ", error));
+
+          toast.info("Novo comentário recebido!", {
+            autoClose: false,
+            closeOnClick: true,
+          });
+        }
+        setCountSolicitacaoMaterialAtual(novosComentariosCount); // Atualiza o contador atual
+        await LerComentariosTodosSolicitacaoMaterial({ id: usuario.id, setComentariosTodosSolicitacaoMaterial });
+      } catch (error) {
+        console.error("Erro ao atualizar comentários:", error);
+      }
+    };
+
+    const interval = setInterval(updateComentarios, 15000); // A cada 15 segundos
+    return () => clearInterval(interval);
+  }, [usuario, initialLoadComplete, countSolicitacaoMaterialAtual]);
+
   return (
     <DataContext.Provider
       value={{
@@ -245,6 +309,18 @@ export default function DataProvider({ children }: any) {
         setPatrimonios,
         documentos,
         setDocumentos,
+        solicitacaoMaterial,
+        setSolicitacaoMaterial,
+        solicitacaoMaterialUser,
+        setSolicitacaoMaterialUser,
+        comentariosSolicitacaoMaterial,
+        setComentariosSolicitacaoMaterial,
+        comentariosTodosSolicitacaoMaterial,
+        setComentariosTodosSolicitacaoMaterial,
+        countSolicitacaoMaterial,
+        setCountSolicitacaoMaterial,
+        countSolicitacaoMaterialAtual,
+        setCountSolicitacaoMaterialAtual
       }}
     >
       {children}

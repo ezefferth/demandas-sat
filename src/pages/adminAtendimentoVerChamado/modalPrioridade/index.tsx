@@ -8,8 +8,8 @@ import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
 import { Demanda } from '../../../components/types';
-import { AtualizarPrioridadeDemanda } from '../../../components/data/fetch/chamados/atualizarPrioridadeChamado';
-import { LerDemandas } from '../../../components/data/fetch/chamados/lerChamados';
+import { AtualizarPrioridadeDemanda } from '../../../components/data/fetch/demandas/atualizarPrioridadeDemanda';
+import { LerDemandas } from '../../../components/data/fetch/demandas/lerDemandas';
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';

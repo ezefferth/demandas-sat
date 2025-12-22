@@ -11,8 +11,8 @@ import {
   TextField,
 } from "@mui/material";
 import { AuthContext } from "../../../components/data/context/authContext";
-import { CriarDemanda } from "../../../components/data/fetch/chamados/criarChamado";
-import { LerDemandasUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
+import { CriarDemanda } from "../../../components/data/fetch/demandas/criarDemanda";
+import { LerDemandasUser } from "../../../components/data/fetch/demandas/lerDemandaUser";
 import { CriarDocumento } from "../../../components/data/fetch/documentos/criarDocumento";
 import { LerDocumento } from "../../../components/data/fetch/documentos/lerDocumentos";
 import { toast } from 'react-toastify';

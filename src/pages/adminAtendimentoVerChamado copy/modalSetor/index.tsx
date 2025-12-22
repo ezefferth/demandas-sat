@@ -11,12 +11,12 @@ import {
 } from "@mui/material";
 import { AuthContext } from "../../../components/data/context/authContext";
 // import { LerChamadosUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
-import { LerDemandas } from "../../../components/data/fetch/demandas/lerDemandas";
+
+
 import { toast } from 'react-toastify';
 import { AxiosResponse } from "axios";
-import { AtualizarAssuntoDemanda } from "../../../components/data/fetch/demandas/atualizarAssuntoDemanda";
-import { Assunto } from "../../../components/types";
-
+import { AtualizarSetorSolicitacaoMaterial } from "../../../components/data/fetch/demandasSolicitacaoMateriais/atualizarSetorSolicitacaoMaterial";
+import { LerSolicitacaoMateriais } from "../../../components/data/fetch/demandasSolicitacaoMateriais/lerSolicitacaoMaterial";
 
 const style = {
   position: "absolute",
@@ -33,29 +33,29 @@ type Props = {
   openAdd: boolean;
   setOpenAdd: (value: boolean) => void;
   handleClose: (value: boolean) => void;
-  demandaId: string;
+  solicitacaoId: number;
 };
 
-export default function ModalAtualizaAssunto({
+export default function ModalAtualizaSetorSolicitacaoMaterial({
   openAdd,
   handleClose,
   setOpenAdd,
-  demandaId
+  solicitacaoId
 }: Props) {
 
-  const [assuntoId, setAssuntoId] = useState<string>("");
+  const [setorId, setSetorId] = useState<string>("");
   const handleChange = (event: SelectChangeEvent<string>) => {
-    setAssuntoId(event.target.value);
+    setSetorId(event.target.value);
   };
 
 
   const { usuario } = useContext(AuthContext);
-  const { setDemandas, assuntos } =
+  const { setSolicitacaoMaterial, setores } =
     useContext(DataContext);
 
 
   const handleOnAdd = async () => {
-    await LerDemandas({ setDemandas });
+    await LerSolicitacaoMateriais({ setSolicitacaoMaterial });
   };
 
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,7 +67,7 @@ export default function ModalAtualizaAssunto({
     const usuarioId = usuario!.id;
 
     if (
-      assuntoId.length <= 3 &&
+      setorId.length <= 3 &&
       usuarioId.length <= 3
     ) {
       toast.error("Preencha todos os campos obrigatórios!");
@@ -75,29 +75,28 @@ export default function ModalAtualizaAssunto({
       return;
     }
 
-    const promise: Promise<AxiosResponse> = AtualizarAssuntoDemanda({ id: demandaId, assuntoId: assuntoId })
+    const promise: Promise<AxiosResponse> = AtualizarSetorSolicitacaoMaterial({ id: solicitacaoId, setorId: setorId })
 
     toast.promise(promise, {
-      pending: "Atualizando assunto...",
-      success: "Comentario atualizado com sucesso!",
-      error: "Erro ao atualizar comentario!",
+      pending: "Atualizando setor...",
+      success: "Setor atualizado com sucesso!",
+      error: "Erro ao atualizar setor!",
     });
 
     try {
       await promise;
       setOpenAdd(false);
-      setAssuntoId("");
+      setSetorId("");
       handleOnAdd();
     } catch (e: any) {
       console.error(e.response?.request?.status);
-      setAssuntoId("");
+      setSetorId("");
       setOpenAdd(false);
     } finally {
       setLoading(false);
     }
   };
 
- 
   return (
     <div>
       <Modal
@@ -107,25 +106,25 @@ export default function ModalAtualizaAssunto({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <h2 className="text-center">Alterar Assunto</h2>
-          
+          <h2 className="text-center">Alterar Setor</h2>
+
           <div className="mt-5">
             <FormControl
               variant="standard"
               sx={{ width: "100%" }}
             >
-              <InputLabel sx={{ pl: 1.5 }}>Assunto</InputLabel>
+              <InputLabel sx={{ pl: 1.5 }}>Setor</InputLabel>
               <Select
-                value={assuntoId}
+                value={setorId}
                 onChange={handleChange}
                 sx={{ pl: 1.5 }}
               >
-                {assuntos?.map((assunto: Assunto) => (
+                {setores?.map((setor) => (
                   <MenuItem
-                    key={assunto.id}
-                    value={assunto.id}
+                    key={setor.id}
+                    value={setor.id}
                   >
-                    {assunto.nome}
+                    {setor.nome}
                   </MenuItem>
                 ))}
               </Select>

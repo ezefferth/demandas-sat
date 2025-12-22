@@ -6,13 +6,11 @@ import Modal from '@mui/material/Modal';
 import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
-
-import { AtualizarStatusDemanda } from '../../../components/data/fetch/demandas/atualizarStatusDemanda';
-import { Demanda } from '../../../components/types';
-import { LerDemandas } from '../../../components/data/fetch/demandas/lerDemandas';
-
+import {  SolicitacaoMaterial } from '../../../components/types';
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
+import { AtualizarPrioridadeSolicitacaoMaterial } from '../../../components/data/fetch/demandasSolicitacaoMateriais/atualizarPrioridadeSolicitacaoMaterial';
+import { LerSolicitacaoMateriais } from '../../../components/data/fetch/demandasSolicitacaoMateriais/lerSolicitacaoMaterial';
 
 const style = {
   position: 'absolute',
@@ -30,46 +28,47 @@ type Props = {
   open: boolean;
   setOpen: (value: boolean) => void
   handleClose: (value: boolean) => void
-  demanda: Demanda;
+  solicitacao: SolicitacaoMaterial;
   // onUpdate: (updatedChamado: Chamado) => void;
 }
 
-export default function ModalStatus({ open, handleClose, setOpen, demanda }: Props) {
+export default function ModalPrioridadeSolicitacaoMaterial({ open, handleClose, setOpen, solicitacao }: Props) {
 
 
-  const [statusId, setStatusId] = useState<string>('')
+  const [prioridadeId, setPrioridadeId] = useState<string>('')
 
-  const { status, setDemandas } = useContext(DataContext)
-
-
+  const { prioridades, setSolicitacaoMaterial } = useContext(DataContext)
 
   useEffect(() => {
-    if (demanda) {
-      setStatusId(demanda.statusId || '');
+    if (solicitacao) {
+      setPrioridadeId(solicitacao.prioridadeDemandaId || '');
     }
-  }, [demanda])
-
+  }, [solicitacao])
   const [loading, setLoading] = useState<boolean>(false);
+
+
   const handle = async () => {
     if (loading) return; // impede múltiplos cliques
     setLoading(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarStatusDemanda({ id: demanda.id, statusId });
+    const promise: Promise<AxiosResponse> = AtualizarPrioridadeSolicitacaoMaterial({ id: solicitacao.id, prioridadeId });
 
     toast.promise(promise, {
-      pending: "Atualizando status...",
-      success: "Status atualizado com sucesso!",
-      error: "Erro ao atualizar status!",
+      pending: "Atualizando prioridade...",
+      success: "Prioridade atualizada com sucesso!",
+      error: "Erro ao atualizar prioridade!",
     });
 
     try {
       await promise
       setOpen(false);
 
-      await LerDemandas({ setDemandas })
+      await LerSolicitacaoMateriais({ setSolicitacaoMaterial })
+
       // Atualiza o contexto global ou o estado local do chamado
       //onUpdate(updatedChamado);
     } catch (e: any) {
+      toast.error("Erro ao atualizar prioridade!");
       console.error(e.response?.request?.status);
       setOpen(false);
     } finally {
@@ -78,7 +77,7 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    setStatusId(event.target.value);
+    setPrioridadeId(event.target.value);
   };
 
 
@@ -92,22 +91,22 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
       >
         <Box sx={style}>
           <h2 className='text-center'>
-            Alterar Status
+            Alterar Prioridade
           </h2>
           <FormControl variant="standard" sx={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-standard-label">Status</InputLabel>
+            <InputLabel id="demo-simple-select-standard-label">Prioridade</InputLabel>
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={statusId}
+              value={prioridadeId}
               onChange={handleChange}
               defaultValue={
-                status?.find(st => st.id === demanda.statusId)?.nome || ''
+                prioridades?.find(st => st.id === solicitacao.prioridadeDemandaId)?.nome || ''
               }
               label="Status"
             >
               {
-                status?.map(st => (
+                prioridades?.map(st => (
                   <MenuItem key={st.id} value={st.id} >
                     {st.nome}
                   </MenuItem>
@@ -121,7 +120,7 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
               Cancelar
             </button>
             <button className='border rounded-lg bg-slate-300 px-3 py-1 hover:bg-slate-400 transition-all' onClick={handle}>
-              Cadastrar
+              Alterar
             </button>
           </div>
         </Box>

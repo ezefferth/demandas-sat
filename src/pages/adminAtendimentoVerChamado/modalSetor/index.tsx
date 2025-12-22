@@ -12,11 +12,11 @@ import {
 import { AuthContext } from "../../../components/data/context/authContext";
 // import { LerChamadosUser } from "../../../components/data/fetch/chamados/lerChamadosUser";
 
-import { LerDemandas } from "../../../components/data/fetch/chamados/lerChamados";
+import { LerDemandas } from "../../../components/data/fetch/demandas/lerDemandas";
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from "axios";
-import { AtualizarSetorDemanda } from "../../../components/data/fetch/chamados/atualizarSetorChamado";
+import { AtualizarSetorDemanda } from "../../../components/data/fetch/demandas/atualizarSetorDemanda";
 
 const style = {
   position: "absolute",

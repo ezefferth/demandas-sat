@@ -4,13 +4,13 @@ import { useContext, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { TextField } from '@mui/material';
 import { Demanda, Patrimonio } from '../../../components/types';
-import { LerDemandas } from '../../../components/data/fetch/chamados/lerChamados';
+import { LerDemandas } from '../../../components/data/fetch/demandas/lerDemandas';
 import { FaArrowRight, FaX } from "react-icons/fa6";
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
-import { AtualizarPatrimonioDemanda } from '../../../components/data/fetch/chamados/atualizarPatrimonioChamado';
-import { AtualizarRemoverPatrimonioDemanda } from '../../../components/data/fetch/chamados/atualizarRemoverPatrimonioChamado';
+import { AtualizarPatrimonioDemanda } from '../../../components/data/fetch/demandas/atualizarPatrimonioChamado';
+import { AtualizarRemoverPatrimonioDemanda } from '../../../components/data/fetch/demandas/atualizarRemoverPatrimonioDemanda';
 
 const style = {
   position: 'absolute',

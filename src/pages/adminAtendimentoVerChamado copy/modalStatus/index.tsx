@@ -7,12 +7,12 @@ import { useContext, useEffect, useState } from 'react';
 import { DataContext } from '../../../components/data/context/dataContext';
 import { FormControl, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
 
-import { AtualizarStatusDemanda } from '../../../components/data/fetch/demandas/atualizarStatusDemanda';
-import { Demanda } from '../../../components/types';
-import { LerDemandas } from '../../../components/data/fetch/demandas/lerDemandas';
+import { SolicitacaoMaterial } from '../../../components/types';
 
 import { toast } from 'react-toastify';
 import { AxiosResponse } from 'axios';
+import { AtualizarStatusSolicitacaoMaterial } from '../../../components/data/fetch/demandasSolicitacaoMateriais/atualizarStatusSolicitacaoMaterial';
+import { LerSolicitacaoMateriais } from '../../../components/data/fetch/demandasSolicitacaoMateriais/lerSolicitacaoMaterial';
 
 const style = {
   position: 'absolute',
@@ -30,31 +30,31 @@ type Props = {
   open: boolean;
   setOpen: (value: boolean) => void
   handleClose: (value: boolean) => void
-  demanda: Demanda;
+  solicitacao: SolicitacaoMaterial;
   // onUpdate: (updatedChamado: Chamado) => void;
 }
 
-export default function ModalStatus({ open, handleClose, setOpen, demanda }: Props) {
+export default function ModalStatusSolicitacao({ open, handleClose, setOpen, solicitacao }: Props) {
 
 
-  const [statusId, setStatusId] = useState<string>('')
+  const [statusDemandaId, setStatusDemandaId] = useState<string>('')
 
-  const { status, setDemandas } = useContext(DataContext)
+  const { status, setSolicitacaoMaterial } = useContext(DataContext)
 
 
 
   useEffect(() => {
-    if (demanda) {
-      setStatusId(demanda.statusId || '');
+    if (solicitacao) {
+      setStatusDemandaId(solicitacao.statusDemandaId || '');
     }
-  }, [demanda])
+  }, [solicitacao])
 
   const [loading, setLoading] = useState<boolean>(false);
   const handle = async () => {
     if (loading) return; // impede múltiplos cliques
     setLoading(true);
 
-    const promise: Promise<AxiosResponse> = AtualizarStatusDemanda({ id: demanda.id, statusId });
+    const promise: Promise<AxiosResponse> = AtualizarStatusSolicitacaoMaterial({ id: solicitacao.id, statusDemandaId });
 
     toast.promise(promise, {
       pending: "Atualizando status...",
@@ -66,7 +66,7 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
       await promise
       setOpen(false);
 
-      await LerDemandas({ setDemandas })
+      await LerSolicitacaoMateriais({ setSolicitacaoMaterial })
       // Atualiza o contexto global ou o estado local do chamado
       //onUpdate(updatedChamado);
     } catch (e: any) {
@@ -78,7 +78,7 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
   };
 
   const handleChange = (event: SelectChangeEvent) => {
-    setStatusId(event.target.value);
+    setStatusDemandaId(event.target.value);
   };
 
 
@@ -99,10 +99,10 @@ export default function ModalStatus({ open, handleClose, setOpen, demanda }: Pro
             <Select
               labelId="demo-simple-select-standard-label"
               id="demo-simple-select-standard"
-              value={statusId}
+              value={statusDemandaId}
               onChange={handleChange}
               defaultValue={
-                status?.find(st => st.id === demanda.statusId)?.nome || ''
+                status?.find(st => st.id === solicitacao.statusDemandaId)?.nome || ''
               }
               label="Status"
             >

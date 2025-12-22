@@ -22,6 +22,7 @@ import PageNotFoundAdminTI from "../../pages/pageNotFoundAdminTI";
 // import { useContext } from "react";
 // import { AuthContext } from "../data/context/authContext";
 import MateriaisPage from "../../pages/adminConfigMateriais";
+import VerSolicitacaoMaterialAdmin from "../../pages/adminAtendimentoVerChamado copy";
 
 export default function Router() {
 
@@ -126,6 +127,14 @@ export default function Router() {
           element={
             <AdminRoute>
               <VerChamadoAdmin />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/verSolicitacaoMaterialAdmin"
+          element={
+            <AdminRoute>
+              <VerSolicitacaoMaterialAdmin />
             </AdminRoute>
           }
         />
