@@ -6,14 +6,14 @@
 import { api } from "../../../../services/api";
 
 type Props = {
-  id: string
-  statusId: string;
+  id: number
+  statusDemandaId: string;
   finalizadoPor: string;
 };
 
-export async function AtualizarFinalizarSolicitacaoMaterial({ id, statusId, finalizadoPor }: Props) {
+export async function AtualizarFinalizarSolicitacaoMaterial({ id, statusDemandaId, finalizadoPor }: Props) {
   try {
-    const response = await api.post("/atualizarFinalizarSolicitacaoMaterial", { id, statusId, finalizadoPor }, {
+    const response = await api.post("/atualizarFinalizarDemandaMaterial", { id, statusDemandaId, finalizadoPor }, {
       headers: { "Content-Type": "application/json" }
     });
     // console.log("Sucesso em finalizar demanda!", response);

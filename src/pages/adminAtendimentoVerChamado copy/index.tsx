@@ -12,6 +12,7 @@ import ModalStatusSolicitacao from "./modalStatus";
 import ModalPrioridadeSolicitacaoMaterial from "./modalPrioridade";
 import ModalAtualizaSetorSolicitacaoMaterial from "./modalSetor";
 import ModalAprovarItemSolicitacaoMaterial from "./modalAprovaItem";
+import ModalAddFinalizarSolicitacaoMaterial from "./modalFinalizar";
 
 export default function VerSolicitacaoMaterialAdmin() {
   const { usuario } = useContext(AuthContext);
@@ -548,12 +549,13 @@ export default function VerSolicitacaoMaterialAdmin() {
           setOpen={setOpenPrioridade}
           handleClose={handleClosePrioridade}
         />
-        {/*<ModalAddFinalizar
+        <ModalAddFinalizarSolicitacaoMaterial
           open={openFinalizar}
           setOpen={setOpenFinalizar}
           handleClose={handleCloseFinalizar}
-          demanda={localSolicitacaoMaterial}
+          solicitacao={localSolicitacaoMaterial}
         />
+        {/*
         <ModalAddAnexo
           demandaId={Number(localSolicitacaoMaterial.id)}
           openAdd={openAddDoc}

@@ -52,7 +52,17 @@ export default function ModalEditarMaterial({ material, openEdit, setOpenEdit }:
   const handleChangeAtivo = (event: SelectChangeEvent<string>) => {
     setAtivo(event.target.value === "true");
   };
-
+  const UNIDADES = [
+    { value: "un", label: "Unidade (un)" },
+    { value: "cx", label: "Caixa (cx)" },
+    { value: "pct", label: "Pacote (pct)" },
+    { value: "kg", label: "Quilograma (kg)" },
+    { value: "g", label: "Grama (g)" },
+    { value: "lt", label: "Litro (lt)" },
+    { value: "ml", label: "Mililitro (ml)" },
+    { value: "m", label: "Metro (m)" },
+    { value: "resma", label: "Resma" },
+  ];
   const handleEdit = async () => {
     if (loading) return;
     setLoading(true);
@@ -77,6 +87,8 @@ export default function ModalEditarMaterial({ material, openEdit, setOpenEdit }:
       setLoading(false);
       return;
     }
+
+
 
     const payload = {
       id: material.id,
@@ -156,13 +168,19 @@ export default function ModalEditarMaterial({ material, openEdit, setOpenEdit }:
             </Select>
           </FormControl>
 
-          <TextField
-            label="Unidade (ex: un, cx)"
-            variant="filled"
-            sx={{ width: "50%" }}
-            value={unidade}
-            onChange={(e) => setUnidade(e.target.value)}
-          />
+          <FormControl variant="filled" sx={{ width: "50%" }}>
+            <InputLabel>Unidade</InputLabel>
+            <Select
+              value={unidade}
+              onChange={(e) => setUnidade(e.target.value)}
+            >
+              {UNIDADES.map((u) => (
+                <MenuItem key={u.value} value={u.value}>
+                  {u.label}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
         </div>
 
         <div className="mt-4 flex gap-3">
